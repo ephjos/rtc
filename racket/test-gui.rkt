@@ -2,7 +2,10 @@
 
 (require rackunit
          rackunit/text-ui
+         rackunit/gui
          "./test/all.rkt")
 
-(exit (run-tests all-tests))
+(test/gui
+  all-tests
+  #:wait? #t)
 
