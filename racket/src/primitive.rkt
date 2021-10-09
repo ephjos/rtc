@@ -14,6 +14,8 @@
          primitive-add
          primitive-sub
          primitive-scale
+         primitive-div
+         primitive-neg
          primitive-dot
          primitive-cross
          primitive-magnitude
@@ -49,10 +51,26 @@
 (define (primitive-scale s p)
   (map (lambda (x) (* x s)) p))
 
+(define (primitive-div s p)
+  (map (lambda (x) (/ x s)) p))
+
+(define (primitive-neg p)
+  (primitive-scale -1 p))
+
 (define (primitive-dot a b)
   (foldr + 0 (map * a b)))
 
-(define (primitive-cross) 0)
+(define (primitive-cross a b)
+  (let ([ax (primitive-x a)]
+        [ay (primitive-y a)]
+        [az (primitive-z a)]
+        [bx (primitive-x b)]
+        [by (primitive-y b)]
+        [bz (primitive-z b)])
+    (vector
+      (- (* ay bz) (* az by))
+      (- (* az bx) (* ax bz))
+      (- (* ax by) (* ay bx)))))
 
 (define (primitive-magnitude p)
   (sqrt (foldr + 0 (map * p p))))
