@@ -2,7 +2,9 @@
 
 (require rackunit
          rackunit/text-ui
-         "./primitive-test.rkt")
+         "./primitive-test.rkt"
+         "./color-test.rkt"
+         "./canvas-test.rkt")
 
 (provide all-tests)
 
@@ -10,5 +12,7 @@
   (test-suite
     "rtc tests"
     primitive-tests
+    color-tests
+    canvas-tests
     ))
 
