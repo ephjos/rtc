@@ -2,8 +2,8 @@
 
 (require "./util.rkt")
 
-(provide make-point
-         make-vector
+(provide make-point-3d
+         make-vector-3d
          tuple-x
          tuple-y
          tuple-z
@@ -22,10 +22,10 @@
          tuple-normalize
          )
 
-(define (make-point x y z)
+(define (make-point-3d x y z)
   (list x y z 1))
 
-(define (make-vector x y z)
+(define (make-vector-3d x y z)
   (list x y z 0))
 
 (define (tuple-x v) (car v))
@@ -67,7 +67,7 @@
         [bx (tuple-x b)]
         [by (tuple-y b)]
         [bz (tuple-z b)])
-    (make-vector
+    (make-vector-3d
       (- (* ay bz) (* az by))
       (- (* az bx) (* ax bz))
       (- (* ax by) (* ay bx)))))
