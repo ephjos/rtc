@@ -1,4 +1,4 @@
-#lang racket/base
+#lang racket
 
 
 (print "Hello, world!")

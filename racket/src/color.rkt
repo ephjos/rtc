@@ -1,15 +1,15 @@
-#lang racket/base
+#lang racket
 
 (require "./util.rkt")
 
-(provide color
+(provide make-color
          color-eq?
          color-add
          color-sub
          color-mul
          color-scale)
 
-(define (color r g b)
+(define (make-color r g b)
   (list r g b))
 
 (define (color-r v) (car v))
