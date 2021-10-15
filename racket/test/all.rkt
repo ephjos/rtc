@@ -2,7 +2,7 @@
 
 (require rackunit
          rackunit/text-ui
-         "./primitive-test.rkt"
+         "./tuple-test.rkt"
          "./color-test.rkt"
          "./canvas-test.rkt")
 
@@ -11,7 +11,7 @@
 (define all-tests
   (test-suite
     "rtc tests"
-    primitive-tests
+    tuple-tests
     color-tests
     canvas-tests
     ))
