@@ -7,7 +7,8 @@
          color-add
          color-sub
          color-mul
-         color-scale)
+         color-scale
+         color-to-display)
 
 (define (make-color r g b)
   (list r g b))
@@ -34,4 +35,7 @@
 (define (color-scale s c)
   (map (lambda (x) (* s x)) c))
 
+(define (color-to-display c)
+  (string-join (map (lambda (x)
+         (number->string (exact-floor (clamp 0 (* x 255) 255)))) c)))
 
