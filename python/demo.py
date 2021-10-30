@@ -2,6 +2,7 @@
 import argparse
 
 # Import function
+from canvas import demo_canvas
 from tuples import demo_tuples
 
 def main():
@@ -10,6 +11,7 @@ def main():
 
     # Add parser
     tuples_parser = subparsers.add_parser('tuples', help='demonstrate using basic tuples')
+    canvas_parser = subparsers.add_parser('canvas', help='demonstrate using canvas')
 
     args = parser.parse_args()
 
@@ -20,6 +22,7 @@ def main():
     # Map parser name to function
     commands = {
         'tuples': demo_tuples,
+        'canvas': demo_canvas,
     }
 
     commands[args.demo](args)

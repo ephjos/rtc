@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import unittest
+
+from canvas import TestCanvas
+from color import TestColor
 from tuples import TestTuples
 
 def main():

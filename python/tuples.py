@@ -5,88 +5,88 @@ import unittest
 from utils import req
 
 class Tuple:
-    def __init__(s,x,y,z,w):
-        s.x = x
-        s.y = y
-        s.z = z
-        s.w = w
+    def __init__(self,x,y,z,w):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
 
-    def isPoint(s):
-        return req(s.w,1)
+    def isPoint(self):
+        return req(self.w,1)
 
-    def isVector(s):
-        return req(s.w,0)
+    def isVector(self):
+        return req(self.w,0)
 
-    def __str__(s):
-        return "[{:6.2f} {:6.2f} {:6.2f} {:6.2f}]".format(s.x,s.y,s.z,s.w)
+    def __str__(self):
+        return "[{:6.2f} {:6.2f} {:6.2f} {:6.2f}]".format(self.x,self.y,self.z,self.w)
 
-    def __repr__(s):
-        return str(s)
+    def __repr__(self):
+        return str(self)
 
-    def __eq__(s, o):
-        return req(s.x,o.x) and req(s.y,o.y) and req(s.z,o.z) and req(s.w,o.w)
+    def __eq__(self, o):
+        return req(self.x,o.x) and req(self.y,o.y) and req(self.z,o.z) and req(self.w,o.w)
 
-    def __add__(s, o):
+    def __add__(self, o):
         return Tuple(
-            s.x + o.x,
-            s.y + o.y,
-            s.z + o.z,
-            s.w + o.w,
+            self.x + o.x,
+            self.y + o.y,
+            self.z + o.z,
+            self.w + o.w,
         )
 
-    def __sub__(s, o):
+    def __sub__(self, o):
         return Tuple(
-            s.x - o.x,
-            s.y - o.y,
-            s.z - o.z,
-            s.w - o.w,
+            self.x - o.x,
+            self.y - o.y,
+            self.z - o.z,
+            self.w - o.w,
         )
 
-    def __neg__(s):
+    def __neg__(self):
         return Tuple(
-            -s.x,
-            -s.y,
-            -s.z,
-            -s.w,
+            -self.x,
+            -self.y,
+            -self.z,
+            -self.w,
         )
 
-    def __mul__(s, o):
+    def __mul__(self, o):
         return Tuple(
-            s.x * o,
-            s.y * o,
-            s.z * o,
-            s.w * o,
+            self.x * o,
+            self.y * o,
+            self.z * o,
+            self.w * o,
         )
 
-    def __truediv__(s, o):
+    def __truediv__(self, o):
         return Tuple(
-            s.x / o,
-            s.y / o,
-            s.z / o,
-            s.w / o,
+            self.x / o,
+            self.y / o,
+            self.z / o,
+            self.w / o,
         )
 
-    def magnitude(s):
+    def magnitude(self):
         return math.sqrt(
-            (s.x ** 2) +
-            (s.y ** 2) +
-            (s.z ** 2) +
-            (s.w ** 2)
+            (self.x ** 2) +
+            (self.y ** 2) +
+            (self.z ** 2) +
+            (self.w ** 2)
         )
 
-    def normalize(s):
-        return s / s.magnitude()
+    def normalize(self):
+        return self / self.magnitude()
 
     @staticmethod
-    def dot(s, o):
-        return s.x * o.x + s.y * o.y + s.z * o.z + s.w * o.w
+    def dot(self, o):
+        return self.x * o.x + self.y * o.y + self.z * o.z + self.w * o.w
 
     @staticmethod
-    def cross(s, o):
+    def cross(self, o):
         return Vector(
-            s.y*o.z - s.z*o.y,
-            s.z*o.x - s.x*o.z,
-            s.x*o.y - s.y*o.x,
+            self.y*o.z - self.z*o.y,
+            self.z*o.x - self.x*o.z,
+            self.x*o.y - self.y*o.x,
         )
 
 
