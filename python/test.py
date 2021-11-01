@@ -3,6 +3,7 @@ import unittest
 
 from canvas import TestCanvas
 from color import TestColor
+from matrix import TestMatrix
 from tuples import TestTuples
 
 def main():
