@@ -3,6 +3,7 @@ import argparse
 
 # Import function
 from canvas import demo_canvas
+from transform import demo_transform
 from tuples import demo_tuples
 
 def main():
@@ -10,8 +11,9 @@ def main():
     subparsers = parser.add_subparsers(help='available demos', dest="demo")
 
     # Add parser
-    tuples_parser = subparsers.add_parser('tuples', help='demonstrate using basic tuples')
     canvas_parser = subparsers.add_parser('canvas', help='demonstrate using canvas')
+    transform_parser = subparsers.add_parser('transform', help='demonstrate using basic transformation matrices to build a clock')
+    tuples_parser = subparsers.add_parser('tuples', help='demonstrate using basic tuples')
 
     args = parser.parse_args()
 
@@ -21,8 +23,9 @@ def main():
 
     # Map parser name to function
     commands = {
-        'tuples': demo_tuples,
         'canvas': demo_canvas,
+        'transform': demo_transform,
+        'tuples': demo_tuples,
     }
 
     commands[args.demo](args)

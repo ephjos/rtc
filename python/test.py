@@ -4,6 +4,7 @@ import unittest
 from canvas import TestCanvas
 from color import TestColor
 from matrix import TestMatrix
+from transform import TestTransform
 from tuples import TestTuples
 
 def main():

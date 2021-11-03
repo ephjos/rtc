@@ -29,6 +29,18 @@ class Canvas:
 
         return "\n".join(lines) + "\n"
 
+    def save(self, filename):
+        with open(filename, "w") as savefile:
+            savefile.write("P3\n{} {}\n255\n\n".format(self.w, self.h))
+            l = self.w*self.h
+            s = 50
+            for i in range(0, l, s):
+                line = ' '.join(map(str, self.p[i:min(i+s, l)]))
+                savefile.write(line)
+                savefile.write("\n")
+
+            savefile.write("\n")
+
 
 class TestCanvas(unittest.TestCase):
     def test_canvas_constructor(self):

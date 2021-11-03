@@ -65,7 +65,7 @@ class Matrix:
             return self.__matmul_tuple__(o)
 
     @staticmethod
-    def identity(d):
+    def identity(d=4):
         return Matrix([[1 if i == j else 0 for j in range(d)] for i in range(d)])
 
     @property
