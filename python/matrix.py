@@ -119,6 +119,8 @@ class Matrix:
             raise Exception("Cannot get determinant of non-square matrix")
 
         det = self.determinant()
+        if det == 0:
+            raise Exception("Determinant is 0, cannot get inverse")
         cofactors = Matrix([[self.cofactor(i,j)/det for j in range(p)] for i in range(p)])
         return cofactors.T
 

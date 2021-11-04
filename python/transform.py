@@ -13,6 +13,12 @@ class Transform(Matrix):
     def identity(d=4):
         return Transform([[1 if i == j else 0 for j in range(d)] for i in range(d)])
 
+    def inverse(self):
+        temp = Matrix.inverse(self)
+        self = temp
+        self.__class__ = Transform
+        return self
+
     def apply(self, temp):
         self = temp @ self
         self.__class__ = Transform

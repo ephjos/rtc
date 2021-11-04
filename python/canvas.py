@@ -40,6 +40,7 @@ class Canvas:
                 savefile.write("\n")
 
             savefile.write("\n")
+        print("Saved to ", filename)
 
 
 class TestCanvas(unittest.TestCase):
