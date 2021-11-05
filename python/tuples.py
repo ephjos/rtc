@@ -77,11 +77,9 @@ class Tuple:
     def normalize(self):
         return self / self.magnitude()
 
-    @staticmethod
     def dot(self, o):
         return self.x * o.x + self.y * o.y + self.z * o.z + self.w * o.w
 
-    @staticmethod
     def cross(self, o):
         return Vector(
             self.y*o.z - self.z*o.y,
@@ -89,6 +87,8 @@ class Tuple:
             self.x*o.y - self.y*o.x,
         )
 
+    def reflect(self, normal):
+        return self - normal * 2 * self.dot(normal)
 
 def Point(x,y,z):
     return Tuple(x,y,z,1)
@@ -188,13 +188,26 @@ class TestTuples(unittest.TestCase):
     def test_dot(self):
         a = Vector(1,2,3)
         b = Vector(2,3,4)
-        self.assertEqual(Tuple.dot(a,b), 20)
+        self.assertEqual(a.dot(b), 20)
 
     def test_cross(self):
         a = Vector(1,2,3)
         b = Vector(2,3,4)
-        self.assertEqual(Tuple.cross(a,b), Vector(-1,2,-1))
-        self.assertEqual(Tuple.cross(b,a), Vector(1,-2,1))
+        self.assertEqual(a.cross(b), Vector(-1,2,-1))
+        self.assertEqual(b.cross(a), Vector(1,-2,1))
+
+    def test_reflect_45(self):
+        v = Vector(1, -1, 0)
+        n = Vector(0, 1, 0)
+        r = v.reflect(n)
+        self.assertEqual(r, Vector(1,1,0))
+
+    def test_reflect_slanted(self):
+        v = Vector(0, -1, 0)
+        n = Vector(math.sqrt(2)/2, math.sqrt(2)/2, 0)
+        r = v.reflect(n)
+        self.assertEqual(r, Vector(1,0,0))
+
 
 def demo_tuples(*args):
     class Projectile:

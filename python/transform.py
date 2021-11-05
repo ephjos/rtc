@@ -9,9 +9,8 @@ from tuples import Point, Vector, Tuple
 from utils import req, clamp
 
 class Transform(Matrix):
-    @staticmethod
-    def identity(d=4):
-        return Transform([[1 if i == j else 0 for j in range(d)] for i in range(d)])
+    def __init__(self, d=4):
+        Matrix.__init__(self, [[1 if i == j else 0 for j in range(d)] for i in range(d)])
 
     def inverse(self):
         temp = Matrix.inverse(self)
@@ -68,44 +67,44 @@ class Transform(Matrix):
 
 class TestTransform(unittest.TestCase):
     def test_translation(self):
-        transform = Transform.identity().translation(5, -3, 2)
+        transform = Transform().translation(5, -3, 2)
         p = Point(-3, 4, 5)
         self.assertEqual(transform @ p, Point(2,1,7))
 
     def test_translation_inverse(self):
-        transform = Transform.identity().translation(5, -3, 2).inverse()
+        transform = Transform().translation(5, -3, 2).inverse()
         p = Point(-3, 4, 5)
         self.assertEqual(transform @ p, Point(-8, 7, 3))
 
     def test_translation_vector(self):
-        transform = Transform.identity().translation(5, -3, 2)
+        transform = Transform().translation(5, -3, 2)
         v = Vector(-3, 4, 5)
         self.assertEqual(transform @ v, v)
 
     def test_scaling_point(self):
-        transform = Transform.identity().scaling(2, 3, 4)
+        transform = Transform().scaling(2, 3, 4)
         p = Point(-4, 6, 8)
         self.assertEqual(transform @ p, Point(-8, 18, 32))
 
     def test_scaling_vector(self):
-        transform = Transform.identity().scaling(2, 3, 4)
+        transform = Transform().scaling(2, 3, 4)
         p = Vector(-4, 6, 8)
         self.assertEqual(transform @ p, Vector(-8, 18, 32))
 
     def test_scaling_inverse(self):
-        transform = Transform.identity().scaling(2, 3, 4).inverse()
+        transform = Transform().scaling(2, 3, 4).inverse()
         p = Vector(-4, 6, 8)
         self.assertEqual(transform @ p, Vector(-2, 2, 2))
 
     def test_scaling_reflection(self):
-        transform = Transform.identity().scaling(-1, 1, 1).inverse()
+        transform = Transform().scaling(-1, 1, 1).inverse()
         p = Point(2, 3, 4)
         self.assertEqual(transform @ p, Point(-2, 3, 4))
 
     def test_rotation_x(self):
         p = Point(0, 1, 0)
-        half_quarter = Transform.identity().rotation_x(math.pi / 4)
-        full_quarter = Transform.identity().rotation_x(math.pi / 2)
+        half_quarter = Transform().rotation_x(math.pi / 4)
+        full_quarter = Transform().rotation_x(math.pi / 2)
 
         self.assertEqual(half_quarter @ p, Point(0, math.sqrt(2)/2, math.sqrt(2)/2))
         self.assertEqual(full_quarter @ p, Point(0, 0, 1))
@@ -113,45 +112,45 @@ class TestTransform(unittest.TestCase):
 
     def test_rotation_y(self):
         p = Point(0, 0, 1)
-        half_quarter = Transform.identity().rotation_y(math.pi / 4)
-        full_quarter = Transform.identity().rotation_y(math.pi / 2)
+        half_quarter = Transform().rotation_y(math.pi / 4)
+        full_quarter = Transform().rotation_y(math.pi / 2)
 
         self.assertEqual(half_quarter @ p, Point(math.sqrt(2)/2, 0, math.sqrt(2)/2))
         self.assertEqual(full_quarter @ p, Point(1, 0, 0))
 
     def test_rotation_z(self):
         p = Point(0, 1, 0)
-        half_quarter = Transform.identity().rotation_z(math.pi / 4)
-        full_quarter = Transform.identity().rotation_z(math.pi / 2)
+        half_quarter = Transform().rotation_z(math.pi / 4)
+        full_quarter = Transform().rotation_z(math.pi / 2)
 
         self.assertEqual(half_quarter @ p, Point(-math.sqrt(2)/2, math.sqrt(2)/2, 0))
         self.assertEqual(full_quarter @ p, Point(-1, 0, 0))
 
     def test_shearing(self):
-        transform = Transform.identity().shearing(1, 0, 0, 0, 0, 0)
+        transform = Transform().shearing(1, 0, 0, 0, 0, 0)
         p = Point(2,3,4)
         self.assertEqual(transform @ p, Point(5, 3, 4))
 
-        transform = Transform.identity().shearing(0, 1, 0, 0, 0, 0)
+        transform = Transform().shearing(0, 1, 0, 0, 0, 0)
         self.assertEqual(transform @ p, Point(6, 3, 4))
 
-        transform = Transform.identity().shearing(0, 0, 1, 0, 0, 0)
+        transform = Transform().shearing(0, 0, 1, 0, 0, 0)
         self.assertEqual(transform @ p, Point(2, 5, 4))
 
-        transform = Transform.identity().shearing(0, 0, 0, 1, 0, 0)
+        transform = Transform().shearing(0, 0, 0, 1, 0, 0)
         self.assertEqual(transform @ p, Point(2, 7, 4))
 
-        transform = Transform.identity().shearing(0, 0, 0, 0, 1, 0)
+        transform = Transform().shearing(0, 0, 0, 0, 1, 0)
         self.assertEqual(transform @ p, Point(2, 3, 6))
 
-        transform = Transform.identity().shearing(0, 0, 0, 0, 0, 1)
+        transform = Transform().shearing(0, 0, 0, 0, 0, 1)
         self.assertEqual(transform @ p, Point(2, 3, 7))
 
     def test_individual_chaining(self):
         p = Point(1, 0, 1)
-        A = Transform.identity().rotation_x(math.pi/2)
-        B = Transform.identity().scaling(5, 5, 5)
-        C = Transform.identity().translation(10, 5, 7)
+        A = Transform().rotation_x(math.pi/2)
+        B = Transform().scaling(5, 5, 5)
+        C = Transform().translation(10, 5, 7)
 
         p2 = A @ p
         self.assertEqual(p2, Point(1, -1, 0))
@@ -164,15 +163,15 @@ class TestTransform(unittest.TestCase):
 
     def test_group_chaining(self):
         p = Point(1, 0, 1)
-        A = Transform.identity().rotation_x(math.pi/2)
-        B = Transform.identity().scaling(5, 5, 5)
-        C = Transform.identity().translation(10, 5, 7)
+        A = Transform().rotation_x(math.pi/2)
+        B = Transform().scaling(5, 5, 5)
+        C = Transform().translation(10, 5, 7)
         T = C @ B @ A
 
         self.assertEqual(T @ p, Point(15, 0, 7))
 
         # pylint: disable=no-member
-        T2 = Transform.identity().rotation_x(math.pi/2).scaling(5, 5, 5).translation(10, 5, 7)
+        T2 = Transform().rotation_x(math.pi/2).scaling(5, 5, 5).translation(10, 5, 7)
         self.assertEqual(T, T2)
         self.assertEqual(T2 @ p, Point(15, 0, 7))
 

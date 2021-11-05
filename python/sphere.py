@@ -8,15 +8,20 @@ import uuid
 from canvas import Canvas
 from color import Color
 from intersection import Intersection, Intersections
+from lights import PointLight
+from materials import Material
 from ray import Ray
 from transform import Transform
 from tuples import Tuple, Point, Vector
 
 class Sphere:
-    def __init__(self):
+    def __init__(self, material=Material()):
         self.id = str(uuid.uuid4())
-        self._transform = Transform.identity()
-        self.inverse = self.transform.inverse()
+
+        self._transform = Transform()
+        self.inverse_transform = self.transform.inverse()
+
+        self.material = material
 
     @property
     def transform(self):
@@ -25,14 +30,14 @@ class Sphere:
     @transform.setter
     def transform(self, t):
         self._transform = t
-        self.inverse = t.inverse()
+        self.inverse_transform = t.inverse()
 
     def intersect(self, r):
-        ray = r.transform(self.inverse)
+        ray = r.transform(self.inverse_transform)
         sphere_to_ray = ray.origin - Point(0,0,0)
-        a = Tuple.dot(ray.direction, ray.direction)
-        b = 2 * Tuple.dot(ray.direction, sphere_to_ray)
-        c = Tuple.dot(sphere_to_ray, sphere_to_ray) - 1
+        a = ray.direction.dot(ray.direction)
+        b = 2 * ray.direction.dot(sphere_to_ray)
+        c = sphere_to_ray.dot(sphere_to_ray) - 1
         discriminant = (b*b) - 4*a*c
 
         if discriminant < 0:
@@ -44,6 +49,13 @@ class Sphere:
         if t1 > t2:
             return Intersections(Intersection(t2,self), Intersection(t1, self))
         return Intersections(Intersection(t1,self), Intersection(t2, self))
+
+    def normal_at(self, world_point):
+        object_point = self.inverse_transform @ world_point
+        object_normal = object_point - Point(0,0,0)
+        world_normal = self.inverse_transform.T @ object_normal
+        world_normal.w = 0
+        return world_normal.normalize()
 
 class TestSphere(unittest.TestCase):
     def test_sphere_intersect(self):
@@ -155,18 +167,18 @@ class TestSphere(unittest.TestCase):
 
     def test_sphere_default_transform(self):
         s = Sphere()
-        self.assertEqual(s.transform, Transform.identity())
+        self.assertEqual(s.transform, Transform())
 
     def test_sphere_change_transform(self):
         s = Sphere()
-        t = Transform.identity().translation(2,3,4)
+        t = Transform().translation(2,3,4)
         s.transform = t
         self.assertEqual(s.transform, t)
 
     def test_sphere_intersect_scaled(self):
         r = Ray(Point(0,0,-5), Vector(0,0,1))
         s = Sphere()
-        s.transform = Transform.identity().scaling(2,2,2)
+        s.transform = Transform().scaling(2,2,2)
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 2)
@@ -176,24 +188,76 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_translated(self):
         r = Ray(Point(0,0,-5), Vector(0,0,1))
         s = Sphere()
-        s.transform = Transform.identity().translation(5,0,0)
+        s.transform = Transform().translation(5,0,0)
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 0)
 
+    def test_sphere_normal_at_x(self):
+        s = Sphere()
+        n = s.normal_at(Point(1, 0, 0))
+        self.assertEqual(n, Vector(1,0,0))
+
+    def test_sphere_normal_at_y(self):
+        s = Sphere()
+        n = s.normal_at(Point(0, 1, 0))
+        self.assertEqual(n, Vector(0,1,0))
+
+    def test_sphere_normal_at_z(self):
+        s = Sphere()
+        n = s.normal_at(Point(0, 0, 1))
+        self.assertEqual(n, Vector(0,0,1))
+
+    def test_sphere_normal_at_non_axis(self):
+        s = Sphere()
+        r3o3 = math.sqrt(3)/3
+        n = s.normal_at(Point(r3o3, r3o3, r3o3))
+        self.assertEqual(n, Vector(r3o3, r3o3, r3o3))
+        self.assertEqual(n, n.normalize())
+
+    def test_sphere_normal_on_translated(self):
+        s = Sphere()
+        s.transform = Transform().translation(0,1,0)
+        n = s.normal_at(Point(0, 1.70711, -0.70711))
+        self.assertEqual(n, Vector(0, 0.70711, -0.70711))
+
+    def test_sphere_normal_on_transformed(self):
+        s = Sphere()
+        s.transform = Transform().rotation_z(math.pi/5).scaling(1, 0.5, 1)
+        n = s.normal_at(Point(0, math.sqrt(2)/2, -math.sqrt(2)/2))
+        self.assertEqual(n, Vector(0, 0.97014, -0.24254))
+
+    def test_sphere_default_material(self):
+        s = Sphere()
+        m = s.material
+        self.assertEqual(m, Material())
+
+    def test_sphere_assigned_material(self):
+        s = Sphere()
+        m = Material()
+        m.ambient = 1
+        s.material = m
+        self.assertEqual(s.material, m)
+
 def demo_ray(*args):
-    origin = Point(0,0,-1.05)
+    origin = Point(0,0,-5)
     wall_z = 10
+    wall_size = 7
     s = Sphere()
 
     hit_color = Color(1,0,0)
-    c = Canvas(100,100)
+
+    canvas_size = 100
+    pixel_size = wall_size / canvas_size
+    c = Canvas(canvas_size, canvas_size)
     w2 = c.w // 2
     h2 = c.h // 2
 
     for i in range(-h2,h2):
+        world_y = i * pixel_size
         for j in range(-w2,w2):
-            ray = Ray(origin, (Point(i,j,wall_z)-origin).normalize())
+            world_x = j * pixel_size
+            ray = Ray(origin, (Point(world_x,world_y,wall_z)-origin).normalize())
             xs = s.intersect(ray)
             hit = xs.hit()
 
@@ -203,29 +267,39 @@ def demo_ray(*args):
 
     c.save("./demo_ray.ppm")
 
-def demo_ray_book(*args):
+
+def demo_material(*args):
     origin = Point(0,0,-5)
     wall_z = 10
     wall_size = 7
-    canvas_size = 100
-    pixel_size = wall_size / canvas_size
-    half = wall_size/2
-
-    canvas = Canvas(canvas_size, canvas_size)
-    color = Color(1,0,0)
     s = Sphere()
+    s.material.color = Color(1,0.2,1)
 
-    for y in range(canvas_size):
-        world_y = half - pixel_size*y
-        for x in range(canvas_size):
-            world_x = - half + pixel_size*x
-            position = Point(world_x, world_y, wall_z)
-            r = Ray(origin, (position-origin).normalize())
-            xs = s.intersect(r)
+    light_position = Point(-10, -10, -10)
+    light_color = Color(1,1,1)
+    light = PointLight(light_position, light_color)
 
-            if xs.hit() is not None:
-                canvas.write(x,y,color)
+    canvas_size = 480
+    pixel_size = wall_size / canvas_size
+    c = Canvas(canvas_size, canvas_size)
+    w2 = c.w // 2
+    h2 = c.h // 2
 
-    canvas.save("./demo_ray_book.ppm")
+    for i in range(-h2,h2):
+        world_y = i*pixel_size
+        for j in range(-w2,w2):
+            world_x = j*pixel_size
+            ray = Ray(origin, (Point(world_x,world_y,wall_z)-origin).normalize())
+            xs = s.intersect(ray)
+            hit = xs.hit()
 
+            if hit is None:
+                continue
 
+            point = ray.position(hit.t)
+            normal = hit.object.normal_at(point)
+            eye = -ray.direction
+            color = s.material.lighting(light,point,eye,normal)
+            c.write(j+w2, (i+h2), color)
+
+    c.save("./demo_material.ppm")

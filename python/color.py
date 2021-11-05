@@ -44,7 +44,6 @@ class Color:
             self.b * s,
         )
 
-    @staticmethod
     def blend(self, o):
         return Color(
             self.r * o.r,
@@ -77,6 +76,6 @@ class TestColor(unittest.TestCase):
     def test_blend_color(self):
         c1 = Color(1, 0.2, 0.4)
         c2 = Color(0.9, 1, 0.1)
-        self.assertEqual(Color.blend(c1,c2), Color(0.9, 0.2, 0.04))
+        self.assertEqual(c1.blend(c2), Color(0.9, 0.2, 0.04))
 
 

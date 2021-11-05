@@ -3,6 +3,8 @@ import unittest
 
 from canvas import TestCanvas
 from color import TestColor
+from lights import TestPointLight
+from materials import TestMaterial
 from matrix import TestMatrix
 from ray import TestRay
 from sphere import TestSphere

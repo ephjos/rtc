@@ -64,10 +64,6 @@ class Matrix:
         else:
             return self.__matmul_tuple__(o)
 
-    @staticmethod
-    def identity(d=4):
-        return Matrix([[1 if i == j else 0 for j in range(d)] for i in range(d)])
-
     @property
     def T(self):
         return Matrix(list(map(list, zip(*self.rows))))
@@ -124,6 +120,9 @@ class Matrix:
         cofactors = Matrix([[self.cofactor(i,j)/det for j in range(p)] for i in range(p)])
         return cofactors.T
 
+
+def IdentityMatrix(d=4):
+    return Matrix([[1 if i == j else 0 for j in range(d)] for i in range(d)])
 
 
 class TestMatrix(unittest.TestCase):
@@ -211,12 +210,12 @@ class TestMatrix(unittest.TestCase):
                     [1,2,4,8],
                     [2,4,8,16],
                     [4,8,16,32]])
-        I = Matrix.identity(4)
+        I = IdentityMatrix(4)
         self.assertEqual(A @ I, A)
 
     def test_matrix_multiply_identity_tuple(self):
         a = Tuple(1,2,3,4)
-        I = Matrix.identity(4)
+        I = IdentityMatrix(4)
         self.assertEqual(I @ a, a)
 
     def test_matrix_transpose(self):
@@ -231,7 +230,7 @@ class TestMatrix(unittest.TestCase):
         self.assertEqual(A.T, AT)
 
     def test_matrix_identity_transpose(self):
-        A = Matrix.identity(4)
+        A = IdentityMatrix(4)
         self.assertEqual(A.T, A)
 
     def test_matrix_submatrix(self):
