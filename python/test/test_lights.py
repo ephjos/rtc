@@ -1,15 +1,11 @@
-#!/usr/bin/env python
 
-import math
+
 import unittest
 
-from color import Color
-from tuples import Tuple, Point, Vector
+from rtc.color import Color
+from rtc.lights import PointLight
+from rtc.tuples import Point
 
-class PointLight:
-    def __init__(self, position, intensity):
-        self.position = position
-        self.intensity = intensity
 
 class TestPointLight(unittest.TestCase):
     def test_point_light_constructor(self):

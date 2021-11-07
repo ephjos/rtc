@@ -1,27 +1,11 @@
-#!/usr/bin/env python
 
-import math
+
 import unittest
 
-from transform import Transform
-from tuples import Tuple, Point, Vector
+from rtc.ray import Ray
+from rtc.transform import Transform
+from rtc.tuples import Point, Vector
 
-class Ray:
-    def __init__(self, origin, direction):
-        if not origin.isPoint():
-            raise Exception("origin must be a point")
-        if not direction.isVector():
-            raise Exception("direction must be a vector")
-        self.origin = origin
-        self.direction = direction
-
-    def position(self, t):
-        return self.origin + self.direction*t
-
-    def transform(self, t):
-        origin = t @ self.origin
-        direction = t @ self.direction
-        return Ray(origin, direction)
 
 class TestRay(unittest.TestCase):
     def test_ray_constructor(self):

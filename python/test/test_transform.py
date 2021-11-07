@@ -1,69 +1,13 @@
-#!/usr/bin/env python
+
 import math
 import unittest
 
-from canvas import Canvas
-from color import Color
-from matrix import Matrix
-from tuples import Point, Vector, Tuple
-from utils import req, clamp
+from rtc.canvas import Canvas
+from rtc.color import Color
+from rtc.matrix import Matrix
+from rtc.transform import Transform, ViewTransform
+from rtc.tuples import Point, Vector
 
-class Transform(Matrix):
-    def __init__(self, d=4):
-        Matrix.__init__(self, [[1 if i == j else 0 for j in range(d)] for i in range(d)])
-
-    def inverse(self):
-        temp = Matrix.inverse(self)
-        self = temp
-        self.__class__ = Transform
-        return self
-
-    def apply(self, temp):
-        self = temp @ self
-        self.__class__ = Transform
-        return self
-
-    def translation(self, x, y, z):
-        temp = Matrix([[1, 0, 0, x],
-                       [0, 1, 0, y],
-                       [0, 0, 1, z],
-                       [0, 0, 0, 1]])
-        return self.apply(temp)
-
-    def scaling(self, x, y, z):
-        temp = Matrix([[x, 0, 0, 0],
-                       [0, y, 0, 0],
-                       [0, 0, z, 0],
-                       [0, 0, 0, 1]])
-        return self.apply(temp)
-
-    def rotation_x(self, r):
-        temp = Matrix([[1, 0,           0,            0],
-                       [0, math.cos(r), -math.sin(r), 0],
-                       [0, math.sin(r), math.cos(r),  0],
-                       [0, 0,           0,            1]])
-        return self.apply(temp)
-
-    def rotation_y(self, r):
-        temp = Matrix([[math.cos(r),  0, math.sin(r), 0],
-                       [0,            1, 0,           0],
-                       [-math.sin(r), 0, math.cos(r), 0],
-                       [0,            0, 0,           1]])
-        return self.apply(temp)
-
-    def rotation_z(self, r):
-        temp = Matrix([[math.cos(r), -math.sin(r), 0, 0],
-                       [math.sin(r), math.cos(r),  0, 0],
-                       [0,           0,            1, 0],
-                       [0,           0,            0, 1]])
-        return self.apply(temp)
-
-    def shearing(self, xy, xz, yx, yz, zx, zy):
-        temp = Matrix([[1,  xy, xz, 0],
-                       [yx, 1,  yz, 0],
-                       [zx, zy, 1,  0],
-                       [0,  0,  0,  1]])
-        return self.apply(temp)
 
 class TestTransform(unittest.TestCase):
     def test_translation(self):
@@ -175,23 +119,39 @@ class TestTransform(unittest.TestCase):
         self.assertEqual(T, T2)
         self.assertEqual(T2 @ p, Point(15, 0, 7))
 
-def demo_transform(*args):
-    size = 50
-    canvas = Canvas(size, size)
-    tick = Color(1,1,1)
+    def test_default_view_transform(self):
+        at = Point(0,0,0)
+        to = Point(0,0,-1)
+        up = Vector(0,1,0)
+        t = ViewTransform(at, to, up)
 
-    for i in range(12):
-        p = Point(1, 0, 0)
-        r = i * (math.pi/6)
-        T = Transform \
-                .identity() \
-                .rotation_z(r) \
-                .scaling(size/4, size/4, size/4) \
-                .translation(size/2, size/2, 0)
-        Tp = T @ p
-        x = round(Tp.x)
-        y = round(Tp.y)
-        canvas.write(x, y, tick)
+        self.assertEqual(t, Transform())
 
-    canvas.save("./transform_demo.ppm")
+    def test_view_transform_z(self):
+        at = Point(0,0,0)
+        to = Point(0,0,1)
+        up = Vector(0,1,0)
+        t = ViewTransform(at, to, up)
 
+        self.assertEqual(t, Transform().scaling(-1,1,-1))
+
+    def test_view_transform_moves_world(self):
+        at = Point(0,0,8)
+        to = Point(0,0,0)
+        up = Vector(0,1,0)
+        t = ViewTransform(at, to, up)
+
+        self.assertEqual(t, Transform().translation(0,0,-8))
+
+    def test_view_transform_arbitrary(self):
+        at = Point(1,3,2)
+        to = Point(4,-2,8)
+        up = Vector(1,1,0)
+        t = ViewTransform(at, to, up)
+
+        expected = Matrix([[-0.50709, 0.50709,  0.67612, -2.36643],
+                           [0.76772, 0.60609,  0.12122, -2.82843],
+                           [-0.35857, 0.59761, -0.71714,  0.00000],
+                           [0.00000, 0.00000,  0.00000,  1.00000]])
+
+        self.assertEqual(t, expected)

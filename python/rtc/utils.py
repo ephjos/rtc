@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 # Rough equals
 def req(a,b):
