@@ -1,5 +1,3 @@
-
-
 import unittest
 
 from rtc.canvas import Canvas
@@ -12,7 +10,7 @@ class TestCanvas(unittest.TestCase):
         self.assertEqual(c.w, 10)
         self.assertEqual(c.h, 20)
         for p in c.p:
-            self.assertEqual(p, Color(0,0,0))
+            self.assertEqual(p, Color(0, 0, 0))
 
     def test_write_to_canvas(self):
         c = Canvas(10, 20)

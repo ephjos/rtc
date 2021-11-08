@@ -1,4 +1,3 @@
-
 from rtc.canvas import Canvas
 from rtc.color import Color
 from rtc.lights import PointLight
@@ -6,15 +5,16 @@ from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.tuples import Point
 
+
 def demo_material(*args):
-    origin = Point(0,0,-5)
+    origin = Point(0, 0, -5)
     wall_z = 10
     wall_size = 7
     s = Sphere()
-    s.material.color = Color(1,0.2,1)
+    s.material.color = Color(1, 0.2, 1)
 
     light_position = Point(-10, -10, -10)
-    light_color = Color(1,1,1)
+    light_color = Color(1, 1, 1)
     light = PointLight(light_position, light_color)
 
     canvas_size = 100
@@ -23,11 +23,11 @@ def demo_material(*args):
     w2 = c.w // 2
     h2 = c.h // 2
 
-    for i in range(-h2,h2):
-        world_y = i*pixel_size
-        for j in range(-w2,w2):
-            world_x = j*pixel_size
-            ray = Ray(origin, (Point(world_x,world_y,wall_z)-origin).normalize())
+    for i in range(-h2, h2):
+        world_y = i * pixel_size
+        for j in range(-w2, w2):
+            world_x = j * pixel_size
+            ray = Ray(origin, (Point(world_x, world_y, wall_z) - origin).normalize())
             xs = s.intersect(ray)
             hit = xs.hit()
 
@@ -37,7 +37,7 @@ def demo_material(*args):
             point = ray.position(hit.t)
             normal = hit.object.normal_at(point)
             eye = -ray.direction
-            color = s.material.lighting(light,point,eye,normal)
-            c.write(j+w2, (i+h2), color)
+            color = s.material.lighting(light, point, eye, normal)
+            c.write(j + w2, (i + h2), color)
 
     c.save("./demo_material.ppm")

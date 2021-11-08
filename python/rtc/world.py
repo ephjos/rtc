@@ -1,4 +1,3 @@
-
 from rtc.color import Color
 from rtc.intersection import Intersections, Computations
 from rtc.lights import PointLight
@@ -6,6 +5,7 @@ from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.transform import Transform
 from rtc.tuples import Point
+
 
 class World:
     def __init__(self, objects=None, light=None):
@@ -37,7 +37,7 @@ class World:
         hit = intersections.hit()
 
         if hit is None:
-            return Color(0,0,0)
+            return Color(0, 0, 0)
 
         comps = hit.prepare_computations(r)
         return self.shade_hit(comps)
@@ -59,7 +59,7 @@ class World:
 
 
 def DefaultWorld():
-    light = PointLight(Point(-10,10,-10), Color(1,1,1))
+    light = PointLight(Point(-10, 10, -10), Color(1, 1, 1))
     s1 = Sphere()
     s1.material.color = Color(0.8, 1.0, 0.6)
     s1.material.diffuse = 0.7
@@ -69,4 +69,3 @@ def DefaultWorld():
     s2.transform = Transform().scaling(0.5, 0.5, 0.5)
 
     return World([s1, s2], light)
-

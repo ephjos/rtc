@@ -1,5 +1,5 @@
-
 from rtc.utils import EPSILON
+
 
 class Computations:
     def __init__(self):
@@ -10,6 +10,7 @@ class Computations:
         self.normalv = None
         self.inside = None
         self.over_point = None
+
 
 class Intersection:
     def __init__(self, t, o):
@@ -32,6 +33,7 @@ class Intersection:
         comps.over_point = comps.point + comps.normalv * EPSILON
 
         return comps
+
 
 class Intersections:
     def __init__(self, intersections=None):

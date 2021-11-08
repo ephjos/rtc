@@ -1,5 +1,3 @@
-
-
 class PointLight:
     def __init__(self, position, intensity):
         self.position = position
@@ -7,4 +5,3 @@ class PointLight:
 
     def __eq__(self, o):
         return self.position == o.position and self.intensity == o.intensity
-

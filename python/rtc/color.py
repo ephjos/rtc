@@ -1,6 +1,9 @@
-
-
 from rtc.utils import req, clamp
+
+
+def display_color(c):
+    return clamp(round(c * 255), 0, 255)
+
 
 class Color:
     def __init__(self, r, g, b):
@@ -9,7 +12,6 @@ class Color:
         self.b = b
 
     def __str__(self):
-        display_color = lambda c: clamp(round(c*255), 0, 255)
         r = display_color(self.r)
         g = display_color(self.g)
         b = display_color(self.b)
@@ -25,7 +27,7 @@ class Color:
         return str(self)
 
     def __eq__(self, o):
-        return req(self.r,o.r) and req(self.g,o.g) and req(self.b,o.b)
+        return req(self.r, o.r) and req(self.g, o.g) and req(self.b, o.b)
 
     def __add__(self, o):
         return Color(
@@ -54,5 +56,3 @@ class Color:
             self.g * o.g,
             self.b * o.b,
         )
-
-

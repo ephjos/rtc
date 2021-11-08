@@ -1,8 +1,8 @@
-
 import copy
 
 from rtc.tuples import Tuple
 from rtc.utils import req
+
 
 class Matrix:
     def __init__(self, rows):
@@ -40,7 +40,7 @@ class Matrix:
         [r, s] = o.shape
 
         if q != r:
-            raise Exception("Shape mismatch: " + str([p,q]) + " " + str([r,s]))
+            raise Exception("Shape mismatch: " + str([p, q]) + " " + str([r, s]))
 
         M = Matrix([[0 for j in range(s)] for i in range(r)])
 
@@ -53,7 +53,7 @@ class Matrix:
         return M
 
     def __matmul_tuple__(self, o):
-        result = self.__matmul_matrix__(Matrix([[o.x],[o.y],[o.z],[o.w]]))
+        result = self.__matmul_matrix__(Matrix([[o.x], [o.y], [o.z], [o.w]]))
         return Tuple(result[0][0], result[1][0], result[2][0], result[3][0])
 
     def __matmul__(self, o):
@@ -76,11 +76,11 @@ class Matrix:
             b = self.rows[0][1]
             c = self.rows[1][0]
             d = self.rows[1][1]
-            return (a*d) - (b*c)
+            return (a * d) - (b * c)
 
         result = 0
         for i in range(p):
-            result += self[0][i] * self.cofactor(0,i)
+            result += self[0][i] * self.cofactor(0, i)
         return result
 
     def submatrix(self, y, x):
@@ -96,11 +96,11 @@ class Matrix:
         return Matrix(rows)
 
     def minor(self, y, x):
-        return self.submatrix(y,x).determinant()
+        return self.submatrix(y, x).determinant()
 
     def cofactor(self, y, x):
-        m = self.minor(y,x)
-        if (x+y) % 2 != 0:
+        m = self.minor(y, x)
+        if (x + y) % 2 != 0:
             return -1 * m
         return m
 
@@ -115,11 +115,11 @@ class Matrix:
         det = self.determinant()
         if det == 0:
             raise Exception("Determinant is 0, cannot get inverse")
-        cofactors = Matrix([[self.cofactor(i,j)/det for j in range(p)] for i in range(p)])
+        cofactors = Matrix(
+            [[self.cofactor(i, j) / det for j in range(p)] for i in range(p)]
+        )
         return cofactors.T
 
 
 def IdentityMatrix(d=4):
     return Matrix([[1 if i == j else 0 for j in range(d)] for i in range(d)])
-
-

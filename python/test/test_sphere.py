@@ -1,12 +1,7 @@
-
-
 import math
 import unittest
 
-from rtc.canvas import Canvas
-from rtc.color import Color
 from rtc.intersection import Intersection, Intersections
-from rtc.lights import PointLight
 from rtc.materials import Material
 from rtc.ray import Ray
 from rtc.sphere import Sphere
@@ -16,7 +11,7 @@ from rtc.tuples import Point, Vector
 
 class TestSphere(unittest.TestCase):
     def test_sphere_intersect(self):
-        r = Ray(Point(0,0,-5), Vector(0,0,1))
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
@@ -25,7 +20,7 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[1].t, 6.0)
 
     def test_sphere_intersect_tangent(self):
-        r = Ray(Point(0,1,-5), Vector(0,0,1))
+        r = Ray(Point(0, 1, -5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
@@ -34,14 +29,14 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[1].t, 5.0)
 
     def test_sphere_intersect_miss(self):
-        r = Ray(Point(0,2,-5), Vector(0,0,1))
+        r = Ray(Point(0, 2, -5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 0)
 
     def test_sphere_intersect_inside(self):
-        r = Ray(Point(0,0,0), Vector(0,0,1))
+        r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
@@ -50,7 +45,7 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[1].t, 1.0)
 
     def test_sphere_intersect_behind(self):
-        r = Ray(Point(0,0,5), Vector(0,0,1))
+        r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
@@ -59,7 +54,7 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[1].t, -4.0)
 
     def test_sphere_intersect_set_object(self):
-        r = Ray(Point(0,0,-5), Vector(0,0,1))
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
@@ -128,14 +123,14 @@ class TestSphere(unittest.TestCase):
 
     def test_sphere_change_transform(self):
         s = Sphere()
-        t = Transform().translation(2,3,4)
+        t = Transform().translation(2, 3, 4)
         s.transform = t
         self.assertEqual(s.transform, t)
 
     def test_sphere_intersect_scaled(self):
-        r = Ray(Point(0,0,-5), Vector(0,0,1))
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        s.transform = Transform().scaling(2,2,2)
+        s.transform = Transform().scaling(2, 2, 2)
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 2)
@@ -143,9 +138,9 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[1].t, 7)
 
     def test_sphere_intersect_translated(self):
-        r = Ray(Point(0,0,-5), Vector(0,0,1))
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        s.transform = Transform().translation(5,0,0)
+        s.transform = Transform().translation(5, 0, 0)
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 0)
@@ -153,35 +148,35 @@ class TestSphere(unittest.TestCase):
     def test_sphere_normal_at_x(self):
         s = Sphere()
         n = s.normal_at(Point(1, 0, 0))
-        self.assertEqual(n, Vector(1,0,0))
+        self.assertEqual(n, Vector(1, 0, 0))
 
     def test_sphere_normal_at_y(self):
         s = Sphere()
         n = s.normal_at(Point(0, 1, 0))
-        self.assertEqual(n, Vector(0,1,0))
+        self.assertEqual(n, Vector(0, 1, 0))
 
     def test_sphere_normal_at_z(self):
         s = Sphere()
         n = s.normal_at(Point(0, 0, 1))
-        self.assertEqual(n, Vector(0,0,1))
+        self.assertEqual(n, Vector(0, 0, 1))
 
     def test_sphere_normal_at_non_axis(self):
         s = Sphere()
-        r3o3 = math.sqrt(3)/3
+        r3o3 = math.sqrt(3) / 3
         n = s.normal_at(Point(r3o3, r3o3, r3o3))
         self.assertEqual(n, Vector(r3o3, r3o3, r3o3))
         self.assertEqual(n, n.normalize())
 
     def test_sphere_normal_on_translated(self):
         s = Sphere()
-        s.transform = Transform().translation(0,1,0)
+        s.transform = Transform().translation(0, 1, 0)
         n = s.normal_at(Point(0, 1.70711, -0.70711))
         self.assertEqual(n, Vector(0, 0.70711, -0.70711))
 
     def test_sphere_normal_on_transformed(self):
         s = Sphere()
-        s.transform = Transform().rotation_z(math.pi/5).scaling(1, 0.5, 1)
-        n = s.normal_at(Point(0, math.sqrt(2)/2, -math.sqrt(2)/2))
+        s.transform = Transform().rotation_z(math.pi / 5).scaling(1, 0.5, 1)
+        n = s.normal_at(Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2))
         self.assertEqual(n, Vector(0, 0.97014, -0.24254))
 
     def test_sphere_default_material(self):
@@ -195,4 +190,3 @@ class TestSphere(unittest.TestCase):
         m.ambient = 1
         s.material = m
         self.assertEqual(s.material, m)
-
