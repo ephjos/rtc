@@ -3,9 +3,13 @@ import math
 
 from rtc.matrix import Matrix
 
+
 class Transform(Matrix):
     def __init__(self, d=4):
-        Matrix.__init__(self, [[1 if i == j else 0 for j in range(d)] for i in range(d)])
+        Matrix.__init__(
+            self,
+            [[1 if i == j else 0 for j in range(d)] for i in range(d)])
+        self.__class__ = Transform
 
     def inverse(self):
         temp = Matrix.inverse(self)
@@ -60,6 +64,7 @@ class Transform(Matrix):
                        [0,  0,  0,  1]])
         return self.apply(temp)
 
+
 def ViewTransform(at, to, up):
     forward = (to - at).normalize()
     upn = up.normalize()
@@ -72,5 +77,3 @@ def ViewTransform(at, to, up):
                           [0, 0, 0, 1]])
 
     return orientation @ Transform().translation(-at.x, -at.y, -at.z)
-
-

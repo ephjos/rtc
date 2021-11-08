@@ -24,10 +24,14 @@ class Material:
             req(self.specular, o.specular) and \
             req(self.shininess, o.shininess)
 
-    def lighting(self, light, point, eyev, normalv):
+    def lighting(self, light, point, eyev, normalv, in_shadow=False):
         effective_color = self.color.blend(light.intensity)
         lightv = (light.position - point).normalize()
         ambient = effective_color * self.ambient
+
+        if in_shadow:
+            return ambient
+
         light_dot_normal = lightv.dot(normalv)
 
         if light_dot_normal < 0:
@@ -44,7 +48,6 @@ class Material:
             else:
                 factor = pow(reflect_dot_eye, self.shininess)
                 specular = light.intensity * self.specular * factor
-
         return ambient + diffuse + specular
 
 

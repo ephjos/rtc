@@ -93,4 +93,41 @@ class TestWorld(unittest.TestCase):
 
         self.assertEqual(c, inner.material.color)
 
+    def test_world_no_shadow(self):
+        w = DefaultWorld()
+        p = Point(0, 10, 0)
+
+        self.assertFalse(w.is_shadowed(p))
+
+    def test_world_in_shadow(self):
+        w = DefaultWorld()
+        p = Point(10, -10, 10)
+
+        self.assertTrue(w.is_shadowed(p))
+
+    def test_world_no_shadow_object_behind_light(self):
+        w = DefaultWorld()
+        p = Point(-20, 20, -20)
+
+        self.assertFalse(w.is_shadowed(p))
+
+    def test_world_no_shadow_object_behind_point(self):
+        w = DefaultWorld()
+        p = Point(-2, 2, -2)
+
+        self.assertFalse(w.is_shadowed(p))
+
+    def test_world_shade_hit_intersection_in_shadow(self):
+        w = World()
+        w.light = PointLight(Point(0, 0, -10), Color(1,1,1))
+        s1 = Sphere()
+        s2 = Sphere()
+        s2.transform = Transform().translation(0,0,10)
+        w.objects = [s1, s2]
+        r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
+        i = Intersection(4, s2)
+        comps = i.prepare_computations(r)
+        c = w.shade_hit(comps)
+
+        self.assertEqual(c, Color(0.1,0.1,0.1))
 

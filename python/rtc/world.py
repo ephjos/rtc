@@ -1,9 +1,8 @@
 
-
-
 from rtc.color import Color
 from rtc.intersection import Intersections, Computations
 from rtc.lights import PointLight
+from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.transform import Transform
 from rtc.tuples import Point
@@ -29,7 +28,9 @@ class World:
         eyev = comps.eyev
         normalv = comps.normalv
 
-        return material.lighting(light, point, eyev, normalv)
+        shadowed = self.is_shadowed(comps.over_point)
+
+        return material.lighting(light, point, eyev, normalv, shadowed)
 
     def color_at(self, r):
         intersections = self.intersect(r)
@@ -40,6 +41,21 @@ class World:
 
         comps = hit.prepare_computations(r)
         return self.shade_hit(comps)
+
+    def is_shadowed(self, point):
+        v = self.light.position - point
+        distance = v.magnitude()
+        direction = v.normalize()
+
+        r = Ray(point, direction)
+        intersections = self.intersect(r)
+
+        h = intersections.hit()
+
+        if h is None:
+            return False
+
+        return h.t < distance
 
 
 def DefaultWorld():

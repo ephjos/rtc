@@ -1,4 +1,6 @@
 
+from rtc.utils import EPSILON
+
 class Computations:
     def __init__(self):
         self.t = None
@@ -7,6 +9,7 @@ class Computations:
         self.eyev = None
         self.normalv = None
         self.inside = None
+        self.over_point = None
 
 class Intersection:
     def __init__(self, t, o):
@@ -25,6 +28,8 @@ class Intersection:
         if comps.normalv.dot(comps.eyev) < 0:
             comps.inside = True
             comps.normalv = -comps.normalv
+
+        comps.over_point = comps.point + comps.normalv * EPSILON
 
         return comps
 
