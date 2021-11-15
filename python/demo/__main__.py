@@ -3,6 +3,7 @@ import argparse
 from demo.demo_canvas import demo_canvas
 from demo.demo_camera import demo_camera
 from demo.demo_material import demo_material
+from demo.demo_plane import demo_plane
 from demo.demo_ray import demo_ray
 from demo.demo_transform import demo_transform
 from demo.demo_tuples import demo_tuples
@@ -17,17 +18,14 @@ def main():
     # Add parser
     subparsers.add_parser("canvas", help="demonstrate using canvas")
     subparsers.add_parser("camera", help="demonstrate using camera")
-    subparsers.add_parser(
-        "material", help="demonstrate using material"
-    )
+    subparsers.add_parser("material", help="demonstrate using material")
+    subparsers.add_parser("plane", help="demonstrate using plane")
     subparsers.add_parser("ray", help="demonstrate using rays")
     subparsers.add_parser(
         "transform",
         help="demonstrate using basic transformation matrices to build a clock",
     )
-    subparsers.add_parser(
-        "tuples", help="demonstrate using basic tuples"
-    )
+    subparsers.add_parser("tuples", help="demonstrate using basic tuples")
 
     args = parser.parse_args()
 
@@ -40,6 +38,7 @@ def main():
         "canvas": demo_canvas,
         "camera": demo_camera,
         "material": demo_material,
+        "plane": demo_plane,
         "ray": demo_ray,
         "transform": demo_transform,
         "tuples": demo_tuples,

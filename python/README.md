@@ -17,3 +17,9 @@ python -m demo
 ```bash
 autoflake --in-place --remove-unused-variables --remove-all-unused-imports $(find -name "*.py")
 ```
+
+#### Format
+
+```bash
+black .
+```
