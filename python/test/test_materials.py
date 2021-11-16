@@ -4,7 +4,9 @@ import unittest
 from rtc.color import Color
 from rtc.lights import PointLight
 from rtc.materials import Material
+from rtc.pattern import StripePattern
 from rtc.tuples import Point, Vector
+from rtc.sphere import Sphere
 
 
 class TestMaterial(unittest.TestCase):
@@ -24,7 +26,7 @@ class TestMaterial(unittest.TestCase):
         normalv = Vector(0, 0, -1)
         light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
 
-        result = m.lighting(light, position, eyev, normalv)
+        result = m.lighting(Sphere(), light, position, eyev, normalv)
         self.assertEqual(result, Color(1.9, 1.9, 1.9))
 
     def test_material_lighting_eye_offset_45(self):
@@ -35,7 +37,7 @@ class TestMaterial(unittest.TestCase):
         normalv = Vector(0, 0, -1)
         light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
 
-        result = m.lighting(light, position, eyev, normalv)
+        result = m.lighting(Sphere(), light, position, eyev, normalv)
         self.assertEqual(result, Color(1.0, 1.0, 1.0))
 
     def test_material_lighting_eye_opposite_light_offset_45(self):
@@ -46,7 +48,7 @@ class TestMaterial(unittest.TestCase):
         normalv = Vector(0, 0, -1)
         light = PointLight(Point(0, 10, -10), Color(1, 1, 1))
 
-        result = m.lighting(light, position, eyev, normalv)
+        result = m.lighting(Sphere(), light, position, eyev, normalv)
         self.assertEqual(result, Color(0.7364, 0.7364, 0.7364))
 
     def test_material_lighting_eye_in_reflection(self):
@@ -57,7 +59,7 @@ class TestMaterial(unittest.TestCase):
         normalv = Vector(0, 0, -1)
         light = PointLight(Point(0, 10, -10), Color(1, 1, 1))
 
-        result = m.lighting(light, position, eyev, normalv)
+        result = m.lighting(Sphere(), light, position, eyev, normalv)
         self.assertEqual(result, Color(1.6364, 1.6364, 1.6364))
 
     def test_material_lighting_light_behind(self):
@@ -68,7 +70,7 @@ class TestMaterial(unittest.TestCase):
         normalv = Vector(0, 0, -1)
         light = PointLight(Point(0, 0, 10), Color(1, 1, 1))
 
-        result = m.lighting(light, position, eyev, normalv)
+        result = m.lighting(Sphere(), light, position, eyev, normalv)
         self.assertEqual(result, Color(0.1, 0.1, 0.1))
 
     def test_material_lighting_in_shadow(self):
@@ -80,5 +82,20 @@ class TestMaterial(unittest.TestCase):
         light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
         in_shadow = True
 
-        result = m.lighting(light, position, eyev, normalv, in_shadow)
+        result = m.lighting(Sphere(), light, position, eyev, normalv, in_shadow)
         self.assertEqual(result, Color(0.1, 0.1, 0.1))
+
+    def test_material_lighting_with_stripe_pattern(self):
+        m = Material()
+        m.pattern = StripePattern(Color(1,1,1),Color(0,0,0))
+        m.ambient = 1
+        m.diffuse = 0
+        m.specular = 0
+        eyev = Vector(0,0,-1)
+        normalv = Vector(0,0,-1)
+        light = PointLight(Point(0,0,-10),Color(1,1,1))
+        c1 = m.lighting(Sphere(), light, Point(0.9,0,0), eyev, normalv, False)
+        c2 = m.lighting(Sphere(), light, Point(1.1,0,0), eyev, normalv, False)
+
+        self.assertEqual(c1, Color(1,1,1))
+        self.assertEqual(c2, Color(0,0,0))

@@ -16,6 +16,7 @@ class Material:
         self.diffuse = diffuse
         self.specular = specular
         self.shininess = shininess
+        self.pattern = None
 
     def __eq__(self, o):
         return (
@@ -26,8 +27,13 @@ class Material:
             and req(self.shininess, o.shininess)
         )
 
-    def lighting(self, light, point, eyev, normalv, in_shadow=False):
-        effective_color = self.color.blend(light.intensity)
+    def lighting(self, o, light, point, eyev, normalv, in_shadow=False):
+        if self.pattern:
+            color = self.pattern.pattern_at_shape(o, point)
+        else:
+            color = self.color
+
+        effective_color = color.blend(light.intensity)
         lightv = (light.position - point).normalize()
         ambient = effective_color * self.ambient
 

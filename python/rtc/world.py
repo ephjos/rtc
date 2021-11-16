@@ -27,10 +27,11 @@ class World:
         point = comps.point
         eyev = comps.eyev
         normalv = comps.normalv
+        o = comps.object
 
         shadowed = self.is_shadowed(comps.over_point)
 
-        return material.lighting(light, point, eyev, normalv, shadowed)
+        return material.lighting(o, light, point, eyev, normalv, shadowed)
 
     def color_at(self, r):
         intersections = self.intersect(r)
