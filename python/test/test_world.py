@@ -134,50 +134,50 @@ class TestWorld(unittest.TestCase):
 
     def test_world_reflected_color(self):
         w = DefaultWorld()
-        r = Ray(Point(0,0,0), Vector(0,0,1))
+        r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
         shape = w.objects[1]
         shape.material.ambient = 1
         i = Intersection(1, shape)
         comps = i.prepare_computations(r)
         color = w.reflected_color(comps)
-        self.assertEqual(color, Color(0,0,0))
+        self.assertEqual(color, Color(0, 0, 0))
 
     def test_world_reflected_color_reflective(self):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0,-1,0)
+        shape.transform = Transform().translation(0, -1, 0)
         w.objects.append(shape)
-        r = Ray(Point(0,0,-3), Vector(0,-math.sqrt(2)/2,math.sqrt(2)/2))
+        r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)
         color = w.reflected_color(comps)
-        self.assertEqual(color, Color(0.19032,0.2379,0.14274))
+        self.assertEqual(color, Color(0.19032, 0.2379, 0.14274))
 
     def test_world_shade_hit_reflective(self):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0,-1,0)
+        shape.transform = Transform().translation(0, -1, 0)
         w.objects.append(shape)
-        r = Ray(Point(0,0,-3), Vector(0,-math.sqrt(2)/2,math.sqrt(2)/2))
+        r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)
         color = w.shade_hit(comps)
-        self.assertEqual(color, Color(0.87677,0.92436,0.82918))
+        self.assertEqual(color, Color(0.87677, 0.92436, 0.82918))
 
     def test_world_mutally_reflective(self):
         w = World()
-        w.light = PointLight(Point(0,0,0), Color(1,1,1))
+        w.light = PointLight(Point(0, 0, 0), Color(1, 1, 1))
         lower = Plane()
         lower.material.reflective = 1
-        lower.transform = Transform().translation(0,-1,0)
+        lower.transform = Transform().translation(0, -1, 0)
         w.objects.append(lower)
         upper = Plane()
         upper.material.reflective = 1
-        upper.transform = Transform().translation(0,1,0)
+        upper.transform = Transform().translation(0, 1, 0)
         w.objects.append(upper)
-        r = Ray(Point(0,0,0), Vector(0,1,0))
+        r = Ray(Point(0, 0, 0), Vector(0, 1, 0))
 
         self.assertIsNotNone(w.color_at(r))
 
@@ -185,10 +185,10 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0,-1,0)
+        shape.transform = Transform().translation(0, -1, 0)
         w.objects.append(shape)
-        r = Ray(Point(0,0,-3), Vector(0,-math.sqrt(2)/2,math.sqrt(2)/2))
+        r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)
         color = w.reflected_color(comps, 0)
-        self.assertEqual(color, Color(0,0,0))
+        self.assertEqual(color, Color(0, 0, 0))

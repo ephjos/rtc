@@ -87,18 +87,18 @@ class TestMaterial(unittest.TestCase):
 
     def test_material_lighting_with_stripe_pattern(self):
         m = Material()
-        m.pattern = StripePattern(Color(1,1,1),Color(0,0,0))
+        m.pattern = StripePattern(Color(1, 1, 1), Color(0, 0, 0))
         m.ambient = 1
         m.diffuse = 0
         m.specular = 0
-        eyev = Vector(0,0,-1)
-        normalv = Vector(0,0,-1)
-        light = PointLight(Point(0,0,-10),Color(1,1,1))
-        c1 = m.lighting(Sphere(), light, Point(0.9,0,0), eyev, normalv, False)
-        c2 = m.lighting(Sphere(), light, Point(1.1,0,0), eyev, normalv, False)
+        eyev = Vector(0, 0, -1)
+        normalv = Vector(0, 0, -1)
+        light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
+        c1 = m.lighting(Sphere(), light, Point(0.9, 0, 0), eyev, normalv, False)
+        c2 = m.lighting(Sphere(), light, Point(1.1, 0, 0), eyev, normalv, False)
 
-        self.assertEqual(c1, Color(1,1,1))
-        self.assertEqual(c2, Color(0,0,0))
+        self.assertEqual(c1, Color(1, 1, 1))
+        self.assertEqual(c2, Color(0, 0, 0))
 
     def test_material_default_reflective(self):
         m = Material()

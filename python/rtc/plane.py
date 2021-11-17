@@ -1,4 +1,3 @@
-
 from rtc.intersection import Intersection, Intersections
 from rtc.shape import Shape
 from rtc.tuples import Vector

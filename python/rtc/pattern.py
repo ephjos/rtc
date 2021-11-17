@@ -1,12 +1,7 @@
 import math
-import uuid
 
 from rtc.color import Color
-from rtc.intersection import Intersection, Intersections
-from rtc.materials import Material
-from rtc.shape import Shape
 from rtc.transform import Transform
-from rtc.tuples import Point
 from rtc.utils import EPSILON
 
 
@@ -25,7 +20,7 @@ class Pattern:
         self.inverse_transform = t.inverse()
 
     def pattern_at(self, point):
-        return Color(point.x,point.y,point.z)
+        return Color(point.x, point.y, point.z)
 
     def pattern_at_shape(self, o, point):
         object_point = o.inverse_transform @ point
@@ -64,7 +59,7 @@ class RingPattern(Pattern):
     def pattern_at(self, point):
         x2 = point.x * point.x
         z2 = point.z * point.z
-        if math.floor(math.sqrt(x2+z2)) % 2 == 0:
+        if math.floor(math.sqrt(x2 + z2)) % 2 == 0:
             return self.a
         return self.b
 
@@ -79,6 +74,6 @@ class CheckersPattern(Pattern):
         x = 0 if abs(point.x) < EPSILON else math.floor(point.x)
         y = 0 if abs(point.y) < EPSILON else math.floor(point.y)
         z = 0 if abs(point.z) < EPSILON else math.floor(point.z)
-        if (x+y+z) % 2 == 0:
+        if (x + y + z) % 2 == 0:
             return self.a
         return self.b

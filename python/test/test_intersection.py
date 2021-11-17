@@ -57,7 +57,7 @@ class TestIntersection(unittest.TestCase):
 
     def test_precompute_reflect(self):
         shape = Plane()
-        ray = Ray(Point(0,1,-1), Vector(0, -math.sqrt(2)/2, math.sqrt(2)/2))
+        ray = Ray(Point(0, 1, -1), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(ray)
-        self.assertEqual(comps.reflectv, Vector(0, math.sqrt(2)/2, math.sqrt(2)/2))
+        self.assertEqual(comps.reflectv, Vector(0, math.sqrt(2) / 2, math.sqrt(2) / 2))
