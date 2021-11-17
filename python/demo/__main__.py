@@ -9,6 +9,16 @@ from demo.demo_transform import demo_transform
 from demo.demo_tuples import demo_tuples
 
 
+def demo_all(*args):
+    demo_canvas()
+    demo_camera()
+    demo_material()
+    demo_plane()
+    demo_ray()
+    demo_transform()
+    demo_tuples()
+
+
 def main():
     parser = argparse.ArgumentParser(description="Ray Tracer Challenge Demos")
     parser.prog = "demo"
@@ -16,6 +26,7 @@ def main():
     subparsers = parser.add_subparsers(help="available demos", dest="demo")
 
     # Add parser
+    subparsers.add_parser("all", help="Runs all demos")
     subparsers.add_parser("canvas", help="demonstrate using canvas")
     subparsers.add_parser("camera", help="demonstrate using camera")
     subparsers.add_parser("material", help="demonstrate using material")
@@ -35,6 +46,7 @@ def main():
 
     # Map parser name to function
     commands = {
+        "all": demo_all,
         "canvas": demo_canvas,
         "camera": demo_camera,
         "material": demo_material,

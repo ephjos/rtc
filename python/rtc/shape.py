@@ -1,10 +1,8 @@
-import math
 import uuid
 
-from rtc.intersection import Intersection, Intersections
 from rtc.materials import Material
 from rtc.transform import Transform
-from rtc.tuples import Point, Vector
+from rtc.tuples import Vector
 
 
 class Shape:
@@ -39,7 +37,7 @@ class Shape:
         return self.local_intersect(ray)
 
     def local_normal_at(self, p):
-        return Vector(p.x,p.y,p.z)
+        return Vector(p.x, p.y, p.z)
 
     def normal_at(self, world_point):
         local_point = self.inverse_transform @ world_point

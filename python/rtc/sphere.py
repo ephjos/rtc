@@ -1,10 +1,7 @@
 import math
-import uuid
 
 from rtc.intersection import Intersection, Intersections
-from rtc.materials import Material
 from rtc.shape import Shape
-from rtc.transform import Transform
 from rtc.tuples import Point
 
 
@@ -31,4 +28,3 @@ class Sphere(Shape):
 
     def local_normal_at(self, point):
         return point - Point(0, 0, 0)
-
