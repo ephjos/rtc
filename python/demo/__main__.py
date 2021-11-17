@@ -6,6 +6,7 @@ from demo.demo_material import demo_material
 from demo.demo_pattern import demo_pattern
 from demo.demo_plane import demo_plane
 from demo.demo_ray import demo_ray
+from demo.demo_reflection import demo_reflection
 from demo.demo_transform import demo_transform
 from demo.demo_tuples import demo_tuples
 
@@ -16,6 +17,7 @@ def demo_all(*args):
     demo_material()
     demo_plane()
     demo_ray()
+    demo_reflection()
     demo_transform()
     demo_tuples()
 
@@ -34,6 +36,7 @@ def main():
     subparsers.add_parser("pattern", help="demonstrate using pattern")
     subparsers.add_parser("plane", help="demonstrate using plane")
     subparsers.add_parser("ray", help="demonstrate using rays")
+    subparsers.add_parser("reflection", help="demonstrate reflections")
     subparsers.add_parser(
         "transform",
         help="demonstrate using basic transformation matrices to build a clock",
@@ -55,6 +58,7 @@ def main():
         "pattern": demo_pattern,
         "plane": demo_plane,
         "ray": demo_ray,
+        "reflection": demo_reflection,
         "transform": demo_transform,
         "tuples": demo_tuples,
     }

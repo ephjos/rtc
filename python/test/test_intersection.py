@@ -1,6 +1,8 @@
+import math
 import unittest
 
 from rtc.intersection import Intersection
+from rtc.plane import Plane
 from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.transform import Transform
@@ -52,3 +54,10 @@ class TestIntersection(unittest.TestCase):
 
         self.assertLess(comps.over_point.z, -EPSILON / 2)
         self.assertGreater(comps.point.z, comps.over_point.z)
+
+    def test_precompute_reflect(self):
+        shape = Plane()
+        ray = Ray(Point(0,1,-1), Vector(0, -math.sqrt(2)/2, math.sqrt(2)/2))
+        i = Intersection(math.sqrt(2), shape)
+        comps = i.prepare_computations(ray)
+        self.assertEqual(comps.reflectv, Vector(0, math.sqrt(2)/2, math.sqrt(2)/2))

@@ -10,12 +10,14 @@ class Material:
         diffuse=0.9,
         specular=0.9,
         shininess=200.0,
+        reflective=0.0,
     ):
         self.color = color
         self.ambient = ambient
         self.diffuse = diffuse
         self.specular = specular
         self.shininess = shininess
+        self.reflective = reflective
         self.pattern = None
 
     def __eq__(self, o):

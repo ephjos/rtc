@@ -8,6 +8,7 @@ class Computations:
         self.point = None
         self.eyev = None
         self.normalv = None
+        self.reflectv = None
         self.inside = None
         self.over_point = None
 
@@ -24,6 +25,7 @@ class Intersection:
         comps.point = ray.position(self.t)
         comps.eyev = -ray.direction
         comps.normalv = self.object.normal_at(comps.point)
+        comps.reflectv = ray.direction.reflect(comps.normalv)
         comps.inside = False
 
         if comps.normalv.dot(comps.eyev) < 0:

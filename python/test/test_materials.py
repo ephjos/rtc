@@ -99,3 +99,7 @@ class TestMaterial(unittest.TestCase):
 
         self.assertEqual(c1, Color(1,1,1))
         self.assertEqual(c2, Color(0,0,0))
+
+    def test_material_default_reflective(self):
+        m = Material()
+        self.assertEqual(m.reflective, 0.0)
