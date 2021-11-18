@@ -59,7 +59,7 @@ def demo_reflection(*args):
 
     world = World([floor, middle, right, left], light)
 
-    s = 2
+    s = 1
     camera = Camera(80 * s, 60 * s, math.pi / 3)
     at = Point(0, 1.5, -5)
     to = Point(0, 1, 0)

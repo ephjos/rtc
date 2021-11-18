@@ -14,9 +14,9 @@ from rtc.world import World, DefaultWorld
 
 class TestWorld(unittest.TestCase):
     def test_world_constructor(self):
-        w = World()
-        self.assertEqual(w.objects, [])
-        self.assertEqual(w.light, None)
+        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
+        self.assertEqual(w.shapes, [])
+        self.assertEqual(w.light, PointLight(Point(0, 0, 0), Color(0, 0, 0)))
 
     def test_default_world(self):
         light = PointLight(Point(-10, 10, -10), Color(1, 1, 1))
@@ -31,8 +31,8 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
 
         self.assertEqual(w.light, light)
-        self.assertTrue(s1 in w.objects)
-        self.assertTrue(s2 in w.objects)
+        self.assertTrue(s1 in w.shapes)
+        self.assertTrue(s2 in w.shapes)
 
     def test_world_intersect(self):
         w = DefaultWorld()
@@ -49,7 +49,7 @@ class TestWorld(unittest.TestCase):
     def test_world_shade_hit(self):
         w = DefaultWorld()
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
-        shape = w.objects[0]
+        shape = w.shapes[0]
         i = Intersection(4, shape)
         comps = i.prepare_computations(r)
         c = w.shade_hit(comps)
@@ -60,7 +60,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
         w.light = PointLight(Point(0, 0.25, 0), Color(1, 1, 1))
         r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
-        shape = w.objects[1]
+        shape = w.shapes[1]
         i = Intersection(0.5, shape)
 
         comps = i.prepare_computations(r)
@@ -84,9 +84,9 @@ class TestWorld(unittest.TestCase):
 
     def test_color_at_hits_behind(self):
         w = DefaultWorld()
-        outer = w.objects[0]
+        outer = w.shapes[0]
         outer.material.ambient = 1
-        inner = w.objects[1]
+        inner = w.shapes[1]
         inner.material.ambient = 1
 
         r = Ray(Point(0, 0, 0.75), Vector(0, 0, -1))
@@ -106,25 +106,25 @@ class TestWorld(unittest.TestCase):
 
         self.assertTrue(w.is_shadowed(p))
 
-    def test_world_no_shadow_object_behind_light(self):
+    def test_world_no_shadow_shape_behind_light(self):
         w = DefaultWorld()
         p = Point(-20, 20, -20)
 
         self.assertFalse(w.is_shadowed(p))
 
-    def test_world_no_shadow_object_behind_point(self):
+    def test_world_no_shadow_shape_behind_point(self):
         w = DefaultWorld()
         p = Point(-2, 2, -2)
 
         self.assertFalse(w.is_shadowed(p))
 
     def test_world_shade_hit_intersection_in_shadow(self):
-        w = World()
+        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
         w.light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
         s1 = Sphere()
         s2 = Sphere()
         s2.transform = Transform().translation(0, 0, 10)
-        w.objects = [s1, s2]
+        w.shapes = [s1, s2]
         r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
         i = Intersection(4, s2)
         comps = i.prepare_computations(r)
@@ -135,7 +135,7 @@ class TestWorld(unittest.TestCase):
     def test_world_reflected_color(self):
         w = DefaultWorld()
         r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
-        shape = w.objects[1]
+        shape = w.shapes[1]
         shape.material.ambient = 1
         i = Intersection(1, shape)
         comps = i.prepare_computations(r)
@@ -147,7 +147,7 @@ class TestWorld(unittest.TestCase):
         shape = Plane()
         shape.material.reflective = 0.5
         shape.transform = Transform().translation(0, -1, 0)
-        w.objects.append(shape)
+        w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)
@@ -159,7 +159,7 @@ class TestWorld(unittest.TestCase):
         shape = Plane()
         shape.material.reflective = 0.5
         shape.transform = Transform().translation(0, -1, 0)
-        w.objects.append(shape)
+        w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)
@@ -167,16 +167,16 @@ class TestWorld(unittest.TestCase):
         self.assertEqual(color, Color(0.87677, 0.92436, 0.82918))
 
     def test_world_mutally_reflective(self):
-        w = World()
+        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
         w.light = PointLight(Point(0, 0, 0), Color(1, 1, 1))
         lower = Plane()
         lower.material.reflective = 1
         lower.transform = Transform().translation(0, -1, 0)
-        w.objects.append(lower)
+        w.shapes.append(lower)
         upper = Plane()
         upper.material.reflective = 1
         upper.transform = Transform().translation(0, 1, 0)
-        w.objects.append(upper)
+        w.shapes.append(upper)
         r = Ray(Point(0, 0, 0), Vector(0, 1, 0))
 
         self.assertIsNotNone(w.color_at(r))
@@ -186,7 +186,7 @@ class TestWorld(unittest.TestCase):
         shape = Plane()
         shape.material.reflective = 0.5
         shape.transform = Transform().translation(0, -1, 0)
-        w.objects.append(shape)
+        w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(r)

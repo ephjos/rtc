@@ -3,10 +3,9 @@
 test:
 	python -m unittest discover
 
-
-.PHONY: demo
-demo:
-	python -m demo
+.PHONY: lint
+lint:
+	mypy rtc demo test
 
 .PHONY: format
 format:

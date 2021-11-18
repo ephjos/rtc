@@ -19,7 +19,7 @@ class TestIntersection(unittest.TestCase):
         comps = i.prepare_computations(r)
 
         self.assertEqual(comps.t, i.t)
-        self.assertEqual(comps.object, i.object)
+        self.assertEqual(comps.shape, i.shape)
         self.assertEqual(comps.point, Point(0, 0, -1))
         self.assertEqual(comps.eyev, Vector(0, 0, -1))
         self.assertEqual(comps.normalv, Vector(0, 0, -1))

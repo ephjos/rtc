@@ -1,14 +1,16 @@
 import copy
 
-from rtc.tuples import Tuple
+from rtc.tuples import Tuple4
 from rtc.utils import req
+
+from typing import Union
 
 
 class Matrix:
-    def __init__(self, rows):
+    def __init__(self, rows: list[list[float]]):
         self.rows = rows
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> list[float]:
         return self.rows[key]
 
     def __str__(self):
@@ -18,26 +20,31 @@ class Matrix:
         return str(self)
 
     @property
-    def shape(self):
+    def shape(self) -> tuple[int, int]:
         if len(self.rows) == 0:
-            return [0, 0]
-        return [len(self.rows), len(self.rows[0])]
+            return (0, 0)
+        return (len(self.rows), len(self.rows[0]))
 
-    def __eq__(self, o):
+    def __eq__(self, other):
+        if not isinstance(other, Matrix):
+            raise NotImplementedError()
+
         shape = self.shape
-        if shape != o.shape:
+        if shape != other.shape:
             return False
 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                if not req(self[i][j], o[i][j]):
+                if not req(self[i][j], other[i][j]):
                     return False
 
         return True
 
-    def __matmul_matrix__(self, o):
+    def __matmul_matrix__(self, other) -> "Matrix":
+        if not isinstance(other, Matrix):
+            raise NotImplementedError()
         [p, q] = self.shape
-        [r, s] = o.shape
+        [r, s] = other.shape
 
         if q != r:
             raise Exception("Shape mismatch: " + str([p, q]) + " " + str([r, s]))
@@ -48,25 +55,31 @@ class Matrix:
             for j in range(s):
                 M[i][j] = 0
                 for k in range(r):
-                    M[i][j] += self[i][k] * o[k][j]
+                    M[i][j] += self[i][k] * other[k][j]
 
         return M
 
-    def __matmul_tuple__(self, o):
-        result = self.__matmul_matrix__(Matrix([[o.x], [o.y], [o.z], [o.w]]))
-        return Tuple(result[0][0], result[1][0], result[2][0], result[3][0])
+    def __matmul_tuple__(self, other) -> Tuple4:
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
+        result = self.__matmul_matrix__(
+            Matrix([[other.x], [other.y], [other.z], [other.w]])
+        )
+        return Tuple4(result[0][0], result[1][0], result[2][0], result[3][0])
 
-    def __matmul__(self, o):
-        if isinstance(o, Matrix):
-            return self.__matmul_matrix__(o)
+    def __matmul__(self, other) -> Union["Matrix", Tuple4]:
+        if isinstance(other, Matrix):
+            return self.__matmul_matrix__(other)
+        elif isinstance(other, Tuple4):
+            return self.__matmul_tuple__(other)
         else:
-            return self.__matmul_tuple__(o)
+            raise NotImplementedError()
 
     @property
-    def T(self):
+    def T(self) -> "Matrix":
         return Matrix(list(map(list, zip(*self.rows))))
 
-    def determinant(self):
+    def determinant(self) -> float:
         [p, q] = self.shape
         if p != q:
             raise Exception("Cannot get determinant of non-square matrix")
@@ -78,12 +91,12 @@ class Matrix:
             d = self.rows[1][1]
             return (a * d) - (b * c)
 
-        result = 0
+        result = 0.0
         for i in range(p):
             result += self[0][i] * self.cofactor(0, i)
         return result
 
-    def submatrix(self, y, x):
+    def submatrix(self, y: int, x: int) -> "Matrix":
         [p, q] = self.shape
         if p != q:
             raise Exception("Cannot get determinant of non-square matrix")
@@ -95,19 +108,19 @@ class Matrix:
 
         return Matrix(rows)
 
-    def minor(self, y, x):
+    def minor(self, y: int, x: int) -> float:
         return self.submatrix(y, x).determinant()
 
-    def cofactor(self, y, x):
+    def cofactor(self, y: int, x: int) -> float:
         m = self.minor(y, x)
         if (x + y) % 2 != 0:
             return -1 * m
         return m
 
-    def is_invertible(self):
+    def is_invertible(self) -> bool:
         return self.determinant() != 0
 
-    def inverse(self):
+    def inverse(self) -> "Matrix":
         [p, q] = self.shape
         if p != q:
             raise Exception("Cannot get determinant of non-square matrix")
@@ -121,5 +134,5 @@ class Matrix:
         return cofactors.T
 
 
-def IdentityMatrix(d=4):
+def IdentityMatrix(d: int = 4) -> Matrix:
     return Matrix([[1 if i == j else 0 for j in range(d)] for i in range(d)])

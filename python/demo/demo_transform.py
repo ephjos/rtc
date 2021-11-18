@@ -25,4 +25,4 @@ def demo_transform(*args):
         y = round(Tp.y)
         canvas.write(x, y, tick)
 
-    canvas.save("./transform_demo.ppm")
+    canvas.save("./demo_transform.ppm")

@@ -33,7 +33,7 @@ class TestPlane(unittest.TestCase):
         xs = p.local_intersect(r)
         self.assertEqual(len(xs), 1)
         self.assertEqual(xs[0].t, 1)
-        self.assertEqual(xs[0].object, p)
+        self.assertEqual(xs[0].shape, p)
 
     def test_ray_intersect_below(self):
         p = Plane()
@@ -41,4 +41,4 @@ class TestPlane(unittest.TestCase):
         xs = p.local_intersect(r)
         self.assertEqual(len(xs), 1)
         self.assertEqual(xs[0].t, 1)
-        self.assertEqual(xs[0].object, p)
+        self.assertEqual(xs[0].shape, p)

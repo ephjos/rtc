@@ -1,12 +1,12 @@
 import math
 import unittest
 
-from rtc.tuples import Tuple, Vector, Point
+from rtc.tuples import Tuple4, Vector, Point
 
 
-class TestTuples(unittest.TestCase):
+class TestTuple4s(unittest.TestCase):
     def test_tuple_w_1(self):
-        a = Tuple(4.3, -4.2, 3.1, 1.0)
+        a = Tuple4(4.3, -4.2, 3.1, 1.0)
         self.assertEqual(a.x, 4.3)
         self.assertEqual(a.y, -4.2)
         self.assertEqual(a.z, 3.1)
@@ -15,7 +15,7 @@ class TestTuples(unittest.TestCase):
         self.assertFalse(a.isVector())
 
     def test_tuple_w_0(self):
-        a = Tuple(4.3, -4.2, 3.1, 0.0)
+        a = Tuple4(4.3, -4.2, 3.1, 0.0)
         self.assertEqual(a.x, 4.3)
         self.assertEqual(a.y, -4.2)
         self.assertEqual(a.z, 3.1)
@@ -25,16 +25,16 @@ class TestTuples(unittest.TestCase):
 
     def test_point_creates(self):
         p = Point(4, -4, 3)
-        self.assertEqual(p, Tuple(4, -4, 3, 1))
+        self.assertEqual(p, Tuple4(4, -4, 3, 1))
 
     def test_vector_creates(self):
         p = Vector(4, -4, 3)
-        self.assertEqual(p, Tuple(4, -4, 3, 0))
+        self.assertEqual(p, Tuple4(4, -4, 3, 0))
 
     def test_add_tuples(self):
-        a1 = Tuple(3, -2, 5, 1)
-        a2 = Tuple(-2, 3, 1, 0)
-        self.assertEqual(a1 + a2, Tuple(1, 1, 6, 1))
+        a1 = Tuple4(3, -2, 5, 1)
+        a2 = Tuple4(-2, 3, 1, 0)
+        self.assertEqual(a1 + a2, Tuple4(1, 1, 6, 1))
 
     def test_sub_points(self):
         p1 = Point(3, 2, 1)
@@ -57,14 +57,14 @@ class TestTuples(unittest.TestCase):
         self.assertEqual(zero - v, Vector(-1, 2, -3))
 
     def test_neg_tuple(self):
-        a = Tuple(1, -2, 3, -4)
-        self.assertEqual(-a, Tuple(-1, 2, -3, 4))
+        a = Tuple4(1, -2, 3, -4)
+        self.assertEqual(-a, Tuple4(-1, 2, -3, 4))
 
     def test_scale(self):
-        a = Tuple(1, -2, 3, -4)
-        self.assertEqual(a * 3.5, Tuple(3.5, -7, 10.5, -14))
-        self.assertEqual(a * 0.5, Tuple(0.5, -1, 1.5, -2))
-        self.assertEqual(a / 2, Tuple(0.5, -1, 1.5, -2))
+        a = Tuple4(1, -2, 3, -4)
+        self.assertEqual(a * 3.5, Tuple4(3.5, -7, 10.5, -14))
+        self.assertEqual(a * 0.5, Tuple4(0.5, -1, 1.5, -2))
+        self.assertEqual(a / 2, Tuple4(0.5, -1, 1.5, -2))
 
     def test_magnitude(self):
         v = Vector(1, 0, 0)

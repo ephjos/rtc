@@ -1,7 +1,7 @@
 import unittest
 
 from rtc.matrix import Matrix, IdentityMatrix
-from rtc.tuples import Tuple
+from rtc.tuples import Tuple4
 
 
 class TestMatrix(unittest.TestCase):
@@ -57,9 +57,9 @@ class TestMatrix(unittest.TestCase):
 
     def test_matrix_multiply_tuple(self):
         A = Matrix([[1, 2, 3, 4], [2, 4, 4, 2], [8, 6, 4, 1], [0, 0, 0, 1]])
-        b = Tuple(1, 2, 3, 1)
+        b = Tuple4(1, 2, 3, 1)
 
-        expected = Tuple(18, 24, 33, 1)
+        expected = Tuple4(18, 24, 33, 1)
 
         self.assertEqual(A @ b, expected)
 
@@ -69,7 +69,7 @@ class TestMatrix(unittest.TestCase):
         self.assertEqual(A @ I, A)
 
     def test_matrix_multiply_identity_tuple(self):
-        a = Tuple(1, 2, 3, 4)
+        a = Tuple4(1, 2, 3, 4)
         I = IdentityMatrix(4)
         self.assertEqual(I @ a, a)
 

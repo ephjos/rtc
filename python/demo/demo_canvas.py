@@ -39,5 +39,4 @@ def demo_canvas(*args):
     print("Hit!")
     print_prj(p)
 
-    with open("./canvas_demo.ppm", "w") as outfile:
-        outfile.write(c.ppm())
+    c.save("./demo_canvas.ppm")

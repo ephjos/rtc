@@ -1,15 +1,19 @@
 import math
 
 from rtc.intersection import Intersection, Intersections
+from rtc.materials import Material
+from rtc.ray import Ray
 from rtc.shape import Shape
-from rtc.tuples import Point
+from rtc.tuples import Tuple4, Point
+
+from typing import Optional
 
 
 class Sphere(Shape):
-    def __init__(self, material=None):
+    def __init__(self, material: Optional[Material] = None):
         super().__init__(material)
 
-    def local_intersect(self, ray):
+    def local_intersect(self, ray: "Ray") -> "Intersections":
         sphere_to_ray = ray.origin - Point(0, 0, 0)
         a = ray.direction.dot(ray.direction)
         b = 2 * ray.direction.dot(sphere_to_ray)
@@ -26,5 +30,5 @@ class Sphere(Shape):
             return Intersections([Intersection(t2, self), Intersection(t1, self)])
         return Intersections([Intersection(t1, self), Intersection(t2, self)])
 
-    def local_normal_at(self, point):
+    def local_normal_at(self, point: Tuple4) -> Tuple4:
         return point - Point(0, 0, 0)

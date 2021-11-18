@@ -43,7 +43,7 @@ class TestPattern(unittest.TestCase):
         self.assertEqual(p.pattern_at(Point(-1, 0, 0)), black)
         self.assertEqual(p.pattern_at(Point(-1.1, 0, 0)), white)
 
-    def test_stripes_with_object_transformation(self):
+    def test_stripes_with_shape_transformation(self):
         o = Sphere()
         o.transform = Transform().scaling(2, 2, 2)
         p = StripePattern(white, black)
@@ -74,7 +74,7 @@ class TestPattern(unittest.TestCase):
         p.transform = Transform().translation(1, 2, 3)
         self.assertEqual(p.transform, Transform().translation(1, 2, 3))
 
-    def test_pattern_object_transformation(self):
+    def test_pattern_shape_transformation(self):
         s = Sphere()
         s.transform = Transform().scaling(2, 2, 2)
         p = Pattern()

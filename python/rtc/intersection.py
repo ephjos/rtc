@@ -1,59 +1,67 @@
+from rtc.ray import Ray
+from rtc.shape import Shape
+from rtc.tuples import Tuple4
 from rtc.utils import EPSILON
 
+from dataclasses import dataclass, field
+from typing import Optional
 
+
+@dataclass
 class Computations:
-    def __init__(self):
-        self.t = None
-        self.object = None
-        self.point = None
-        self.eyev = None
-        self.normalv = None
-        self.reflectv = None
-        self.inside = None
-        self.over_point = None
+    t: float
+    shape: Shape
+    point: Tuple4
+    eyev: Tuple4
+    normalv: Tuple4
+    reflectv: Tuple4
+    inside: bool
+    over_point: Tuple4
 
 
+@dataclass
 class Intersection:
-    def __init__(self, t, o):
-        self.t = t
-        self.object = o
+    t: float
+    shape: Shape
 
-    def prepare_computations(self, ray):
-        comps = Computations()
-        comps.t = self.t
-        comps.object = self.object
-        comps.point = ray.position(self.t)
-        comps.eyev = -ray.direction
-        comps.normalv = self.object.normal_at(comps.point)
-        comps.reflectv = ray.direction.reflect(comps.normalv)
-        comps.inside = False
+    def prepare_computations(self, ray: Ray) -> Computations:
+        t = self.t
+        shape = self.shape
+        point = ray.position(self.t)
+        eyev = -ray.direction
+        normalv = self.shape.normal_at(point)
+        reflectv = ray.direction.reflect(normalv)
+        inside = False
 
-        if comps.normalv.dot(comps.eyev) < 0:
-            comps.inside = True
-            comps.normalv = -comps.normalv
+        if normalv.dot(eyev) < 0:
+            inside = True
+            normalv = -normalv
 
-        comps.over_point = comps.point + comps.normalv * EPSILON
+        over_point = point + normalv * EPSILON
 
-        return comps
+        return Computations(
+            t, shape, point, eyev, normalv, reflectv, inside, over_point
+        )
 
 
+@dataclass
 class Intersections:
-    def __init__(self, intersections=None):
-        if intersections is None:
-            intersections = []
-        self.intersections = intersections
+    data: list[Intersection] = field(default_factory=list)
 
-    def __getitem__(self, index):
-        return self.intersections[index]
+    def __getitem__(self, index: int) -> Intersection:
+        return self.data[index]
 
     def __len__(self):
-        return len(self.intersections)
+        return len(self.data)
 
-    def hit(self):
+    def __iter__(self):
+        return self.data.__iter__()
+
+    def hit(self) -> Optional[Intersection]:
         if len(self) == 0:
             return None
 
-        positive_intersections = list(filter(lambda i: i.t >= 0, self.intersections))
+        positive_intersections = list(filter(lambda i: i.t >= 0, self.data))
         if len(positive_intersections) == 0:
             return None
 

@@ -1,39 +1,50 @@
 from rtc.color import Color
+from rtc.pattern import Pattern
+from rtc.lights import PointLight
+from rtc.tuples import Tuple4
 from rtc.utils import req
 
+from dataclasses import dataclass
+from typing import Optional, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from rtc.shape import Shape
+
+
+@dataclass
 class Material:
-    def __init__(
-        self,
-        color=Color(1, 1, 1),
-        ambient=0.1,
-        diffuse=0.9,
-        specular=0.9,
-        shininess=200.0,
-        reflective=0.0,
-    ):
-        self.color = color
-        self.ambient = ambient
-        self.diffuse = diffuse
-        self.specular = specular
-        self.shininess = shininess
-        self.reflective = reflective
-        self.pattern = None
+    color: Color = Color(1, 1, 1)
+    ambient: float = 0.1
+    diffuse: float = 0.9
+    specular: float = 0.9
+    shininess: float = 200.0
+    reflective: float = 0.0
+    pattern: Optional[Pattern] = None
 
-    def __eq__(self, o):
+    def __eq__(self, other):
+        if not isinstance(other, Material):
+            raise NotImplementedError()
         return (
-            self.color == o.color
-            and req(self.ambient, o.ambient)
-            and req(self.diffuse, o.diffuse)
-            and req(self.specular, o.specular)
-            and req(self.shininess, o.shininess)
+            self.color == other.color
+            and req(self.ambient, other.ambient)
+            and req(self.diffuse, other.diffuse)
+            and req(self.specular, other.specular)
+            and req(self.shininess, other.shininess)
+            and req(self.reflective, other.reflective)
         )
 
-    def lighting(self, o, light, point, eyev, normalv, in_shadow=False):
+    def lighting(
+        self,
+        shape: "Shape",
+        light: PointLight,
+        point: Tuple4,
+        eyev: Tuple4,
+        normalv: Tuple4,
+        in_shadow: bool = False,
+    ) -> Color:
+        color = self.color
         if self.pattern:
-            color = self.pattern.pattern_at_shape(o, point)
-        else:
-            color = self.color
+            color = self.pattern.pattern_at_shape(shape, point)
 
         effective_color = color.blend(light.intensity)
         lightv = (light.position - point).normalize()
@@ -58,4 +69,5 @@ class Material:
             else:
                 factor = pow(reflect_dot_eye, self.shininess)
                 specular = light.intensity * self.specular * factor
+
         return ambient + diffuse + specular

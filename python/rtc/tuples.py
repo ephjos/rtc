@@ -2,13 +2,15 @@ import math
 
 from rtc.utils import req
 
+from dataclasses import dataclass
 
-class Tuple:
-    def __init__(self, x, y, z, w):
-        self.x = x
-        self.y = y
-        self.z = z
-        self.w = w
+
+@dataclass
+class Tuple4:
+    x: float
+    y: float
+    z: float
+    w: float
 
     def isPoint(self):
         return req(self.w, 1)
@@ -24,52 +26,58 @@ class Tuple:
     def __repr__(self):
         return str(self)
 
-    def __eq__(self, o):
+    def __eq__(self, other):
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
         return (
-            req(self.x, o.x)
-            and req(self.y, o.y)
-            and req(self.z, o.z)
-            and req(self.w, o.w)
+            req(self.x, other.x)
+            and req(self.y, other.y)
+            and req(self.z, other.z)
+            and req(self.w, other.w)
         )
 
-    def __add__(self, o):
-        return Tuple(
-            self.x + o.x,
-            self.y + o.y,
-            self.z + o.z,
-            self.w + o.w,
+    def __add__(self, other):
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
+        return Tuple4(
+            self.x + other.x,
+            self.y + other.y,
+            self.z + other.z,
+            self.w + other.w,
         )
 
-    def __sub__(self, o):
-        return Tuple(
-            self.x - o.x,
-            self.y - o.y,
-            self.z - o.z,
-            self.w - o.w,
+    def __sub__(self, other):
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
+        return Tuple4(
+            self.x - other.x,
+            self.y - other.y,
+            self.z - other.z,
+            self.w - other.w,
         )
 
     def __neg__(self):
-        return Tuple(
+        return Tuple4(
             -self.x,
             -self.y,
             -self.z,
             -self.w,
         )
 
-    def __mul__(self, o):
-        return Tuple(
-            self.x * o,
-            self.y * o,
-            self.z * o,
-            self.w * o,
+    def __mul__(self, other: float):
+        return Tuple4(
+            self.x * other,
+            self.y * other,
+            self.z * other,
+            self.w * other,
         )
 
-    def __truediv__(self, o):
-        return Tuple(
-            self.x / o,
-            self.y / o,
-            self.z / o,
-            self.w / o,
+    def __truediv__(self, other: float):
+        return Tuple4(
+            self.x / other,
+            self.y / other,
+            self.z / other,
+            self.w / other,
         )
 
     def magnitude(self):
@@ -78,23 +86,29 @@ class Tuple:
     def normalize(self):
         return self / self.magnitude()
 
-    def dot(self, o):
-        return self.x * o.x + self.y * o.y + self.z * o.z + self.w * o.w
+    def dot(self, other):
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
+        return self.x * other.x + self.y * other.y + self.z * other.z + self.w * other.w
 
-    def cross(self, o):
+    def cross(self, other):
+        if not isinstance(other, Tuple4):
+            raise NotImplementedError()
         return Vector(
-            self.y * o.z - self.z * o.y,
-            self.z * o.x - self.x * o.z,
-            self.x * o.y - self.y * o.x,
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
         )
 
     def reflect(self, normal):
+        if not isinstance(normal, Tuple4):
+            raise NotImplementedError()
         return self - normal * 2 * self.dot(normal)
 
 
-def Point(x, y, z):
-    return Tuple(x, y, z, 1)
+def Point(x: float, y: float, z: float):
+    return Tuple4(x, y, z, 1)
 
 
-def Vector(x, y, z):
-    return Tuple(x, y, z, 0)
+def Vector(x: float, y: float, z: float):
+    return Tuple4(x, y, z, 0)

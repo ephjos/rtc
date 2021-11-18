@@ -53,21 +53,21 @@ class TestSphere(unittest.TestCase):
         self.assertEqual(xs[0].t, -6.0)
         self.assertEqual(xs[1].t, -4.0)
 
-    def test_sphere_intersect_set_object(self):
+    def test_sphere_intersect_set_shape(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
         xs = s.intersect(r)
 
         self.assertEqual(len(xs), 2)
-        self.assertEqual(xs[0].object, s)
-        self.assertEqual(xs[1].object, s)
+        self.assertEqual(xs[0].shape, s)
+        self.assertEqual(xs[1].shape, s)
 
     def test_intersection_constructor(self):
         s = Sphere()
         i = Intersection(3.5, s)
 
         self.assertEqual(i.t, 3.5)
-        self.assertEqual(i.object, s)
+        self.assertEqual(i.shape, s)
 
     def test_intersections_constructor(self):
         s = Sphere()

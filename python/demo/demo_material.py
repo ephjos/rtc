@@ -35,9 +35,9 @@ def demo_material(*args):
                 continue
 
             point = ray.position(hit.t)
-            normal = hit.object.normal_at(point)
+            normal = hit.shape.normal_at(point)
             eye = -ray.direction
-            color = s.material.lighting(light, point, eye, normal)
+            color = s.material.lighting(hit.shape, light, point, eye, normal)
             c.write(j + w2, (i + h2), color)
 
     c.save("./demo_material.ppm")

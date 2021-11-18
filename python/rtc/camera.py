@@ -4,10 +4,11 @@ from rtc.canvas import Canvas
 from rtc.ray import Ray
 from rtc.transform import Transform
 from rtc.tuples import Point
+from rtc.world import World
 
 
 class Camera:
-    def __init__(self, hsize, vsize, fov):
+    def __init__(self, hsize: int, vsize: int, fov: float):
         self.hsize = hsize
         self.vsize = vsize
         self.fov = fov
@@ -27,15 +28,15 @@ class Camera:
         self.pixel_size = (self.half_width * 2) / hsize
 
     @property
-    def transform(self):
+    def transform(self) -> Transform:
         return self._transform
 
     @transform.setter
-    def transform(self, t):
-        self._transform = t
-        self.inverse_transform = t.inverse()
+    def transform(self, transform):
+        self._transform = transform
+        self.inverse_transform = transform.inverse()
 
-    def ray_for_pixel(self, px, py):
+    def ray_for_pixel(self, px: int, py: int) -> Ray:
         xoffset = (px + 0.5) * self.pixel_size
         yoffset = (py + 0.5) * self.pixel_size
 
@@ -48,7 +49,7 @@ class Camera:
 
         return Ray(origin, direction)
 
-    def render(self, world):
+    def render(self, world: World, progress: bool = False) -> Canvas:
         image = Canvas(self.hsize, self.vsize)
 
         for y in range(self.vsize):
