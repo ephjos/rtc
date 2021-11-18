@@ -103,3 +103,8 @@ class TestMaterial(unittest.TestCase):
     def test_material_default_reflective(self):
         m = Material()
         self.assertEqual(m.reflective, 0.0)
+
+    def test_material_default_transparency_refractive(self):
+        m = Material()
+        self.assertEqual(m.transparency, 0.0)
+        self.assertEqual(m.refractive_index, 1.0)

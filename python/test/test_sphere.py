@@ -4,7 +4,7 @@ import unittest
 from rtc.intersection import Intersection, Intersections
 from rtc.materials import Material
 from rtc.ray import Ray
-from rtc.sphere import Sphere
+from rtc.sphere import Sphere, GlassSphere
 from rtc.transform import Transform
 from rtc.tuples import Point, Vector
 
@@ -190,3 +190,11 @@ class TestSphere(unittest.TestCase):
         m.ambient = 1
         s.material = m
         self.assertEqual(s.material, m)
+
+
+class TestGlassSphere(unittest.TestCase):
+    def test_glass_sphere(self):
+        s = GlassSphere()
+        self.assertEqual(s.transform, Transform())
+        self.assertEqual(s.material.transparency, 1.0)
+        self.assertEqual(s.material.refractive_index, 1.5)

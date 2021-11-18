@@ -32,3 +32,7 @@ class Sphere(Shape):
 
     def local_normal_at(self, point: Tuple4) -> Tuple4:
         return point - Point(0, 0, 0)
+
+
+def GlassSphere() -> Sphere:
+    return Sphere(Material(transparency=1.0, refractive_index=1.5))

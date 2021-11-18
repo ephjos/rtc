@@ -1,3 +1,5 @@
+import math
+
 from rtc.color import Color
 from rtc.intersection import Intersection, Intersections, Computations
 from rtc.lights import PointLight
@@ -35,8 +37,9 @@ class World:
 
         surface = material.lighting(shape, light, point, eyev, normalv, shadowed)
         reflected = self.reflected_color(comps, remaining)
+        refracted = self.refracted_color(comps, remaining)
 
-        return surface + reflected
+        return surface + reflected + refracted
 
     def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
         intersections = self.intersect(ray)
@@ -45,7 +48,7 @@ class World:
         if hit is None:
             return Color(0, 0, 0)
 
-        comps = hit.prepare_computations(ray)
+        comps = hit.prepare_computations(ray, intersections)
         return self.shade_hit(comps, remaining)
 
     def is_shadowed(self, point: "Tuple4") -> bool:
@@ -71,6 +74,28 @@ class World:
         reflect_ray = Ray(comps.over_point, comps.reflectv)
         color = self.color_at(reflect_ray, remaining - 1)
         return color * reflective
+
+    def refracted_color(self, comps, remaining):
+        if remaining == 0:
+            return Color(0, 0, 0)
+        if comps.shape.material.transparency == 0:
+            return Color(0, 0, 0)
+
+        n_ratio = comps.n1 / comps.n2
+        cos_i = comps.eyev.dot(comps.normalv)
+        sin2_t = (n_ratio * n_ratio) * (1 - (cos_i * cos_i))
+        if sin2_t > 1:
+            return Color(0, 0, 0)
+
+        cos_t = math.sqrt(1 - sin2_t)
+        direction = comps.normalv * (n_ratio * cos_i - cos_t) - comps.eyev * n_ratio
+        reflect_ray = Ray(comps.under_point, direction)
+        color = (
+            self.color_at(reflect_ray, remaining - 1)
+            * comps.shape.material.transparency
+        )
+
+        return color
 
 
 def DefaultWorld() -> "World":

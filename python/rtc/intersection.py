@@ -17,6 +17,9 @@ class Computations:
     reflectv: Tuple4
     inside: bool
     over_point: Tuple4
+    under_point: Tuple4
+    n1: float
+    n2: float
 
 
 @dataclass
@@ -24,7 +27,7 @@ class Intersection:
     t: float
     shape: Shape
 
-    def prepare_computations(self, ray: Ray) -> Computations:
+    def prepare_computations(self, ray: Ray, xs: "Intersections") -> Computations:
         t = self.t
         shape = self.shape
         point = ray.position(self.t)
@@ -38,15 +41,49 @@ class Intersection:
             normalv = -normalv
 
         over_point = point + normalv * EPSILON
+        under_point = point - normalv * EPSILON
+
+        containers: list[Shape] = []
+        hit = self
+        n1 = 0.0
+        n2 = 0.0
+
+        for i in xs:
+            if i == hit:
+                if len(containers) == 0:
+                    n1 = 1.0
+                else:
+                    n1 = containers[-1].material.refractive_index
+            if i.shape in containers:
+                containers.remove(i.shape)
+            else:
+                containers.append(i.shape)
+            if i == hit:
+                if len(containers) == 0:
+                    n2 = 1.0
+                else:
+                    n2 = containers[-1].material.refractive_index
+                break
 
         return Computations(
-            t, shape, point, eyev, normalv, reflectv, inside, over_point
+            t,
+            shape,
+            point,
+            eyev,
+            normalv,
+            reflectv,
+            inside,
+            over_point,
+            under_point,
+            n1,
+            n2,
         )
 
 
 @dataclass
 class Intersections:
     data: list[Intersection] = field(default_factory=list)
+    i: int = 0
 
     def __getitem__(self, index: int) -> Intersection:
         return self.data[index]

@@ -2,8 +2,9 @@ import math
 import unittest
 
 from rtc.color import Color
-from rtc.intersection import Intersection
+from rtc.intersection import Intersection, Intersections
 from rtc.lights import PointLight
+from rtc.pattern import Pattern
 from rtc.plane import Plane
 from rtc.ray import Ray
 from rtc.sphere import Sphere
@@ -51,7 +52,7 @@ class TestWorld(unittest.TestCase):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         shape = w.shapes[0]
         i = Intersection(4, shape)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         c = w.shade_hit(comps)
 
         self.assertEqual(c, Color(0.38066, 0.47583, 0.2855))
@@ -63,7 +64,7 @@ class TestWorld(unittest.TestCase):
         shape = w.shapes[1]
         i = Intersection(0.5, shape)
 
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         c = w.shade_hit(comps)
 
         self.assertEqual(c, Color(0.90498, 0.90498, 0.90498))
@@ -127,7 +128,7 @@ class TestWorld(unittest.TestCase):
         w.shapes = [s1, s2]
         r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
         i = Intersection(4, s2)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         c = w.shade_hit(comps)
 
         self.assertEqual(c, Color(0.1, 0.1, 0.1))
@@ -138,7 +139,7 @@ class TestWorld(unittest.TestCase):
         shape = w.shapes[1]
         shape.material.ambient = 1
         i = Intersection(1, shape)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         color = w.reflected_color(comps)
         self.assertEqual(color, Color(0, 0, 0))
 
@@ -150,7 +151,7 @@ class TestWorld(unittest.TestCase):
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         color = w.reflected_color(comps)
         self.assertEqual(color, Color(0.19032, 0.2379, 0.14274))
 
@@ -162,7 +163,7 @@ class TestWorld(unittest.TestCase):
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         color = w.shade_hit(comps)
         self.assertEqual(color, Color(0.87677, 0.92436, 0.82918))
 
@@ -189,6 +190,94 @@ class TestWorld(unittest.TestCase):
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
-        comps = i.prepare_computations(r)
+        comps = i.prepare_computations(r, Intersections([i]))
         color = w.reflected_color(comps, 0)
         self.assertEqual(color, Color(0, 0, 0))
+
+    def test_world_color_refracted_opaque(self):
+        w = DefaultWorld()
+        shape = w.shapes[0]
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
+        xs = Intersections(
+            [
+                Intersection(4, shape),
+                Intersection(6, shape),
+            ]
+        )
+        comps = xs[0].prepare_computations(r, xs)
+        color = w.refracted_color(comps, 5)
+        self.assertEqual(color, Color(0, 0, 0))
+
+    def test_world_color_refracted_max_depth(self):
+        w = DefaultWorld()
+        shape = w.shapes[0]
+        shape.material.transparency = 1.0
+        shape.material.refractive_index = 1.5
+        r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
+        xs = Intersections(
+            [
+                Intersection(4, shape),
+                Intersection(6, shape),
+            ]
+        )
+        comps = xs[0].prepare_computations(r, xs)
+        color = w.refracted_color(comps, 0)
+        self.assertEqual(color, Color(0, 0, 0))
+
+    def test_world_color_refracted_internal(self):
+        w = DefaultWorld()
+        shape = w.shapes[0]
+        shape.material.transparency = 1.0
+        shape.material.refractive_index = 1.5
+        r = Ray(Point(0, 0, math.sqrt(2) / 2), Vector(0, 1, 0))
+        xs = Intersections(
+            [
+                Intersection(-math.sqrt(2) / 2, shape),
+                Intersection(math.sqrt(2) / 2, shape),
+            ]
+        )
+        comps = xs[1].prepare_computations(r, xs)
+        color = w.refracted_color(comps, 5)
+        self.assertEqual(color, Color(0, 0, 0))
+
+    def test_world_color_refracted_color(self):
+        w = DefaultWorld()
+        A = w.shapes[0]
+        A.material.ambient = 1.0
+        A.material.pattern = Pattern()
+        B = w.shapes[1]
+        B.material.transparency = 1.0
+        B.material.refractive_index = 1.5
+        r = Ray(Point(0, 0, 0.1), Vector(0, 1, 0))
+        xs = Intersections(
+            [
+                Intersection(-0.9899, A),
+                Intersection(-0.4899, B),
+                Intersection(0.4899, B),
+                Intersection(0.9899, A),
+            ]
+        )
+        comps = xs[2].prepare_computations(r, xs)
+        color = w.refracted_color(comps, 5)
+        self.assertEqual(color, Color(0, 0.99888, 0.04725))
+
+    def test_world_shade_hit_transparent(self):
+        w = DefaultWorld()
+
+        floor = Plane()
+        floor.transform = Transform().translation(0, -1, 0)
+        floor.material.transparency = 0.5
+        floor.material.refractive_index = 1.5
+        w.shapes.append(floor)
+
+        ball = Sphere()
+        ball.material.color = Color(1, 0, 0)
+        ball.material.ambient = 0.5
+        ball.transform = Transform().translation(0, -3.5, -0.5)
+        w.shapes.append(ball)
+
+        r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
+        xs = Intersections([Intersection(math.sqrt(2), floor)])
+        comps = xs[0].prepare_computations(r, xs)
+        color = w.shade_hit(comps, 5)
+        self.assertEqual(color, Color(0.93642, 0.68642, 0.68642))
