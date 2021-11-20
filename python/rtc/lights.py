@@ -3,8 +3,11 @@ from rtc.color import Color
 from rtc.tuples import Tuple4
 
 
+class Light:
+    pass
+
 @dataclass
-class PointLight:
+class PointLight(Light):
     position: Tuple4
     intensity: Color
 

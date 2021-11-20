@@ -15,9 +15,9 @@ from rtc.world import World, DefaultWorld
 
 class TestWorld(unittest.TestCase):
     def test_world_constructor(self):
-        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
+        w = World([], [PointLight(Point(0, 0, 0), Color(0, 0, 0))])
         self.assertEqual(w.shapes, [])
-        self.assertEqual(w.light, PointLight(Point(0, 0, 0), Color(0, 0, 0)))
+        self.assertEqual(w.lights, [PointLight(Point(0, 0, 0), Color(0, 0, 0))])
 
     def test_default_world(self):
         light = PointLight(Point(-10, 10, -10), Color(1, 1, 1))
@@ -31,7 +31,7 @@ class TestWorld(unittest.TestCase):
 
         w = DefaultWorld()
 
-        self.assertEqual(w.light, light)
+        self.assertEqual(w.lights, [light])
         self.assertTrue(s1 in w.shapes)
         self.assertTrue(s2 in w.shapes)
 
@@ -59,7 +59,7 @@ class TestWorld(unittest.TestCase):
 
     def test_world_shade_hit_inside(self):
         w = DefaultWorld()
-        w.light = PointLight(Point(0, 0.25, 0), Color(1, 1, 1))
+        w.lights = [PointLight(Point(0, 0.25, 0), Color(1, 1, 1))]
         r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
         shape = w.shapes[1]
         i = Intersection(0.5, shape)
@@ -120,8 +120,7 @@ class TestWorld(unittest.TestCase):
         self.assertFalse(w.is_shadowed(p))
 
     def test_world_shade_hit_intersection_in_shadow(self):
-        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
-        w.light = PointLight(Point(0, 0, -10), Color(1, 1, 1))
+        w = World([], [PointLight(Point(0, 0, -10), Color(1,1,1))])
         s1 = Sphere()
         s2 = Sphere()
         s2.transform = Transform().translation(0, 0, 10)
@@ -168,8 +167,7 @@ class TestWorld(unittest.TestCase):
         self.assertEqual(color, Color(0.87677, 0.92436, 0.82918))
 
     def test_world_mutally_reflective(self):
-        w = World([], PointLight(Point(0, 0, 0), Color(0, 0, 0)))
-        w.light = PointLight(Point(0, 0, 0), Color(1, 1, 1))
+        w = World([], [PointLight(Point(0, 0, 0), Color(1,1,1))])
         lower = Plane()
         lower.material.reflective = 1
         lower.transform = Transform().translation(0, -1, 0)

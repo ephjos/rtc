@@ -2,7 +2,7 @@ import math
 
 from rtc.color import Color
 from rtc.intersection import Intersection, Intersections, Computations
-from rtc.lights import PointLight
+from rtc.lights import PointLight, Light
 from rtc.ray import Ray
 from rtc.shape import Shape
 from rtc.sphere import Sphere
@@ -15,7 +15,7 @@ from dataclasses import dataclass
 @dataclass
 class World:
     shapes: list["Shape"]
-    light: "PointLight"
+    lights: list["Light"]
 
     def intersect(self, ray: "Ray") -> "Intersections":
         intersections: list[Intersection] = []
@@ -26,24 +26,28 @@ class World:
         return Intersections(sorted(intersections, key=lambda i: i.t))
 
     def shade_hit(self, comps: "Computations", remaining: int = 5) -> "Color":
-        material = comps.shape.material
-        light = self.light
-        point = comps.point
-        eyev = comps.eyev
-        normalv = comps.normalv
-        shape = comps.shape
+        out = Color(0,0,0)
+        for light in self.lights:
+            material = comps.shape.material
+            point = comps.point
+            eyev = comps.eyev
+            normalv = comps.normalv
+            shape = comps.shape
 
-        shadowed = self.is_shadowed(comps.over_point)
+            shadowed = self.is_shadowed(comps.over_point)
 
-        surface = material.lighting(shape, light, point, eyev, normalv, shadowed)
-        reflected = self.reflected_color(comps, remaining)
-        refracted = self.refracted_color(comps, remaining)
+            surface = material.lighting(shape, light, point, eyev, normalv, shadowed)
+            reflected = self.reflected_color(comps, remaining)
+            refracted = self.refracted_color(comps, remaining)
 
-        if material.reflective > 0 and material.transparency > 0:
-            reflectance = comps.schlick()
-            return surface + reflected*reflectance + refracted * (1-reflectance)
+            if material.reflective > 0 and material.transparency > 0:
+                reflectance = comps.schlick()
+                out += surface + reflected*reflectance + refracted * (1-reflectance)
+                continue
 
-        return surface + reflected + refracted
+            out += surface + reflected + refracted
+        return out
+
 
     def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
         intersections = self.intersect(ray)
@@ -56,19 +60,20 @@ class World:
         return self.shade_hit(comps, remaining)
 
     def is_shadowed(self, point: "Tuple4") -> bool:
-        v = self.light.position - point
-        distance = v.magnitude()
-        direction = v.normalize()
+        for light in self.lights:
+            v = light.position - point
+            distance = v.magnitude()
+            direction = v.normalize()
 
-        r = Ray(point, direction)
-        intersections = self.intersect(r)
+            r = Ray(point, direction)
+            intersections = self.intersect(r)
 
-        h = intersections.hit()
+            h = intersections.hit(shadow=True)
 
-        if h is None:
-            return False
+            if h is not None and h.t < distance:
+                return True
 
-        return h.shape.cast_shadow and h.t < distance
+        return False
 
     def reflected_color(self, comps: "Computations", remaining: int = 5) -> "Color":
         reflective = comps.shape.material.reflective
@@ -112,4 +117,4 @@ def DefaultWorld() -> "World":
     s2 = Sphere()
     s2.transform = Transform().scaling(0.5, 0.5, 0.5)
 
-    return World([s1, s2], light)
+    return World([s1, s2], [light])

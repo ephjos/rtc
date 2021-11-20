@@ -111,16 +111,21 @@ class Intersections:
     def __iter__(self):
         return self.data.__iter__()
 
-    def hit(self) -> Optional[Intersection]:
+    def hit(self, shadow: bool = False) -> Optional[Intersection]:
         if len(self) == 0:
             return None
 
         positive_intersections = list(filter(lambda i: i.t >= 0, self.data))
-        if len(positive_intersections) == 0:
+
+        intersections = positive_intersections
+        if shadow:
+            intersections = list(filter(lambda i: i.shape.cast_shadow, intersections))
+
+        if len(intersections) == 0:
             return None
 
-        curr = positive_intersections[0]
-        for i in positive_intersections[1:]:
+        curr = intersections[0]
+        for i in intersections[1:]:
             if i.t > 0 and i.t < curr.t:
                 curr = i
 
