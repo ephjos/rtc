@@ -19,6 +19,7 @@ class Shape:
         self.inverse_transform: Transform = self.transform.inverse()
 
         self.material = material
+        self.cast_shadow = True
 
     def __eq__(self, other):
         if not isinstance(other, Shape):

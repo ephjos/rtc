@@ -7,7 +7,7 @@ from rtc.ray import Ray
 from rtc.sphere import Sphere, GlassSphere
 from rtc.transform import Transform
 from rtc.tuples import Point, Vector
-from rtc.utils import EPSILON
+from rtc.utils import EPSILON, req
 
 
 class TestIntersection(unittest.TestCase):
@@ -110,3 +110,33 @@ class TestIntersection(unittest.TestCase):
         comps = i.prepare_computations(r, xs)
         self.assertGreater(comps.under_point.z, EPSILON / 2)
         self.assertLess(comps.point.z, comps.under_point.z)
+
+    def test_intersection_slick_total_internal_reflection(self):
+        shape = GlassSphere()
+        r = Ray(Point(0,0,math.sqrt(2)/2), Vector(0,1,0))
+        xs = Intersections([Intersection(-math.sqrt(2)/2,shape),Intersection(math.sqrt(2)/2,shape)])
+        comps = xs[1].prepare_computations(r, xs)
+        reflectance = comps.schlick()
+        self.assertEqual(reflectance, 1.0)
+
+    def test_intersection_slick_perpendicular(self):
+        shape = GlassSphere()
+        r = Ray(Point(0,0,0), Vector(0,1,0))
+        xs = Intersections([
+            Intersection(-1,shape),
+            Intersection(1,shape)
+        ])
+        comps = xs[1].prepare_computations(r, xs)
+        reflectance = comps.schlick()
+        self.assertTrue(req(reflectance, 0.04))
+
+    def test_intersection_slick_small_angle(self):
+        shape = GlassSphere()
+        r = Ray(Point(0,0.99,-2), Vector(0,0,1))
+        xs = Intersections([
+            Intersection(1.8589,shape),
+        ])
+        comps = xs[0].prepare_computations(r, xs)
+        reflectance = comps.schlick()
+        self.assertTrue(req(reflectance, 0.48873))
+
