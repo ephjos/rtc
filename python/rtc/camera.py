@@ -6,6 +6,7 @@ from rtc.transform import Transform
 from rtc.tuples import Point
 from rtc.world import World
 
+from tqdm import trange
 
 class Camera:
     def __init__(self, hsize: int, vsize: int, fov: float):
@@ -52,8 +53,15 @@ class Camera:
     def render(self, world: World, progress: bool = False) -> Canvas:
         image = Canvas(self.hsize, self.vsize)
 
-        for y in range(self.vsize):
-            for x in range(self.hsize):
+        rows = lambda: range(self.vsize)
+        cols = lambda: range(self.hsize)
+
+        if progress:
+            rows = lambda: trange(self.vsize)
+            cols = lambda: trange(self.hsize, leave=False)
+
+        for y in rows():
+            for x in cols():
                 ray = self.ray_for_pixel(x, y)
                 color = world.color_at(ray)
                 image.write(x, y, color)
