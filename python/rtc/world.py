@@ -36,7 +36,7 @@ class World:
 
             shadowed = self.is_shadowed(comps.over_point)
 
-            surface = material.lighting(shape, light, point, eyev, normalv, shadowed)
+            surface = material.lighting(shape, light, comps.over_point, eyev, normalv, shadowed)
             reflected = self.reflected_color(comps, remaining)
             refracted = self.refracted_color(comps, remaining)
 

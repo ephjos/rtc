@@ -41,7 +41,8 @@ class StripePattern(Pattern):
         self.b = b
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        if math.floor(point.x) % 2 == 0:
+        x = 0 if abs(point.x) < EPSILON else math.floor(point.x)
+        if x % 2 == 0:
             return self.a
         return self.b
 

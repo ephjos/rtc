@@ -2,6 +2,7 @@ import argparse
 import yaml
 
 from rtc.camera import Camera
+from rtc.cube import Cube
 from rtc.color import Color
 from rtc.lights import PointLight
 from rtc.materials import Material
@@ -12,7 +13,6 @@ from rtc.tuples import Vector, Point
 from rtc.transform import Transform, ViewTransform
 from rtc.world import World
 
-SHAPES = ['plane', 'sphere']
 
 def parse_transform(transforms, lookup):
     transform = Transform()
@@ -36,6 +36,8 @@ def parse_transform(transforms, lookup):
                 float(transform_row[2]),
                 float(transform_row[3]),
             )
+        else:
+            transform = parse_transform(lookup[transform_row], lookup)
     return transform
 
 def parse_color(color_row, lookup):
@@ -95,32 +97,29 @@ def parse_material(material_row, lookup):
     return material
 
 
-def parse_plane(row, lookup):
-    transform = parse_transform(row['transform'], lookup)
-    material = parse_material(row['material'], lookup)
-
-    p = Plane(material)
-    p.transform = transform
-    return p
-
-
-def parse_sphere(row, lookup):
-    transform = parse_transform(row['transform'], lookup)
-    material = parse_material(row['material'], lookup)
-
-    s = Sphere(material)
-    s.transform = transform
-    return s
-
-
 def parse_shape(row, lookup):
     shape = row['add']
+    shape_class = None
     if shape == 'plane':
-        return parse_plane(row, lookup)
+        shape_class = Plane
     elif shape == 'sphere':
-        return parse_sphere(row, lookup)
+        shape_class = Sphere
+    elif shape == 'cube':
+        shape_class = Cube
 
-    raise Exception('Unknown shape: ' + shape)
+    if shape_class is None:
+        raise Exception('Unknown shape: ' + shape)
+
+    transform = parse_transform(row['transform'], lookup)
+    material = parse_material(row['material'], lookup)
+
+    s = shape_class(material)
+    s.transform = transform
+
+    if 'shadow' in row:
+        s.cast_shadow = row['shadow']
+
+    return s
 
 
 def parse_point(row, lookup):
@@ -168,18 +167,24 @@ def render_file(file, output_file):
             key = row['define']
             value = row['value']
             lookup[key] = value
+            if 'extend' in row:
+                extension = row['extend']
+                lookup[key] = {
+                    **lookup[extension],
+                    **lookup[key],
+                }
 
         shapes = []
         lights = []
         camera = None
         for row in adds:
             add = row['add']
-            if add in SHAPES:
-                shapes.append(parse_shape(row, lookup))
-            elif add == 'camera':
+            if add == 'camera':
                 camera = parse_camera(row, lookup)
             elif add == 'light':
                 lights.append(parse_light(row, lookup))
+            else:
+                shapes.append(parse_shape(row, lookup))
 
         if len(lights) == 0:
             raise Exception('No lights provided by configuration')
