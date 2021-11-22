@@ -1,4 +1,5 @@
 import argparse
+import cProfile
 import yaml
 
 from rtc.camera import Camera
@@ -218,4 +219,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run('main()', filename='rtc.prof', sort="time")
