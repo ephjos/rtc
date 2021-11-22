@@ -5,7 +5,8 @@ from rtc.materials import Material
 from rtc.ray import Ray
 from rtc.shape import Shape
 from rtc.transform import Transform
-from rtc.tuples import Point, Vector
+from rtc.tuples import *
+from rtc.utils import req
 
 
 class TestShape(unittest.TestCase):
@@ -37,25 +38,25 @@ class TestShape(unittest.TestCase):
         s = Shape()
         s.transform = Transform().scaling(2, 2, 2)
         s.intersect(r)
-        self.assertEqual(s.saved_ray.origin, Point(0, 0, -2.5))
-        self.assertEqual(s.saved_ray.direction, Vector(0, 0, 0.5))
+        self.assertTrue(tuple4_eq(s.saved_ray.origin, Point(0, 0, -2.5)))
+        self.assertTrue(tuple4_eq(s.saved_ray.direction, Vector(0, 0, 0.5)))
 
     def test_shape_intersecting_translated(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Shape()
         s.transform = Transform().translation(5, 0, 0)
         s.intersect(r)
-        self.assertEqual(s.saved_ray.origin, Point(-5, 0, -5))
-        self.assertEqual(s.saved_ray.direction, Vector(0, 0, 1))
+        self.assertTrue(tuple4_eq(s.saved_ray.origin, Point(-5, 0, -5)))
+        self.assertTrue(tuple4_eq(s.saved_ray.direction, Vector(0, 0, 1)))
 
     def test_shape_normal_translated(self):
         s = Shape()
         s.transform = Transform().translation(0, 1, 0)
         n = s.normal_at(Point(0, 1.70711, -0.70711))
-        self.assertEqual(n, Vector(0, 0.70711, -0.70711))
+        self.assertTrue(tuple4_eq(n, Vector(0, 0.70711, -0.70711)))
 
     def test_shape_normal_transformed(self):
         s = Shape()
         s.transform = Transform().rotation_z(math.pi / 5).scaling(1, 0.5, 1)
         n = s.normal_at(Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2))
-        self.assertEqual(n, Vector(0, 0.97014, -0.24254))
+        self.assertTrue(tuple4_eq(n, Vector(0, 0.97014, -0.24254)))

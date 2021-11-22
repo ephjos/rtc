@@ -31,9 +31,9 @@ class Cube(Shape):
         return tmin, tmax
 
     def local_intersect(self, ray: "Ray") -> "Intersections":
-        xtmin, xtmax = self.check_axis(ray.origin.x, ray.direction.x)
-        ytmin, ytmax = self.check_axis(ray.origin.y, ray.direction.y)
-        ztmin, ztmax = self.check_axis(ray.origin.z, ray.direction.z)
+        xtmin, xtmax = self.check_axis(ray.origin[0], ray.direction[0])
+        ytmin, ytmax = self.check_axis(ray.origin[1], ray.direction[1])
+        ztmin, ztmax = self.check_axis(ray.origin[2], ray.direction[2])
 
         tmin = max(xtmin, ytmin, ztmin)
         tmax = min(xtmax, ytmax, ztmax)
@@ -44,12 +44,12 @@ class Cube(Shape):
         return Intersections([Intersection(tmin, self), Intersection(tmax, self)])
 
     def local_normal_at(self, point: Tuple4) -> Tuple4:
-        maxc = max(abs(point.x), abs(point.y), abs(point.z))
+        maxc = max(abs(point[0]), abs(point[1]), abs(point[2]))
 
-        if maxc == abs(point.x):
-            return Vector(point.x, 0, 0)
-        elif maxc == abs(point.y):
-            return Vector(0, point.y, 0)
+        if maxc == abs(point[0]):
+            return Vector(point[0], 0, 0)
+        elif maxc == abs(point[1]):
+            return Vector(0, point[1], 0)
 
-        return Vector(0, 0, point.z)
+        return Vector(0, 0, point[2])
 

@@ -62,7 +62,7 @@ def demo_camera(*args):
 
     light = PointLight(Point(-10, 10, -10), Color(1, 1, 1))
 
-    world = World([floor, left_wall, right_wall, middle, right, left], light)
+    world = World([floor, left_wall, right_wall, middle, right, left], [light])
 
     camera = Camera(80, 60, math.pi / 3)
     at = Point(0, 1.5, -5)

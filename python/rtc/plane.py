@@ -14,10 +14,10 @@ class Plane(Shape):
         super().__init__(material)
 
     def local_intersect(self, ray: "Ray") -> Intersections:
-        if req(ray.direction.y, 0):
+        if req(ray.direction[1], 0):
             return Intersections()
 
-        t = -ray.origin.y / ray.direction.y
+        t = -ray.origin[1] / ray.direction[1]
         return Intersections([Intersection(t, self)])
 
     def local_normal_at(self, point: "Tuple4") -> "Tuple4":

@@ -2,7 +2,7 @@ from rtc.canvas import Canvas
 from rtc.color import Color
 from rtc.ray import Ray
 from rtc.sphere import Sphere
-from rtc.tuples import Point
+from rtc.tuples import *
 
 
 def demo_ray(*args):
@@ -23,7 +23,7 @@ def demo_ray(*args):
         world_y = i * pixel_size
         for j in range(-w2, w2):
             world_x = j * pixel_size
-            ray = Ray(origin, (Point(world_x, world_y, wall_z) - origin).normalize())
+            ray = Ray(origin, tuple4_normalize(tuple4_sub(Point(world_x, world_y, wall_z), origin)))
             xs = s.intersect(ray)
             hit = xs.hit()
 

@@ -26,7 +26,7 @@ class Pattern:
         self.inverse_transform = transform.inverse()
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        return Color(point.x, point.y, point.z)
+        return Color(point[0], point[1], point[2])
 
     def pattern_at_shape(self, shape: "Shape", point: "Tuple4") -> "Color":
         shape_point = shape.inverse_transform @ point
@@ -41,7 +41,7 @@ class StripePattern(Pattern):
         self.b = b
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        x = 0 if abs(point.x) < EPSILON else math.floor(point.x)
+        x = 0 if abs(point[0]) < EPSILON else math.floor(point[0])
         if x % 2 == 0:
             return self.a
         return self.b
@@ -54,7 +54,7 @@ class GradientPattern(Pattern):
         self.b = b
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        return self.a + (self.b - self.a) * (point.x - math.floor(point.x))
+        return self.a + (self.b - self.a) * (point[0] - math.floor(point[0]))
 
 
 class RingPattern(Pattern):
@@ -64,8 +64,8 @@ class RingPattern(Pattern):
         self.b = b
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        x2 = point.x * point.x
-        z2 = point.z * point.z
+        x2 = point[0] * point[0]
+        z2 = point[2] * point[2]
         if math.floor(math.sqrt(x2 + z2)) % 2 == 0:
             return self.a
         return self.b
@@ -78,9 +78,9 @@ class CheckersPattern(Pattern):
         self.b = b
 
     def pattern_at(self, point: "Tuple4") -> Color:
-        x = 0 if abs(point.x) < EPSILON else math.floor(point.x)
-        y = 0 if abs(point.y) < EPSILON else math.floor(point.y)
-        z = 0 if abs(point.z) < EPSILON else math.floor(point.z)
+        x = 0 if abs(point[0]) < EPSILON else math.floor(point[0])
+        y = 0 if abs(point[1]) < EPSILON else math.floor(point[1])
+        z = 0 if abs(point[2]) < EPSILON else math.floor(point[2])
         if (x + y + z) % 2 == 0:
             return self.a
         return self.b

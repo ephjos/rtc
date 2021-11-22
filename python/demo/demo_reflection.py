@@ -57,7 +57,7 @@ def demo_reflection(*args):
 
     light = PointLight(Point(-10, 10, -10), Color(1, 1, 1))
 
-    world = World([floor, middle, right, left], light)
+    world = World([floor, middle, right, left], [light])
 
     s = 1
     camera = Camera(80 * s, 60 * s, math.pi / 3)

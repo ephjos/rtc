@@ -2,7 +2,7 @@ import math
 
 from rtc.ray import Ray
 from rtc.shape import Shape
-from rtc.tuples import Tuple4
+from rtc.tuples import *
 from rtc.utils import EPSILON
 
 from dataclasses import dataclass, field
@@ -24,7 +24,7 @@ class Computations:
     n2: float
 
     def schlick(self):
-        cos = self.eyev.dot(self.normalv)
+        cos = tuple4_dot(self.eyev, self.normalv)
 
         if self.n1 > self.n2:
             n = self.n1 / self.n2
@@ -48,17 +48,17 @@ class Intersection:
         t = self.t
         shape = self.shape
         point = ray.position(self.t)
-        eyev = -ray.direction
+        eyev = tuple4_neg(ray.direction)
         normalv = self.shape.normal_at(point)
-        reflectv = ray.direction.reflect(normalv)
+        reflectv = tuple4_reflect(ray.direction, normalv)
         inside = False
 
-        if normalv.dot(eyev) < 0:
+        if tuple4_dot(normalv, eyev) < 0:
             inside = True
-            normalv = -normalv
+            normalv = tuple4_neg(normalv)
 
-        over_point = point + normalv * EPSILON
-        under_point = point - normalv * EPSILON
+        over_point = tuple4_add(point, tuple4_scale(normalv, EPSILON))
+        under_point = tuple4_sub(point, tuple4_scale(normalv, EPSILON))
 
         containers: list[Shape] = []
         hit = self

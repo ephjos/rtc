@@ -1,7 +1,7 @@
 import math
 
 from rtc.matrix import Matrix
-from rtc.tuples import Tuple4
+from rtc.tuples import *
 
 
 class Transform(Matrix):
@@ -71,18 +71,18 @@ class Transform(Matrix):
 
 
 def ViewTransform(at: "Tuple4", to: "Tuple4", up: "Tuple4") -> Transform:
-    forward = (to - at).normalize()
-    upn = up.normalize()
-    left = forward.cross(upn)
-    true_up = left.cross(forward)
+    forward = tuple4_normalize(tuple4_sub(to, at))
+    upn = tuple4_normalize(up)
+    left = tuple4_cross(forward, upn)
+    true_up = tuple4_cross(left, forward)
 
     orientation = Matrix(
         [
-            [left.x, left.y, left.z, 0],
-            [true_up.x, true_up.y, true_up.z, 0],
-            [-forward.x, -forward.y, -forward.z, 0],
+            [left[0], left[1], left[2], 0],
+            [true_up[0], true_up[1], true_up[2], 0],
+            [-forward[0], -forward[1], -forward[2], 0],
             [0, 0, 0, 1],
         ]
     )
 
-    return orientation @ Transform().translation(-at.x, -at.y, -at.z)
+    return orientation @ Transform().translation(-at[0], -at[1], -at[2])

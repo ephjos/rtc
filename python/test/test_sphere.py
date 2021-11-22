@@ -6,7 +6,8 @@ from rtc.materials import Material
 from rtc.ray import Ray
 from rtc.sphere import Sphere, GlassSphere
 from rtc.transform import Transform
-from rtc.tuples import Point, Vector
+from rtc.tuples import *
+from rtc.utils import *
 
 
 class TestSphere(unittest.TestCase):
@@ -148,36 +149,36 @@ class TestSphere(unittest.TestCase):
     def test_sphere_normal_at_x(self):
         s = Sphere()
         n = s.normal_at(Point(1, 0, 0))
-        self.assertEqual(n, Vector(1, 0, 0))
+        self.assertTrue(tuple4_eq(n, Vector(1, 0, 0)))
 
     def test_sphere_normal_at_y(self):
         s = Sphere()
         n = s.normal_at(Point(0, 1, 0))
-        self.assertEqual(n, Vector(0, 1, 0))
+        self.assertTrue(tuple4_eq(n, Vector(0, 1, 0)))
 
     def test_sphere_normal_at_z(self):
         s = Sphere()
         n = s.normal_at(Point(0, 0, 1))
-        self.assertEqual(n, Vector(0, 0, 1))
+        self.assertTrue(tuple4_eq(n, Vector(0, 0, 1)))
 
     def test_sphere_normal_at_non_axis(self):
         s = Sphere()
         r3o3 = math.sqrt(3) / 3
         n = s.normal_at(Point(r3o3, r3o3, r3o3))
-        self.assertEqual(n, Vector(r3o3, r3o3, r3o3))
-        self.assertEqual(n, n.normalize())
+        self.assertTrue(tuple4_eq(n, Vector(r3o3, r3o3, r3o3)))
+        self.assertTrue(tuple4_eq(n, tuple4_normalize(n)))
 
     def test_sphere_normal_on_translated(self):
         s = Sphere()
         s.transform = Transform().translation(0, 1, 0)
         n = s.normal_at(Point(0, 1.70711, -0.70711))
-        self.assertEqual(n, Vector(0, 0.70711, -0.70711))
+        self.assertTrue(tuple4_eq(n, Vector(0, 0.70711, -0.70711)))
 
     def test_sphere_normal_on_transformed(self):
         s = Sphere()
         s.transform = Transform().rotation_z(math.pi / 5).scaling(1, 0.5, 1)
         n = s.normal_at(Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2))
-        self.assertEqual(n, Vector(0, 0.97014, -0.24254))
+        self.assertTrue(tuple4_eq(n, Vector(0, 0.97014, -0.24254)))
 
     def test_sphere_default_material(self):
         s = Sphere()

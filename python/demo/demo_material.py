@@ -3,7 +3,7 @@ from rtc.color import Color
 from rtc.lights import PointLight
 from rtc.ray import Ray
 from rtc.sphere import Sphere
-from rtc.tuples import Point
+from rtc.tuples import *
 
 
 def demo_material(*args):
@@ -27,7 +27,7 @@ def demo_material(*args):
         world_y = i * pixel_size
         for j in range(-w2, w2):
             world_x = j * pixel_size
-            ray = Ray(origin, (Point(world_x, world_y, wall_z) - origin).normalize())
+            ray = Ray(origin, tuple4_normalize(tuple4_sub(Point(world_x, world_y, wall_z), origin)))
             xs = s.intersect(ray)
             hit = xs.hit()
 
@@ -36,7 +36,7 @@ def demo_material(*args):
 
             point = ray.position(hit.t)
             normal = hit.shape.normal_at(point)
-            eye = -ray.direction
+            eye = tuple4_neg(ray.direction)
             color = s.material.lighting(hit.shape, light, point, eye, normal)
             c.write(j + w2, (i + h2), color)
 

@@ -1,7 +1,7 @@
 from rtc.color import Color
 from rtc.pattern import Pattern
 from rtc.lights import PointLight
-from rtc.tuples import Tuple4
+from rtc.tuples import *
 from rtc.utils import req
 
 from dataclasses import dataclass
@@ -49,13 +49,13 @@ class Material:
             color = self.pattern.pattern_at_shape(shape, point)
 
         effective_color = color.blend(light.intensity)
-        lightv = (light.position - point).normalize()
+        lightv = tuple4_normalize(tuple4_sub(light.position, point))
         ambient = effective_color * self.ambient
 
         if in_shadow:
             return ambient
 
-        light_dot_normal = lightv.dot(normalv)
+        light_dot_normal = tuple4_dot(lightv, normalv)
 
         if light_dot_normal < 0:
             diffuse = Color(0, 0, 0)
@@ -63,8 +63,8 @@ class Material:
         else:
             diffuse = effective_color * self.diffuse * light_dot_normal
 
-            reflectv = (-lightv).reflect(normalv)
-            reflect_dot_eye = reflectv.dot(eyev)
+            reflectv = tuple4_reflect(tuple4_neg(lightv), normalv)
+            reflect_dot_eye = tuple4_dot(reflectv, eyev)
 
             if reflect_dot_eye <= 0:
                 specular = Color(0, 0, 0)

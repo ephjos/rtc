@@ -1,7 +1,7 @@
 from rtc.materials import Material
 from rtc.ray import Ray
 from rtc.transform import Transform
-from rtc.tuples import Tuple4, Vector
+from rtc.tuples import *
 
 from typing import Optional, TYPE_CHECKING, cast
 
@@ -44,11 +44,11 @@ class Shape:
         return self.local_intersect(ray)
 
     def local_normal_at(self, point: Tuple4) -> Tuple4:
-        return Vector(point.x, point.y, point.z)
+        return Vector(point[0], point[1], point[2])
 
     def normal_at(self, world_point: Tuple4) -> Tuple4:
         local_point = self.inverse_transform @ world_point
-        local_normal = self.local_normal_at(cast(Tuple4, local_point))
-        world_normal = cast(Tuple4, self.inverse_transform.T @ local_normal)
-        world_normal.w = 0.0
-        return world_normal.normalize()
+        local_normal = self.local_normal_at(local_point)
+        world_normal = self.inverse_transform.T @ local_normal
+        world_normal[3] = 0.0
+        return tuple4_normalize(world_normal)

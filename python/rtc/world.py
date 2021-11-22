@@ -7,7 +7,7 @@ from rtc.ray import Ray
 from rtc.shape import Shape
 from rtc.sphere import Sphere
 from rtc.transform import Transform
-from rtc.tuples import Tuple4, Point
+from rtc.tuples import *
 
 from dataclasses import dataclass
 
@@ -61,9 +61,9 @@ class World:
 
     def is_shadowed(self, point: "Tuple4") -> bool:
         for light in self.lights:
-            v = light.position - point
-            distance = v.magnitude()
-            direction = v.normalize()
+            v = tuple4_sub(light.position, point)
+            distance = tuple4_magnitude(v)
+            direction = tuple4_normalize(v)
 
             r = Ray(point, direction)
             intersections = self.intersect(r)
@@ -91,13 +91,13 @@ class World:
             return Color(0, 0, 0)
 
         n_ratio = comps.n1 / comps.n2
-        cos_i = comps.eyev.dot(comps.normalv)
+        cos_i = tuple4_dot(comps.eyev, comps.normalv)
         sin2_t = (n_ratio * n_ratio) * (1 - (cos_i * cos_i))
         if sin2_t > 1:
             return Color(0, 0, 0)
 
         cos_t = math.sqrt(1 - sin2_t)
-        direction = comps.normalv * (n_ratio * cos_i - cos_t) - comps.eyev * n_ratio
+        direction = tuple4_sub(tuple4_scale(comps.normalv, (n_ratio * cos_i - cos_t)), tuple4_scale(comps.eyev, n_ratio))
         reflect_ray = Ray(comps.under_point, direction)
         color = (
             self.color_at(reflect_ray, remaining - 1)

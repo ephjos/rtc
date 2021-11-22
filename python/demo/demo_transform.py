@@ -21,8 +21,8 @@ def demo_transform(*args):
             .translation(size / 2, size / 2, 0)
         )
         Tp = T @ p
-        x = round(Tp.x)
-        y = round(Tp.y)
+        x = round(Tp[0])
+        y = round(Tp[1])
         canvas.write(x, y, tick)
 
     canvas.save("./demo_transform.ppm")

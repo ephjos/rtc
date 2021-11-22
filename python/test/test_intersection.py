@@ -6,7 +6,7 @@ from rtc.plane import Plane
 from rtc.ray import Ray
 from rtc.sphere import Sphere, GlassSphere
 from rtc.transform import Transform
-from rtc.tuples import Point, Vector
+from rtc.tuples import *
 from rtc.utils import EPSILON, req
 
 
@@ -18,11 +18,11 @@ class TestIntersection(unittest.TestCase):
 
         comps = i.prepare_computations(r, Intersections([i]))
 
-        self.assertEqual(comps.t, i.t)
+        self.assertTrue(req(comps.t, i.t))
         self.assertEqual(comps.shape, i.shape)
-        self.assertEqual(comps.point, Point(0, 0, -1))
-        self.assertEqual(comps.eyev, Vector(0, 0, -1))
-        self.assertEqual(comps.normalv, Vector(0, 0, -1))
+        self.assertTrue(tuple4_eq(comps.point, Point(0, 0, -1)))
+        self.assertTrue(tuple4_eq(comps.eyev, Vector(0, 0, -1)))
+        self.assertTrue(tuple4_eq(comps.normalv, Vector(0, 0, -1)))
 
     def test_prepare_computations_not_inside(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
@@ -40,10 +40,10 @@ class TestIntersection(unittest.TestCase):
 
         comps = i.prepare_computations(r, Intersections([i]))
 
-        self.assertEqual(comps.point, Point(0, 0, 1))
-        self.assertEqual(comps.eyev, Vector(0, 0, -1))
+        self.assertTrue(tuple4_eq(comps.point, Point(0, 0, 1)))
+        self.assertTrue(tuple4_eq(comps.eyev, Vector(0, 0, -1)))
         self.assertTrue(comps.inside)
-        self.assertEqual(comps.normalv, Vector(0, 0, -1))
+        self.assertTrue(tuple4_eq(comps.normalv, Vector(0, 0, -1)))
 
     def test_hit_offset_the_point(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
@@ -52,15 +52,15 @@ class TestIntersection(unittest.TestCase):
         i = Intersection(5, shape)
         comps = i.prepare_computations(r, Intersections([i]))
 
-        self.assertLess(comps.over_point.z, -EPSILON / 2)
-        self.assertGreater(comps.point.z, comps.over_point.z)
+        self.assertLess(comps.over_point[2], -EPSILON / 2)
+        self.assertGreater(comps.point[2], comps.over_point[2])
 
     def test_precompute_reflect(self):
         shape = Plane()
         ray = Ray(Point(0, 1, -1), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(ray, Intersections([i]))
-        self.assertEqual(comps.reflectv, Vector(0, math.sqrt(2) / 2, math.sqrt(2) / 2))
+        self.assertTrue(tuple4_eq(comps.reflectv, Vector(0, math.sqrt(2) / 2, math.sqrt(2) / 2)))
 
     def test_prepare_computations_refractive(self):
         examples = [
@@ -98,8 +98,8 @@ class TestIntersection(unittest.TestCase):
 
         for index, n1, n2 in examples:
             comps = xs[index].prepare_computations(r, xs)
-            self.assertEqual(comps.n1, n1, msg="Index " + str(index))
-            self.assertEqual(comps.n2, n2, msg="Index " + str(index))
+            self.assertTrue(req(comps.n1, n1), msg="Index " + str(index))
+            self.assertTrue(req(comps.n2, n2), msg="Index " + str(index))
 
     def test_prepare_computations_under_point(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
@@ -108,8 +108,8 @@ class TestIntersection(unittest.TestCase):
         i = Intersection(5, shape)
         xs = Intersections([i])
         comps = i.prepare_computations(r, xs)
-        self.assertGreater(comps.under_point.z, EPSILON / 2)
-        self.assertLess(comps.point.z, comps.under_point.z)
+        self.assertGreater(comps.under_point[2], EPSILON / 2)
+        self.assertLess(comps.point[2], comps.under_point[2])
 
     def test_intersection_slick_total_internal_reflection(self):
         shape = GlassSphere()
@@ -117,7 +117,7 @@ class TestIntersection(unittest.TestCase):
         xs = Intersections([Intersection(-math.sqrt(2)/2,shape),Intersection(math.sqrt(2)/2,shape)])
         comps = xs[1].prepare_computations(r, xs)
         reflectance = comps.schlick()
-        self.assertEqual(reflectance, 1.0)
+        self.assertTrue(req(reflectance, 1.0))
 
     def test_intersection_slick_perpendicular(self):
         shape = GlassSphere()

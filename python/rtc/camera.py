@@ -3,7 +3,7 @@ import math
 from rtc.canvas import Canvas
 from rtc.ray import Ray
 from rtc.transform import Transform
-from rtc.tuples import Point
+from rtc.tuples import *
 from rtc.world import World
 
 from tqdm import trange
@@ -46,7 +46,7 @@ class Camera:
 
         pixel = self.inverse_transform @ Point(world_x, world_y, -1)
         origin = self.inverse_transform @ Point(0, 0, 0)
-        direction = (pixel - origin).normalize()
+        direction = tuple4_normalize(tuple4_sub(pixel, origin))
 
         return Ray(origin, direction)
 

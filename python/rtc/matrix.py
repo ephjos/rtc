@@ -1,5 +1,3 @@
-import copy
-
 from rtc.tuples import Tuple4
 from rtc.utils import req
 
@@ -43,37 +41,46 @@ class Matrix:
     def __matmul_matrix__(self, other) -> "Matrix":
         if not isinstance(other, Matrix):
             raise NotImplementedError()
-        [p, q] = self.shape
-        [r, s] = other.shape
+        a = self
+        b = other
+        [p, q] = a.shape
+        [r, s] = b.shape
 
         if q != r:
             raise Exception("Shape mismatch: " + str([p, q]) + " " + str([r, s]))
 
-        M = Matrix([[0 for j in range(s)] for i in range(r)])
+        rows = [[a[0][0]*b[0][0]+a[0][1]*b[1][0]+a[0][2]*b[2][0]+a[0][3]*b[3][0],
+                 a[0][0]*b[0][1]+a[0][1]*b[1][1]+a[0][2]*b[2][1]+a[0][3]*b[3][1],
+                 a[0][0]*b[0][2]+a[0][1]*b[1][2]+a[0][2]*b[2][2]+a[0][3]*b[3][2],
+                 a[0][0]*b[0][3]+a[0][1]*b[1][3]+a[0][2]*b[2][3]+a[0][3]*b[3][3]],
+                [a[1][0]*b[0][0]+a[1][1]*b[1][0]+a[1][2]*b[2][0]+a[1][3]*b[3][0],
+                 a[1][0]*b[0][1]+a[1][1]*b[1][1]+a[1][2]*b[2][1]+a[1][3]*b[3][1],
+                 a[1][0]*b[0][2]+a[1][1]*b[1][2]+a[1][2]*b[2][2]+a[1][3]*b[3][2],
+                 a[1][0]*b[0][3]+a[1][1]*b[1][3]+a[1][2]*b[2][3]+a[1][3]*b[3][3]],
+                [a[2][0]*b[0][0]+a[2][1]*b[1][0]+a[2][2]*b[2][0]+a[2][3]*b[3][0],
+                 a[2][0]*b[0][1]+a[2][1]*b[1][1]+a[2][2]*b[2][1]+a[2][3]*b[3][1],
+                 a[2][0]*b[0][2]+a[2][1]*b[1][2]+a[2][2]*b[2][2]+a[2][3]*b[3][2],
+                 a[2][0]*b[0][3]+a[2][1]*b[1][3]+a[2][2]*b[2][3]+a[2][3]*b[3][3]],
+                [a[3][0]*b[0][0]+a[3][1]*b[1][0]+a[3][2]*b[2][0]+a[3][3]*b[3][0],
+                 a[3][0]*b[0][1]+a[3][1]*b[1][1]+a[3][2]*b[2][1]+a[3][3]*b[3][1],
+                 a[3][0]*b[0][2]+a[3][1]*b[1][2]+a[3][2]*b[2][2]+a[3][3]*b[3][2],
+                 a[3][0]*b[0][3]+a[3][1]*b[1][3]+a[3][2]*b[2][3]+a[3][3]*b[3][3]]]
 
-        for i in range(p):
-            for j in range(s):
-                M[i][j] = 0
-                for k in range(r):
-                    M[i][j] += self[i][k] * other[k][j]
-
-        return M
+        return Matrix(rows)
 
     def __matmul_tuple__(self, other) -> Tuple4:
-        if not isinstance(other, Tuple4):
-            raise NotImplementedError()
-        result = self.__matmul_matrix__(
-            Matrix([[other.x], [other.y], [other.z], [other.w]])
-        )
-        return Tuple4(result[0][0], result[1][0], result[2][0], result[3][0])
+        a = self
+        b = other
+
+        return Tuple4(a[0][0]*b[0]+a[0][1]*b[1]+a[0][2]*b[2]+a[0][3]*b[3],
+                      a[1][0]*b[0]+a[1][1]*b[1]+a[1][2]*b[2]+a[1][3]*b[3],
+                      a[2][0]*b[0]+a[2][1]*b[1]+a[2][2]*b[2]+a[2][3]*b[3],
+                      a[3][0]*b[0]+a[3][1]*b[1]+a[3][2]*b[2]+a[3][3]*b[3])
 
     def __matmul__(self, other) -> Union["Matrix", Tuple4]:
         if isinstance(other, Matrix):
             return self.__matmul_matrix__(other)
-        elif isinstance(other, Tuple4):
-            return self.__matmul_tuple__(other)
-        else:
-            raise NotImplementedError()
+        return self.__matmul_tuple__(other)
 
     @property
     def T(self) -> "Matrix":
@@ -101,10 +108,15 @@ class Matrix:
         if p != q:
             raise Exception("Cannot get determinant of non-square matrix")
 
-        rows = copy.deepcopy(self.rows)
-        del rows[y]
-        for row in rows:
-            del row[x]
+        rows = []
+        for i, row in enumerate(self.rows):
+            if i == y:
+                continue
+            rows.append([])
+            for j, col in enumerate(row):
+                if j == x:
+                    continue
+                rows[-1].append(col)
 
         return Matrix(rows)
 

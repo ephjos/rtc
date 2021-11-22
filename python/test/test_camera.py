@@ -4,7 +4,7 @@ import unittest
 from rtc.camera import Camera
 from rtc.color import Color
 from rtc.transform import Transform, ViewTransform
-from rtc.tuples import Point, Vector
+from rtc.tuples import *
 from rtc.utils import req
 from rtc.world import DefaultWorld
 
@@ -32,21 +32,21 @@ class TestCamera(unittest.TestCase):
     def test_ray_through_center(self):
         c = Camera(201, 101, math.pi / 2)
         r = c.ray_for_pixel(100, 50)
-        self.assertEqual(r.origin, Point(0, 0, 0))
-        self.assertEqual(r.direction, Vector(0, 0, -1))
+        self.assertTrue(tuple4_eq(r.origin, Point(0, 0, 0)))
+        self.assertTrue(tuple4_eq(r.direction, Vector(0, 0, -1)))
 
     def test_ray_through_corner(self):
         c = Camera(201, 101, math.pi / 2)
         r = c.ray_for_pixel(0, 0)
-        self.assertEqual(r.origin, Point(0, 0, 0))
-        self.assertEqual(r.direction, Vector(0.66519, 0.33259, -0.66851))
+        self.assertTrue(tuple4_eq(r.origin, Point(0, 0, 0)))
+        self.assertTrue(tuple4_eq(r.direction, Vector(0.66519, 0.33259, -0.66851)))
 
     def test_ray_when_transformed(self):
         c = Camera(201, 101, math.pi / 2)
         c.transform = Transform().translation(0, -2, 5).rotation_y(math.pi / 4)
         r = c.ray_for_pixel(100, 50)
-        self.assertEqual(r.direction, Vector(math.sqrt(2) / 2, 0, -math.sqrt(2) / 2))
-        self.assertEqual(r.origin, Point(0, 2, -5))
+        self.assertTrue(tuple4_eq(r.direction, Vector(math.sqrt(2) / 2, 0, -math.sqrt(2) / 2)))
+        self.assertTrue(tuple4_eq(r.origin, Point(0, 2, -5)))
 
     def test_camera_render(self):
         w = DefaultWorld()
