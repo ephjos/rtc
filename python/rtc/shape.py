@@ -3,7 +3,7 @@ from rtc.ray import Ray
 from rtc.transform import Transform
 from rtc.tuples import *
 
-from typing import Optional, TYPE_CHECKING, cast
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from rtc.intersection import Intersections

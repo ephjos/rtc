@@ -120,7 +120,7 @@ class TestWorld(unittest.TestCase):
         self.assertFalse(w.is_shadowed(p))
 
     def test_world_shade_hit_intersection_in_shadow(self):
-        w = World([], [PointLight(Point(0, 0, -10), Color(1,1,1))])
+        w = World([], [PointLight(Point(0, 0, -10), Color(1, 1, 1))])
         s1 = Sphere()
         s2 = Sphere()
         s2.transform = Transform().translation(0, 0, 10)
@@ -167,7 +167,7 @@ class TestWorld(unittest.TestCase):
         self.assertEqual(color, Color(0.87677, 0.92436, 0.82918))
 
     def test_world_mutally_reflective(self):
-        w = World([], [PointLight(Point(0, 0, 0), Color(1,1,1))])
+        w = World([], [PointLight(Point(0, 0, 0), Color(1, 1, 1))])
         lower = Plane()
         lower.material.reflective = 1
         lower.transform = Transform().translation(0, -1, 0)

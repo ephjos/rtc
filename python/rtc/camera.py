@@ -8,6 +8,7 @@ from rtc.world import World
 
 from tqdm import trange
 
+
 class Camera:
     def __init__(self, hsize: int, vsize: int, fov: float):
         self.hsize = hsize

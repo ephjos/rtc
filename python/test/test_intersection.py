@@ -60,7 +60,9 @@ class TestIntersection(unittest.TestCase):
         ray = Ray(Point(0, 1, -1), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
         comps = i.prepare_computations(ray, Intersections([i]))
-        self.assertTrue(tuple4_eq(comps.reflectv, Vector(0, math.sqrt(2) / 2, math.sqrt(2) / 2)))
+        self.assertTrue(
+            tuple4_eq(comps.reflectv, Vector(0, math.sqrt(2) / 2, math.sqrt(2) / 2))
+        )
 
     def test_prepare_computations_refractive(self):
         examples = [
@@ -113,30 +115,33 @@ class TestIntersection(unittest.TestCase):
 
     def test_intersection_slick_total_internal_reflection(self):
         shape = GlassSphere()
-        r = Ray(Point(0,0,math.sqrt(2)/2), Vector(0,1,0))
-        xs = Intersections([Intersection(-math.sqrt(2)/2,shape),Intersection(math.sqrt(2)/2,shape)])
+        r = Ray(Point(0, 0, math.sqrt(2) / 2), Vector(0, 1, 0))
+        xs = Intersections(
+            [
+                Intersection(-math.sqrt(2) / 2, shape),
+                Intersection(math.sqrt(2) / 2, shape),
+            ]
+        )
         comps = xs[1].prepare_computations(r, xs)
         reflectance = comps.schlick()
         self.assertTrue(req(reflectance, 1.0))
 
     def test_intersection_slick_perpendicular(self):
         shape = GlassSphere()
-        r = Ray(Point(0,0,0), Vector(0,1,0))
-        xs = Intersections([
-            Intersection(-1,shape),
-            Intersection(1,shape)
-        ])
+        r = Ray(Point(0, 0, 0), Vector(0, 1, 0))
+        xs = Intersections([Intersection(-1, shape), Intersection(1, shape)])
         comps = xs[1].prepare_computations(r, xs)
         reflectance = comps.schlick()
         self.assertTrue(req(reflectance, 0.04))
 
     def test_intersection_slick_small_angle(self):
         shape = GlassSphere()
-        r = Ray(Point(0,0.99,-2), Vector(0,0,1))
-        xs = Intersections([
-            Intersection(1.8589,shape),
-        ])
+        r = Ray(Point(0, 0.99, -2), Vector(0, 0, 1))
+        xs = Intersections(
+            [
+                Intersection(1.8589, shape),
+            ]
+        )
         comps = xs[0].prepare_computations(r, xs)
         reflectance = comps.schlick()
         self.assertTrue(req(reflectance, 0.48873))
-

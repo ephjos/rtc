@@ -26,28 +26,29 @@ class World:
         return Intersections(sorted(intersections, key=lambda i: i.t))
 
     def shade_hit(self, comps: "Computations", remaining: int = 5) -> "Color":
-        out = Color(0,0,0)
+        out = Color(0, 0, 0)
         for light in self.lights:
             material = comps.shape.material
-            point = comps.point
+            comps.point
             eyev = comps.eyev
             normalv = comps.normalv
             shape = comps.shape
 
             shadowed = self.is_shadowed(comps.over_point)
 
-            surface = material.lighting(shape, light, comps.over_point, eyev, normalv, shadowed)
+            surface = material.lighting(
+                shape, light, comps.over_point, eyev, normalv, shadowed
+            )
             reflected = self.reflected_color(comps, remaining)
             refracted = self.refracted_color(comps, remaining)
 
             if material.reflective > 0 and material.transparency > 0:
                 reflectance = comps.schlick()
-                out += surface + reflected*reflectance + refracted * (1-reflectance)
+                out += surface + reflected * reflectance + refracted * (1 - reflectance)
                 continue
 
             out += surface + reflected + refracted
         return out
-
 
     def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
         intersections = self.intersect(ray)
@@ -97,7 +98,10 @@ class World:
             return Color(0, 0, 0)
 
         cos_t = math.sqrt(1 - sin2_t)
-        direction = tuple4_sub(tuple4_scale(comps.normalv, (n_ratio * cos_i - cos_t)), tuple4_scale(comps.eyev, n_ratio))
+        direction = tuple4_sub(
+            tuple4_scale(comps.normalv, (n_ratio * cos_i - cos_t)),
+            tuple4_scale(comps.eyev, n_ratio),
+        )
         reflect_ray = Ray(comps.under_point, direction)
         color = (
             self.color_at(reflect_ray, remaining - 1)

@@ -35,7 +35,7 @@ class TestTuple4s(unittest.TestCase):
     def test_add_tuples(self):
         a1 = Tuple4(3, -2, 5, 1)
         a2 = Tuple4(-2, 3, 1, 0)
-        self.assertTrue(tuple4_eq(tuple4_add(a1,a2), Tuple4(1, 1, 6, 1)))
+        self.assertTrue(tuple4_eq(tuple4_add(a1, a2), Tuple4(1, 1, 6, 1)))
 
     def test_sub_points(self):
         p1 = Point(3, 2, 1)
@@ -97,13 +97,13 @@ class TestTuple4s(unittest.TestCase):
     def test_dot(self):
         a = Vector(1, 2, 3)
         b = Vector(2, 3, 4)
-        self.assertTrue(req(tuple4_dot(a,b), 20))
+        self.assertTrue(req(tuple4_dot(a, b), 20))
 
     def test_cross(self):
         a = Vector(1, 2, 3)
         b = Vector(2, 3, 4)
-        self.assertTrue(tuple4_eq(tuple4_cross(a,b), Vector(-1, 2, -1)))
-        self.assertTrue(tuple4_eq(tuple4_cross(b,a), Vector(1, -2, 1)))
+        self.assertTrue(tuple4_eq(tuple4_cross(a, b), Vector(-1, 2, -1)))
+        self.assertTrue(tuple4_eq(tuple4_cross(b, a), Vector(1, -2, 1)))
 
     def test_reflect_45(self):
         v = Vector(1, -1, 0)

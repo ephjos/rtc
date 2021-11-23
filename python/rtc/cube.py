@@ -1,10 +1,8 @@
-import math
-
 from rtc.intersection import Intersection, Intersections
 from rtc.materials import Material
 from rtc.ray import Ray
 from rtc.shape import Shape
-from rtc.tuples import Tuple4, Point, Vector
+from rtc.tuples import Tuple4, Vector
 from rtc.utils import EPSILON
 
 from typing import Optional
@@ -22,8 +20,8 @@ class Cube(Shape):
             tmin = tmin_numerator / direction
             tmax = tmax_numerator / direction
         else:
-            tmin = tmin_numerator * float('inf')
-            tmax = tmax_numerator * float('inf')
+            tmin = tmin_numerator * float("inf")
+            tmax = tmax_numerator * float("inf")
 
         if tmin > tmax:
             tmin, tmax = tmax, tmin
@@ -52,4 +50,3 @@ class Cube(Shape):
             return Vector(0, point[1], 0)
 
         return Vector(0, 0, point[2])
-

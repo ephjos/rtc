@@ -19,19 +19,19 @@ def parse_transform(transforms, lookup):
     transform = Transform()
     for transform_row in transforms:
         name = transform_row[0]
-        if name == 'rotate-x':
+        if name == "rotate-x":
             transform = transform.rotation_x(float(transform_row[1]))
-        elif name == 'rotate-y':
+        elif name == "rotate-y":
             transform = transform.rotation_y(float(transform_row[1]))
-        elif name == 'rotate-z':
+        elif name == "rotate-z":
             transform = transform.rotation_z(float(transform_row[1]))
-        elif name == 'translate':
+        elif name == "translate":
             transform = transform.translation(
                 float(transform_row[1]),
                 float(transform_row[2]),
                 float(transform_row[3]),
             )
-        elif name == 'scale':
+        elif name == "scale":
             transform = transform.scaling(
                 float(transform_row[1]),
                 float(transform_row[2]),
@@ -41,6 +41,7 @@ def parse_transform(transforms, lookup):
             transform = parse_transform(lookup[transform_row], lookup)
     return transform
 
+
 def parse_color(color_row, lookup):
     return Color(
         float(color_row[0]),
@@ -48,77 +49,79 @@ def parse_color(color_row, lookup):
         float(color_row[2]),
     )
 
+
 def parse_pattern(pattern_row, lookup):
-    pattern_type = pattern_row['type']
+    pattern_type = pattern_row["type"]
     pattern_class = None
-    if pattern_type == 'checkers':
+    if pattern_type == "checkers":
         pattern_class = CheckersPattern
-    elif pattern_type == 'stripes':
+    elif pattern_type == "stripes":
         pattern_class = StripePattern
-    elif pattern_type == 'gradient':
+    elif pattern_type == "gradient":
         pattern_class = GradientPattern
-    elif pattern_type == 'ring':
+    elif pattern_type == "ring":
         pattern_class = RingPattern
 
     if pattern_class is None:
-        raise Exception('Unknown pattern type: ' + pattern_type)
+        raise Exception("Unknown pattern type: " + pattern_type)
 
-    colors = pattern_row['colors']
+    colors = pattern_row["colors"]
     color_a = parse_color(colors[0], lookup)
     color_b = parse_color(colors[1], lookup)
 
     pattern = pattern_class(color_a, color_b)
-    if 'transform' in pattern_row:
-        pattern.transform = parse_transform(pattern_row['transform'], lookup)
+    if "transform" in pattern_row:
+        pattern.transform = parse_transform(pattern_row["transform"], lookup)
 
     return pattern
+
 
 def parse_material(material_row, lookup):
     if isinstance(material_row, str):
         return parse_material(lookup[material_row], lookup)
     material = Material()
-    if 'color' in material_row:
-        material.color = parse_color(material_row['color'], lookup)
-    if 'ambient' in material_row:
-        material.ambient = float(material_row['ambient'])
-    if 'diffuse' in material_row:
-        material.diffuse = float(material_row['diffuse'])
-    if 'specular' in material_row:
-        material.specular = float(material_row['specular'])
-    if 'shininess' in material_row:
-        material.shininess = float(material_row['shininess'])
-    if 'reflective' in material_row:
-        material.reflective = float(material_row['reflective'])
-    if 'pattern' in material_row:
-        material.pattern = parse_pattern(material_row['pattern'], lookup)
-    if 'transparency' in material_row:
-        material.transparency = float(material_row['transparency'])
-    if 'refractive-index' in material_row:
-        material.refractive_index = float(material_row['refractive-index'])
+    if "color" in material_row:
+        material.color = parse_color(material_row["color"], lookup)
+    if "ambient" in material_row:
+        material.ambient = float(material_row["ambient"])
+    if "diffuse" in material_row:
+        material.diffuse = float(material_row["diffuse"])
+    if "specular" in material_row:
+        material.specular = float(material_row["specular"])
+    if "shininess" in material_row:
+        material.shininess = float(material_row["shininess"])
+    if "reflective" in material_row:
+        material.reflective = float(material_row["reflective"])
+    if "pattern" in material_row:
+        material.pattern = parse_pattern(material_row["pattern"], lookup)
+    if "transparency" in material_row:
+        material.transparency = float(material_row["transparency"])
+    if "refractive-index" in material_row:
+        material.refractive_index = float(material_row["refractive-index"])
     return material
 
 
 def parse_shape(row, lookup):
-    shape = row['add']
+    shape = row["add"]
     shape_class = None
-    if shape == 'plane':
+    if shape == "plane":
         shape_class = Plane
-    elif shape == 'sphere':
+    elif shape == "sphere":
         shape_class = Sphere
-    elif shape == 'cube':
+    elif shape == "cube":
         shape_class = Cube
 
     if shape_class is None:
-        raise Exception('Unknown shape: ' + shape)
+        raise Exception("Unknown shape: " + shape)
 
-    transform = parse_transform(row['transform'], lookup)
-    material = parse_material(row['material'], lookup)
+    transform = parse_transform(row["transform"], lookup)
+    material = parse_material(row["material"], lookup)
 
     s = shape_class(material)
     s.transform = transform
 
-    if 'shadow' in row:
-        s.cast_shadow = row['shadow']
+    if "shadow" in row:
+        s.cast_shadow = row["shadow"]
 
     return s
 
@@ -138,13 +141,14 @@ def parse_vector(row, lookup):
         float(row[2]),
     )
 
+
 def parse_camera(row, lookup):
-    width = int(row['width'])
-    height = int(row['height'])
-    fov = float(row['field-of-view'])
-    at = parse_point(row['from'], lookup)
-    to = parse_point(row['to'], lookup)
-    up = parse_vector(row['up'], lookup)
+    width = int(row["width"])
+    height = int(row["height"])
+    fov = float(row["field-of-view"])
+    at = parse_point(row["from"], lookup)
+    to = parse_point(row["to"], lookup)
+    up = parse_vector(row["up"], lookup)
 
     camera = Camera(width, height, fov)
     camera.transform = ViewTransform(at, to, up)
@@ -152,24 +156,24 @@ def parse_camera(row, lookup):
 
 
 def parse_light(row, lookup):
-    at = parse_point(row['at'], lookup)
-    intensity = parse_color(row['intensity'], lookup)
+    at = parse_point(row["at"], lookup)
+    intensity = parse_color(row["intensity"], lookup)
     return PointLight(at, intensity)
 
 
 def render_file(file, output_file):
     with open(file, "r") as fp:
         parsed_yaml = yaml.safe_load(fp)
-        defines = filter(lambda row: 'define' in row, parsed_yaml)
-        adds = filter(lambda row: 'add' in row, parsed_yaml)
+        defines = filter(lambda row: "define" in row, parsed_yaml)
+        adds = filter(lambda row: "add" in row, parsed_yaml)
 
         lookup = {}
         for row in defines:
-            key = row['define']
-            value = row['value']
+            key = row["define"]
+            value = row["value"]
             lookup[key] = value
-            if 'extend' in row:
-                extension = row['extend']
+            if "extend" in row:
+                extension = row["extend"]
                 lookup[key] = {
                     **lookup[extension],
                     **lookup[key],
@@ -179,23 +183,23 @@ def render_file(file, output_file):
         lights = []
         camera = None
         for row in adds:
-            add = row['add']
-            if add == 'camera':
+            add = row["add"]
+            if add == "camera":
                 camera = parse_camera(row, lookup)
-            elif add == 'light':
+            elif add == "light":
                 lights.append(parse_light(row, lookup))
             else:
                 shapes.append(parse_shape(row, lookup))
 
         if len(lights) == 0:
-            raise Exception('No lights provided by configuration')
+            raise Exception("No lights provided by configuration")
 
         for light in lights:
             if light is None:
-                raise Exception('Invalid lights provided by configuration')
+                raise Exception("Invalid lights provided by configuration")
 
         if camera is None:
-            raise Exception('No camera provided by configuration')
+            raise Exception("No camera provided by configuration")
 
         world = World(shapes, lights)
         image = camera.render(world, progress=True)
@@ -219,4 +223,4 @@ def main():
 
 
 if __name__ == "__main__":
-    cProfile.run('main()', filename='rtc.prof', sort="time")
+    cProfile.run("main()", filename="rtc.prof", sort="time")

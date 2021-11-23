@@ -1,11 +1,7 @@
-import math
 import unittest
 
 from rtc.cube import Cube
-from rtc.intersection import Intersection, Intersections
-from rtc.materials import Material
 from rtc.ray import Ray
-from rtc.transform import Transform
 from rtc.tuples import Point, Vector
 
 
@@ -57,11 +53,10 @@ class TestCube(unittest.TestCase):
             [Point(0.3, -1, -0.7), Vector(0, -1, 0)],
             [Point(-0.6, 0.3, 1), Vector(0, 0, 1)],
             [Point(0.4, 0.4, -1), Vector(0, 0, -1)],
-            [Point(1,1,1), Vector(1,0,0)],
-            [Point(-1,-1,-1), Vector(-1,0,0)],
+            [Point(1, 1, 1), Vector(1, 0, 0)],
+            [Point(-1, -1, -1), Vector(-1, 0, 0)],
         ]
 
         for i, [point, normal] in enumerate(examples):
             normal_at = c.local_normal_at(point)
             self.assertEqual(normal_at, normal, "Example " + str(i))
-

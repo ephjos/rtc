@@ -6,7 +6,6 @@ from rtc.ray import Ray
 from rtc.shape import Shape
 from rtc.transform import Transform
 from rtc.tuples import *
-from rtc.utils import req
 
 
 class TestShape(unittest.TestCase):

@@ -6,9 +6,7 @@ from rtc.tuples import *
 
 class Transform(Matrix):
     def __init__(self, d: int = 4):
-        Matrix.__init__(
-            self, 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
-        )
+        Matrix.__init__(self, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
         self.__class__ = Transform
 
     def inverse(self):
@@ -32,34 +30,64 @@ class Transform(Matrix):
 
     def rotation_x(self, r: float):
         temp = Matrix(
-
-                1, 0, 0, 0,
-                0, math.cos(r), -math.sin(r), 0,
-                0, math.sin(r), math.cos(r), 0,
-                0, 0, 0, 1,
-
+            1,
+            0,
+            0,
+            0,
+            0,
+            math.cos(r),
+            -math.sin(r),
+            0,
+            0,
+            math.sin(r),
+            math.cos(r),
+            0,
+            0,
+            0,
+            0,
+            1,
         )
         return self.apply(temp)
 
     def rotation_y(self, r: float):
         temp = Matrix(
-
-                math.cos(r), 0, math.sin(r), 0,
-                0, 1, 0, 0,
-                -math.sin(r), 0, math.cos(r), 0,
-                0, 0, 0, 1,
-
+            math.cos(r),
+            0,
+            math.sin(r),
+            0,
+            0,
+            1,
+            0,
+            0,
+            -math.sin(r),
+            0,
+            math.cos(r),
+            0,
+            0,
+            0,
+            0,
+            1,
         )
         return self.apply(temp)
 
     def rotation_z(self, r: float):
         temp = Matrix(
-
-                math.cos(r), -math.sin(r), 0, 0,
-                math.sin(r), math.cos(r), 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1,
-
+            math.cos(r),
+            -math.sin(r),
+            0,
+            0,
+            math.sin(r),
+            math.cos(r),
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
         )
         return self.apply(temp)
 
@@ -77,12 +105,22 @@ def ViewTransform(at: "Tuple4", to: "Tuple4", up: "Tuple4") -> Transform:
     true_up = tuple4_cross(left, forward)
 
     orientation = Matrix(
-
-            left[0], left[1], left[2], 0,
-            true_up[0], true_up[1], true_up[2], 0,
-            -forward[0], -forward[1], -forward[2], 0,
-            0, 0, 0, 1,
-
+        left[0],
+        left[1],
+        left[2],
+        0,
+        true_up[0],
+        true_up[1],
+        true_up[2],
+        0,
+        -forward[0],
+        -forward[1],
+        -forward[2],
+        0,
+        0,
+        0,
+        0,
+        1,
     )
 
     return orientation @ Transform().translation(-at[0], -at[1], -at[2])

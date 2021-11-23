@@ -14,7 +14,7 @@ class Sphere(Shape):
         super().__init__(material)
 
     def local_intersect(self, ray: "Ray") -> "Intersections":
-        sphere_to_ray = tuple4_sub(ray.origin, Point(0,0,0))
+        sphere_to_ray = tuple4_sub(ray.origin, Point(0, 0, 0))
         a = tuple4_dot(ray.direction, ray.direction)
         b = tuple4_dot(ray.direction, sphere_to_ray) * 2
         c = tuple4_dot(sphere_to_ray, sphere_to_ray) - 1

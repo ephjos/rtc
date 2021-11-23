@@ -48,18 +48,25 @@ class TestTransform(unittest.TestCase):
         half_quarter = Transform().rotation_x(math.pi / 4)
         full_quarter = Transform().rotation_x(math.pi / 2)
 
-        self.assertTrue(tuple4_eq(half_quarter @ p, Point(0, math.sqrt(2) / 2, math.sqrt(2) / 2)))
+        self.assertTrue(
+            tuple4_eq(half_quarter @ p, Point(0, math.sqrt(2) / 2, math.sqrt(2) / 2))
+        )
         self.assertTrue(tuple4_eq(full_quarter @ p, Point(0, 0, 1)))
-        self.assertTrue(tuple4_eq(
-            half_quarter.inverse() @ p, Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2)
-        ))
+        self.assertTrue(
+            tuple4_eq(
+                half_quarter.inverse() @ p,
+                Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2),
+            )
+        )
 
     def test_rotation_y(self):
         p = Point(0, 0, 1)
         half_quarter = Transform().rotation_y(math.pi / 4)
         full_quarter = Transform().rotation_y(math.pi / 2)
 
-        self.assertTrue(tuple4_eq(half_quarter @ p, Point(math.sqrt(2) / 2, 0, math.sqrt(2) / 2)))
+        self.assertTrue(
+            tuple4_eq(half_quarter @ p, Point(math.sqrt(2) / 2, 0, math.sqrt(2) / 2))
+        )
         self.assertTrue(tuple4_eq(full_quarter @ p, Point(1, 0, 0)))
 
     def test_rotation_z(self):
@@ -67,9 +74,9 @@ class TestTransform(unittest.TestCase):
         half_quarter = Transform().rotation_z(math.pi / 4)
         full_quarter = Transform().rotation_z(math.pi / 2)
 
-        self.assertTrue(tuple4_eq(
-            half_quarter @ p, Point(-math.sqrt(2) / 2, math.sqrt(2) / 2, 0)
-        ))
+        self.assertTrue(
+            tuple4_eq(half_quarter @ p, Point(-math.sqrt(2) / 2, math.sqrt(2) / 2, 0))
+        )
         self.assertTrue(tuple4_eq(full_quarter @ p, Point(-1, 0, 0)))
 
     def test_shearing(self):
@@ -152,10 +159,22 @@ class TestTransform(unittest.TestCase):
         t = ViewTransform(at, to, up)
 
         expected = Matrix(
-                -0.50709, 0.50709, 0.67612, -2.36643,
-                0.76772, 0.60609, 0.12122, -2.82843,
-                -0.35857, 0.59761, -0.71714, 0.00000,
-                0.00000, 0.00000, 0.00000, 1.00000,
+            -0.50709,
+            0.50709,
+            0.67612,
+            -2.36643,
+            0.76772,
+            0.60609,
+            0.12122,
+            -2.82843,
+            -0.35857,
+            0.59761,
+            -0.71714,
+            0.00000,
+            0.00000,
+            0.00000,
+            0.00000,
+            1.00000,
         )
 
         self.assertEqual(t, expected)

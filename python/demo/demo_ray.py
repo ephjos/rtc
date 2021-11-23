@@ -23,7 +23,10 @@ def demo_ray(*args):
         world_y = i * pixel_size
         for j in range(-w2, w2):
             world_x = j * pixel_size
-            ray = Ray(origin, tuple4_normalize(tuple4_sub(Point(world_x, world_y, wall_z), origin)))
+            ray = Ray(
+                origin,
+                tuple4_normalize(tuple4_sub(Point(world_x, world_y, wall_z), origin)),
+            )
             xs = s.intersect(ray)
             hit = xs.hit()
 

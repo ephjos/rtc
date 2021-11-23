@@ -1,8 +1,6 @@
 from rtc.tuples import *
 from rtc.transform import Transform
 
-from typing import cast
-
 
 class Ray:
     def __init__(self, origin: "Tuple4", direction: "Tuple4"):
