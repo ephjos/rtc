@@ -8,7 +8,8 @@ from rtc.pattern import Pattern
 from rtc.plane import Plane
 from rtc.ray import Ray
 from rtc.sphere import Sphere
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point, Vector
 from rtc.world import World, DefaultWorld
 
@@ -27,7 +28,7 @@ class TestWorld(unittest.TestCase):
         s1.material.specular = 0.2
 
         s2 = Sphere()
-        s2.transform = Transform().scaling(0.5, 0.5, 0.5)
+        s2.transform = scaling(0.5, 0.5, 0.5)
 
         w = DefaultWorld()
 
@@ -123,7 +124,7 @@ class TestWorld(unittest.TestCase):
         w = World([], [PointLight(Point(0, 0, -10), Color(1, 1, 1))])
         s1 = Sphere()
         s2 = Sphere()
-        s2.transform = Transform().translation(0, 0, 10)
+        s2.transform = translation(0, 0, 10)
         w.shapes = [s1, s2]
         r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
         i = Intersection(4, s2)
@@ -146,7 +147,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0, -1, 0)
+        shape.transform = translation(0, -1, 0)
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
@@ -158,7 +159,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0, -1, 0)
+        shape.transform = translation(0, -1, 0)
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
@@ -170,11 +171,11 @@ class TestWorld(unittest.TestCase):
         w = World([], [PointLight(Point(0, 0, 0), Color(1, 1, 1))])
         lower = Plane()
         lower.material.reflective = 1
-        lower.transform = Transform().translation(0, -1, 0)
+        lower.transform = translation(0, -1, 0)
         w.shapes.append(lower)
         upper = Plane()
         upper.material.reflective = 1
-        upper.transform = Transform().translation(0, 1, 0)
+        upper.transform = translation(0, 1, 0)
         w.shapes.append(upper)
         r = Ray(Point(0, 0, 0), Vector(0, 1, 0))
 
@@ -184,7 +185,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
         shape = Plane()
         shape.material.reflective = 0.5
-        shape.transform = Transform().translation(0, -1, 0)
+        shape.transform = translation(0, -1, 0)
         w.shapes.append(shape)
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
         i = Intersection(math.sqrt(2), shape)
@@ -263,7 +264,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
 
         floor = Plane()
-        floor.transform = Transform().translation(0, -1, 0)
+        floor.transform = translation(0, -1, 0)
         floor.material.transparency = 0.5
         floor.material.refractive_index = 1.5
         w.shapes.append(floor)
@@ -271,7 +272,7 @@ class TestWorld(unittest.TestCase):
         ball = Sphere()
         ball.material.color = Color(1, 0, 0)
         ball.material.ambient = 0.5
-        ball.transform = Transform().translation(0, -3.5, -0.5)
+        ball.transform = translation(0, -3.5, -0.5)
         w.shapes.append(ball)
 
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))
@@ -284,7 +285,7 @@ class TestWorld(unittest.TestCase):
         w = DefaultWorld()
 
         floor = Plane()
-        floor.transform = Transform().translation(0, -1, 0)
+        floor.transform = translation(0, -1, 0)
         floor.material.reflective = 0.5
         floor.material.transparency = 0.5
         floor.material.refractive_index = 1.5
@@ -293,7 +294,7 @@ class TestWorld(unittest.TestCase):
         ball = Sphere()
         ball.material.color = Color(1, 0, 0)
         ball.material.ambient = 0.5
-        ball.transform = Transform().translation(0, -3.5, -0.5)
+        ball.transform = translation(0, -3.5, -0.5)
         w.shapes.append(ball)
 
         r = Ray(Point(0, 0, -3), Vector(0, -math.sqrt(2) / 2, math.sqrt(2) / 2))

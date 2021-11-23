@@ -6,7 +6,7 @@ from rtc.lights import PointLight, Light
 from rtc.ray import Ray
 from rtc.shape import Shape
 from rtc.sphere import Sphere
-from rtc.transform import Transform
+from rtc.transform import *
 from rtc.tuples import *
 
 from dataclasses import dataclass
@@ -120,6 +120,6 @@ def DefaultWorld() -> "World":
     s1.material.specular = 0.2
 
     s2 = Sphere()
-    s2.transform = Transform().scaling(0.5, 0.5, 0.5)
+    s2.transform = scaling(0.5, 0.5, 0.5)
 
     return World([s1, s2], [light])

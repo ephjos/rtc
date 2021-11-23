@@ -1,7 +1,8 @@
 import math
 
 from rtc.color import Color
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Tuple4
 from rtc.utils import EPSILON
 
@@ -13,24 +14,24 @@ if TYPE_CHECKING:
 
 class Pattern:
     def __init__(self):
-        self._transform = Transform()
-        self.inverse_transform = self.transform.inverse()
+        self._transform = IdentityMatrix()
+        self.inverse_transform = matrix_inverse(self._transform)
 
     @property
-    def transform(self) -> Transform:
+    def transform(self) -> Matrix:
         return self._transform
 
     @transform.setter
-    def transform(self, transform: Transform):
+    def transform(self, transform: Matrix):
         self._transform = transform
-        self.inverse_transform = transform.inverse()
+        self.inverse_transform = matrix_inverse(transform)
 
     def pattern_at(self, point: "Tuple4") -> Color:
         return Color(point[0], point[1], point[2])
 
     def pattern_at_shape(self, shape: "Shape", point: "Tuple4") -> "Color":
-        shape_point = shape.inverse_transform.matmul_tuple(point)
-        pattern_point = self.inverse_transform.matmul_tuple(shape_point)
+        shape_point = matrix_mul_tuple(shape.inverse_transform, point)
+        pattern_point = matrix_mul_tuple(self.inverse_transform, shape_point)
         return self.pattern_at(pattern_point)
 
 

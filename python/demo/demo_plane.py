@@ -6,7 +6,8 @@ from rtc.lights import PointLight
 from rtc.materials import Material
 from rtc.plane import Plane
 from rtc.sphere import Sphere
-from rtc.transform import Transform, ViewTransform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point, Vector
 from rtc.world import World
 
@@ -15,14 +16,14 @@ def demo_plane(*args):
     floor = Plane()
 
     middle = Sphere()
-    middle.transform = Transform().translation(-0.5, 1, 0.5)
+    middle.transform = translation(-0.5, 1, 0.5)
     middle.material = Material()
     middle.material.color = Color(0.1, 1, 0.5)
     middle.material.diffuse = 0.7
     middle.material.specular = 0.3
 
     right = Sphere()
-    right.transform = Transform().scaling(0.5, 0.5, 0.5).translation(1.5, 0.5, -0.5)
+    right.transform = matrix_mul(translation(1.5, 0.5, -0.5), scaling(0.5, 0.5, 0.5))
     right.material = Material()
     right.material.color = Color(0.5, 1, 0.1)
     right.material.diffuse = 0.7
@@ -30,7 +31,7 @@ def demo_plane(*args):
 
     left = Sphere()
     left.transform = (
-        Transform().scaling(0.33, 0.33, 0.33).translation(-1.5, 0.33, -0.75)
+        matrix_mul(translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33))
     )
     left.material = Material()
     left.material.color = Color(1, 0.8, 0.1)

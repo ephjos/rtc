@@ -5,13 +5,14 @@ from rtc.materials import Material
 from rtc.pattern import CheckersPattern, StripePattern
 from rtc.plane import Plane
 from rtc.sphere import Sphere
-from rtc.transform import Transform, ViewTransform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point, Vector
 from rtc.world import World
 
 
 def demo_refraction(*args):
-    camera = Camera(400, 200, 1.152)
+    camera = Camera(40, 20, 1.152)
     camera.transform = ViewTransform(
         Point(-2.6, 1.5, -3.9), Point(-0.6, 1, -0.8), Vector(0, 1, 0)
     )
@@ -23,7 +24,7 @@ def demo_refraction(*args):
         Color(0.45, 0.45, 0.45), Color(0.55, 0.55, 0.55)
     )
     wall_material.pattern.transform = (
-        Transform().rotation_y(1.5708).scaling(0.25, 0.25, 0.25)
+        matrix_mul(scaling(0.25, 0.25, 0.25),rotation_y(1.5708))
     )
     wall_material.ambient = 0
     wall_material.diffuse = 0.4
@@ -31,7 +32,7 @@ def demo_refraction(*args):
     wall_material.reflective = 0.3
 
     floor = Plane()
-    floor.transform = Transform().rotation_y(0.31415)
+    floor.transform = rotation_y(0.31415)
     floor.material.pattern = CheckersPattern(
         Color(0.35, 0.35, 0.35), Color(0.65, 0.65, 0.65)
     )
@@ -46,60 +47,60 @@ def demo_refraction(*args):
     west_wall = Plane()
     west_wall.material = wall_material
     west_wall.transform = (
-        Transform().rotation_y(1.5708).rotation_z(1.5708).translation(-5, 0, 0)
+        matrix_mul(translation(-5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708)))
     )
 
     east_wall = Plane()
     east_wall.material = wall_material
     east_wall.transform = (
-        Transform().rotation_y(1.5708).rotation_z(1.5708).translation(5, 0, 0)
+        matrix_mul(translation(5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708)))
     )
 
     north_wall = Plane()
     north_wall.material = wall_material
-    north_wall.transform = Transform().rotation_x(1.5708).translation(0, 0, 5)
+    north_wall.transform = matrix_mul(translation(0, 0, 5), rotation_x(1.5708))
 
     south_wall = Plane()
     south_wall.material = wall_material
-    south_wall.transform = Transform().rotation_x(1.5708).translation(0, 0, -5)
+    south_wall.transform = matrix_mul(translation(0, 0, -5), rotation_x(1.5708))
 
     background_sphere_1 = Sphere()
     background_sphere_1.transform = (
-        Transform().scaling(0.4, 0.4, 0.4).translation(4.6, 0.4, 1)
+        matrix_mul(translation(4.6, 0.4, 1), scaling(0.4, 0.4, 0.4))
     )
     background_sphere_1.material.color = Color(0.8, 0.5, 0.3)
     background_sphere_1.material.shininess = 50
 
     background_sphere_2 = Sphere()
     background_sphere_2.transform = (
-        Transform().scaling(0.3, 0.3, 0.3).translation(4.7, 0.3, 4)
+        matrix_mul(translation(4.7, 0.3, 4), scaling(0.3, 0.3, 0.3))
     )
     background_sphere_2.material.color = Color(0.9, 0.4, 0.5)
     background_sphere_2.material.shininess = 50
 
     background_sphere_3 = Sphere()
     background_sphere_3.transform = (
-        Transform().scaling(0.5, 0.5, 0.5).translation(-1, 0.5, 4.5)
+        matrix_mul(translation(-1, 0.5, 4.5), scaling(0.5, 0.5, 0.5))
     )
     background_sphere_3.material.color = Color(0.4, 0.9, 0.6)
     background_sphere_3.material.shininess = 50
 
     background_sphere_4 = Sphere()
     background_sphere_4.transform = (
-        Transform().scaling(0.3, 0.3, 0.3).translation(-1.7, 0.3, 4.7)
+        matrix_mul(translation(-1.7, 0.3, 4.7), scaling(0.3, 0.3, 0.3))
     )
     background_sphere_4.material.color = Color(0.4, 0.6, 0.9)
     background_sphere_4.material.shininess = 50
 
     red_sphere = Sphere()
-    red_sphere.transform = Transform().translation(-0.6, 1, 0.6)
+    red_sphere.transform = translation(-0.6, 1, 0.6)
     red_sphere.material.color = Color(1, 0.3, 0.2)
     red_sphere.material.specular = 0.4
     red_sphere.material.shininess = 50
 
     blue_glass_sphere = Sphere()
     blue_glass_sphere.transform = (
-        Transform().scaling(0.7, 0.7, 0.7).translation(0.6, 0.7, -0.6)
+        matrix_mul(translation(0.6, 0.7, -0.6), scaling(0.7, 0.7, 0.7))
     )
     blue_glass_sphere.material.color = Color(0, 0, 0.2)
     blue_glass_sphere.material.ambient = 0
@@ -112,7 +113,7 @@ def demo_refraction(*args):
 
     green_glass_sphere = Sphere()
     green_glass_sphere.transform = (
-        Transform().scaling(0.5, 0.5, 0.5).translation(-0.7, 0.5, -0.8)
+        matrix_mul(translation(-0.7, 0.5, -0.8), scaling(0.5, 0.5, 0.5))
     )
     green_glass_sphere.material.color = Color(0, 0.2, 0)
     green_glass_sphere.material.ambient = 0

@@ -7,36 +7,37 @@ from rtc.cube import Cube
 from rtc.color import Color
 from rtc.lights import PointLight
 from rtc.materials import Material
+from rtc.matrix import *
 from rtc.pattern import RingPattern, StripePattern, CheckersPattern, GradientPattern
 from rtc.plane import Plane
 from rtc.sphere import Sphere
 from rtc.tuples import Vector, Point
-from rtc.transform import Transform, ViewTransform
+from rtc.transform import *
 from rtc.world import World
 
 
 def parse_transform(transforms, lookup):
-    transform = Transform()
+    transform = IdentityMatrix()
     for transform_row in transforms:
         name = transform_row[0]
         if name == "rotate-x":
-            transform = transform.rotation_x(float(transform_row[1]))
+            transform = matrix_mul(rotation_x(float(transform_row[1])), transform)
         elif name == "rotate-y":
-            transform = transform.rotation_y(float(transform_row[1]))
+            transform = matrix_mul(rotation_y(float(transform_row[1])), transform)
         elif name == "rotate-z":
-            transform = transform.rotation_z(float(transform_row[1]))
+            transform = matrix_mul(rotation_z(float(transform_row[1])), transform)
         elif name == "translate":
-            transform = transform.translation(
+            transform = matrix_mul(translation(
                 float(transform_row[1]),
                 float(transform_row[2]),
                 float(transform_row[3]),
-            )
+            ), transform)
         elif name == "scale":
-            transform = transform.scaling(
+            transform = matrix_mul(scaling(
                 float(transform_row[1]),
                 float(transform_row[2]),
                 float(transform_row[3]),
-            )
+            ), transform)
         else:
             transform = parse_transform(lookup[transform_row], lookup)
     return transform

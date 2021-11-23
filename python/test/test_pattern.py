@@ -9,7 +9,8 @@ from rtc.pattern import (
     StripePattern,
 )
 from rtc.sphere import Sphere
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point
 
 black = Color(0, 0, 0)
@@ -45,7 +46,7 @@ class TestPattern(unittest.TestCase):
 
     def test_stripes_with_shape_transformation(self):
         o = Sphere()
-        o.transform = Transform().scaling(2, 2, 2)
+        o.transform = scaling(2, 2, 2)
         p = StripePattern(white, black)
         c = p.pattern_at_shape(o, Point(1.5, 0, 0))
         self.assertEqual(c, white)
@@ -53,30 +54,30 @@ class TestPattern(unittest.TestCase):
     def test_stripes_with_pattern_transformation(self):
         o = Sphere()
         p = StripePattern(white, black)
-        p.transform = Transform().scaling(2, 2, 2)
+        p.transform = scaling(2, 2, 2)
         c = p.pattern_at_shape(o, Point(1.5, 0, 0))
         self.assertEqual(c, white)
 
     def test_stripes_with_both_transformation(self):
         o = Sphere()
-        o.transform = Transform().scaling(2, 2, 2)
+        o.transform = scaling(2, 2, 2)
         p = StripePattern(white, black)
-        p.transform = Transform().translation(0.5, 0, 0)
+        p.transform = translation(0.5, 0, 0)
         c = p.pattern_at_shape(o, Point(2.5, 0, 0))
         self.assertEqual(c, white)
 
     def test_pattern_default_transformation(self):
         p = Pattern()
-        self.assertEqual(p.transform, Transform())
+        self.assertEqual(p.transform, IdentityMatrix())
 
     def test_pattern_assign_transformation(self):
         p = Pattern()
-        p.transform = Transform().translation(1, 2, 3)
-        self.assertEqual(p.transform, Transform().translation(1, 2, 3))
+        p.transform = translation(1, 2, 3)
+        self.assertEqual(p.transform, translation(1, 2, 3))
 
     def test_pattern_shape_transformation(self):
         s = Sphere()
-        s.transform = Transform().scaling(2, 2, 2)
+        s.transform = scaling(2, 2, 2)
         p = Pattern()
         c = p.pattern_at_shape(s, Point(2, 3, 4))
         self.assertEqual(c, Color(1, 1.5, 2))
@@ -84,15 +85,15 @@ class TestPattern(unittest.TestCase):
     def test_pattern_pattern_transformation(self):
         s = Sphere()
         p = Pattern()
-        p.transform = Transform().scaling(2, 2, 2)
+        p.transform = scaling(2, 2, 2)
         c = p.pattern_at_shape(s, Point(2, 3, 4))
         self.assertEqual(c, Color(1, 1.5, 2))
 
     def test_pattern_both_transformation(self):
         s = Sphere()
-        s.transform = Transform().scaling(2, 2, 2)
+        s.transform = scaling(2, 2, 2)
         p = Pattern()
-        p.transform = Transform().translation(0.5, 1, 1.5)
+        p.transform = translation(0.5, 1, 1.5)
         c = p.pattern_at_shape(s, Point(2.5, 3, 3.5))
         self.assertEqual(c, Color(0.75, 0.5, 0.25))
 

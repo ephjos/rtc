@@ -1,6 +1,7 @@
 from rtc.materials import Material
 from rtc.ray import Ray
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import *
 
 from typing import Optional, TYPE_CHECKING
@@ -15,8 +16,8 @@ class Shape:
             material = Material()
         # self.id = str(uuid.uuid4())
 
-        self._transform = Transform()
-        self.inverse_transform: Transform = self.transform.inverse()
+        self._transform = IdentityMatrix()
+        self.inverse_transform: Matrix = matrix_inverse(self.transform)
 
         self.material = material
         self.cast_shadow = True
@@ -31,9 +32,9 @@ class Shape:
         return self._transform
 
     @transform.setter
-    def transform(self, transform: Transform):
+    def transform(self, transform: Matrix):
         self._transform = transform
-        self.inverse_transform = transform.inverse()
+        self.inverse_transform = matrix_inverse(transform)
 
     def local_intersect(self, ray: "Ray"):
         # For testing
@@ -47,8 +48,8 @@ class Shape:
         return Vector(point[0], point[1], point[2])
 
     def normal_at(self, world_point: Tuple4) -> Tuple4:
-        local_point = self.inverse_transform.matmul_tuple(world_point)
+        local_point = matrix_mul_tuple(self.inverse_transform, world_point)
         local_normal = self.local_normal_at(local_point)
-        world_normal = self.inverse_transform.T.matmul_tuple(local_normal)
+        world_normal = matrix_mul_tuple(matrix_transpose(self.inverse_transform), local_normal)
         world_normal[3] = 0.0
         return tuple4_normalize(world_normal)

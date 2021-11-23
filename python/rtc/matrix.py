@@ -1,10 +1,148 @@
+import array
+
 from rtc.tuples import Tuple4
 from rtc.utils import req
 
 from typing import Union
 
+def Matrix(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p):
+    return array.array('f', [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p])
 
-class Matrix:
+def IdentityMatrix():
+    return Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+
+def matrix_eq(a,b):
+    for i in range(16):
+        if not req(a[i], b[i]):
+            return False
+    return True
+
+def matrix_mul(a,b):
+    result = Matrix(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+    for i in range(4):
+        for j in range(4):
+            for k in range(4):
+                result[(i*4)+j] += a[(i*4)+k] * b[(k*4)+j]
+    return result
+
+def matrix_mul_tuple(a,b):
+    result = Tuple4(0,0,0,0)
+    for i in range(4):
+        for k in range(4):
+            result[i] += a[(i*4)+k] * b[k]
+    return result
+
+def matrix_inverse(M) -> "Matrix":
+    a = M[0]
+    b = M[1]
+    c = M[2]
+    d = M[3]
+    e = M[4]
+    f = M[5]
+    g = M[6]
+    h = M[7]
+    i = M[8]
+    j = M[9]
+    k = M[10]
+    l = M[11]
+    m = M[12]
+    n = M[13]
+    o = M[14]
+    p = M[15]
+
+    ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n)
+    cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m)
+    cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m)
+    cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m)
+
+    det = a * ca + b * cb + c * cc + d * cd
+    if det == 0:
+        raise Exception("Determinant is 0, cannot get inverse")
+
+    ce = -b * (k * p - l * o) + c * (j * p - l * n) - d * (j * o - k * n)
+    cf = a * (k * p - l * o) - c * (i * p - l * m) + d * (i * o - k * m)
+    cg = -a * (j * p - l * n) + b * (i * p - l * m) - d * (i * n - j * m)
+    ch = a * (j * o - k * n) - b * (i * o - k * m) + c * (i * n - j * m)
+
+    ci = b * (g * p - h * o) - c * (f * p - h * n) + d * (f * o - g * n)
+    cj = -a * (g * p - h * o) + c * (e * p - h * m) - d * (e * o - g * m)
+    ck = a * (f * p - h * n) - b * (e * p - h * m) + d * (e * n - f * m)
+    cl = -a * (f * o - g * n) + b * (e * o - g * m) - c * (e * n - f * m)
+
+    cm = -b * (g * l - h * k) + c * (f * l - h * j) - d * (f * k - g * j)
+    cn = a * (g * l - h * k) - c * (e * l - h * i) + d * (e * k - g * i)
+    co = -a * (f * l - h * j) + b * (e * l - h * i) - d * (e * j - f * i)
+    cp = a * (f * k - g * j) - b * (e * k - g * i) + c * (e * j - f * i)
+
+    return Matrix(
+        ca / det,
+        ce / det,
+        ci / det,
+        cm / det,
+        cb / det,
+        cf / det,
+        cj / det,
+        cn / det,
+        cc / det,
+        cg / det,
+        ck / det,
+        co / det,
+        cd / det,
+        ch / det,
+        cl / det,
+        cp / det,
+    )
+
+def matrix_transpose(M):
+    return Matrix(
+        M[0],
+        M[4],
+        M[8],
+        M[12],
+        M[1],
+        M[5],
+        M[9],
+        M[13],
+        M[2],
+        M[6],
+        M[10],
+        M[14],
+        M[3],
+        M[7],
+        M[11],
+        M[15],
+    )
+
+def matrix_determinant(M):
+    a = M[0]
+    b = M[1]
+    c = M[2]
+    d = M[3]
+    e = M[4]
+    f = M[5]
+    g = M[6]
+    h = M[7]
+    i = M[8]
+    j = M[9]
+    k = M[10]
+    l = M[11]
+    m = M[12]
+    n = M[13]
+    o = M[14]
+    p = M[15]
+
+    ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n)
+    cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m)
+    cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m)
+    cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m)
+
+    return a * ca + b * cb + c * cc + d * cd
+
+def matrix_is_invertible(M):
+    return matrix_determinant(M) != 0
+
+
+class OldMatrix:
     def __init__(self, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p):
         self.a = a
         self.b = b
@@ -241,5 +379,5 @@ class Matrix:
         )
 
 
-def IdentityMatrix() -> Matrix:
+def OldIdentityMatrix() -> Matrix:
     return Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)

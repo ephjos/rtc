@@ -2,7 +2,8 @@ import math
 
 from rtc.canvas import Canvas
 from rtc.ray import Ray
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import *
 from rtc.world import World
 
@@ -14,8 +15,8 @@ class Camera:
         self.hsize = hsize
         self.vsize = vsize
         self.fov = fov
-        self.transform = Transform()
-        self.inverse_transform = self.transform.inverse()
+        self.transform = IdentityMatrix()
+        self.inverse_transform = matrix_inverse(self.transform)
 
         half_view = math.tan(fov / 2)
         aspect = hsize / vsize
@@ -30,13 +31,13 @@ class Camera:
         self.pixel_size = (self.half_width * 2) / hsize
 
     @property
-    def transform(self) -> Transform:
+    def transform(self) -> Matrix:
         return self._transform
 
     @transform.setter
     def transform(self, transform):
         self._transform = transform
-        self.inverse_transform = transform.inverse()
+        self.inverse_transform = matrix_inverse(transform)
 
     def ray_for_pixel(self, px: int, py: int) -> Ray:
         xoffset = (px + 0.5) * self.pixel_size
@@ -45,8 +46,8 @@ class Camera:
         world_x = self.half_width - xoffset
         world_y = self.half_height - yoffset
 
-        pixel = self.inverse_transform.matmul_tuple(Point(world_x, world_y, -1))
-        origin = self.inverse_transform.matmul_tuple(Point(0, 0, 0))
+        pixel = matrix_mul_tuple(self.inverse_transform, Point(world_x, world_y, -1))
+        origin = matrix_mul_tuple(self.inverse_transform, Point(0, 0, 0))
         direction = tuple4_normalize(tuple4_sub(pixel, origin))
 
         return Ray(origin, direction)

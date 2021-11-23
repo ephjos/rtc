@@ -3,9 +3,10 @@ import unittest
 
 from rtc.intersection import Intersection, Intersections
 from rtc.materials import Material
+from rtc.matrix import *
 from rtc.ray import Ray
 from rtc.sphere import Sphere, GlassSphere
-from rtc.transform import Transform
+from rtc.transform import *
 from rtc.tuples import *
 from rtc.utils import *
 
@@ -121,18 +122,18 @@ class TestSphere(unittest.TestCase):
 
     def test_sphere_default_transform(self):
         s = Sphere()
-        self.assertEqual(s.transform, Transform())
+        self.assertEqual(s.transform, IdentityMatrix())
 
     def test_sphere_change_transform(self):
         s = Sphere()
-        t = Transform().translation(2, 3, 4)
+        t = translation(2, 3, 4)
         s.transform = t
         self.assertEqual(s.transform, t)
 
     def test_sphere_intersect_scaled(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        s.transform = Transform().scaling(2, 2, 2)
+        s.transform = scaling(2, 2, 2)
         xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
@@ -142,7 +143,7 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_translated(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        s.transform = Transform().translation(5, 0, 0)
+        s.transform = translation(5, 0, 0)
         xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 0)
@@ -171,13 +172,13 @@ class TestSphere(unittest.TestCase):
 
     def test_sphere_normal_on_translated(self):
         s = Sphere()
-        s.transform = Transform().translation(0, 1, 0)
+        s.transform = translation(0, 1, 0)
         n = s.normal_at(Point(0, 1.70711, -0.70711))
         self.assertTrue(tuple4_eq(n, Vector(0, 0.70711, -0.70711)))
 
     def test_sphere_normal_on_transformed(self):
         s = Sphere()
-        s.transform = Transform().rotation_z(math.pi / 5).scaling(1, 0.5, 1)
+        s.transform = matrix_mul(scaling(1, 0.5, 1), rotation_z(math.pi / 5))
         n = s.normal_at(Point(0, math.sqrt(2) / 2, -math.sqrt(2) / 2))
         self.assertTrue(tuple4_eq(n, Vector(0, 0.97014, -0.24254)))
 
@@ -197,6 +198,6 @@ class TestSphere(unittest.TestCase):
 class TestGlassSphere(unittest.TestCase):
     def test_glass_sphere(self):
         s = GlassSphere()
-        self.assertEqual(s.transform, Transform())
+        self.assertEqual(s.transform, IdentityMatrix())
         self.assertEqual(s.material.transparency, 1.0)
         self.assertEqual(s.material.refractive_index, 1.5)

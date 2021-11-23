@@ -4,6 +4,7 @@ from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.tuples import *
 
+out_ray = Ray(Point(0,0,0), Vector(0,0,0))
 
 def demo_ray(*args):
     origin = Point(0, 0, -5)
@@ -27,7 +28,7 @@ def demo_ray(*args):
                 origin,
                 tuple4_normalize(tuple4_sub(Point(world_x, world_y, wall_z), origin)),
             )
-            xs = s.intersect(ray)
+            xs = s.intersect(ray, out_ray)
             hit = xs.hit()
 
             if hit is None:

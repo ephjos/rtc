@@ -7,7 +7,8 @@ from rtc.materials import Material
 from rtc.pattern import CheckersPattern, RingPattern, StripePattern
 from rtc.plane import Plane
 from rtc.sphere import Sphere
-from rtc.transform import Transform, ViewTransform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point, Vector
 from rtc.world import World
 

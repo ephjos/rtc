@@ -1,5 +1,5 @@
 from rtc.tuples import *
-from rtc.transform import Transform
+from rtc.matrix import *
 
 
 class Ray:
@@ -10,6 +10,6 @@ class Ray:
     def position(self, t: float) -> "Tuple4":
         return tuple4_add(self.origin, tuple4_scale(self.direction, t))
 
-    def transform(self, transform: "Transform", out: "Ray") -> "Ray":
-        out.origin = transform.matmul_tuple(self.origin)
-        out.direction = transform.matmul_tuple(self.direction)
+    def transform(self, transform: "Matrix", out: "Ray") -> "Ray":
+        out.origin = matrix_mul_tuple(transform, self.origin)
+        out.direction = matrix_mul_tuple(transform, self.direction)

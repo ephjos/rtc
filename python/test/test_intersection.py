@@ -5,7 +5,8 @@ from rtc.intersection import Intersections, Intersection
 from rtc.plane import Plane
 from rtc.ray import Ray
 from rtc.sphere import Sphere, GlassSphere
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import *
 from rtc.utils import EPSILON, req
 
@@ -48,7 +49,7 @@ class TestIntersection(unittest.TestCase):
     def test_hit_offset_the_point(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         shape = Sphere()
-        shape.transform = Transform().translation(0, 0, 1)
+        shape.transform = translation(0, 0, 1)
         i = Intersection(5, shape)
         comps = i.prepare_computations(r, Intersections([i]))
 
@@ -75,15 +76,15 @@ class TestIntersection(unittest.TestCase):
         ]
 
         A = GlassSphere()
-        A.transform = Transform().scaling(2, 2, 2)
+        A.transform = scaling(2, 2, 2)
         A.material.refractive_index = 1.5
 
         B = GlassSphere()
-        B.transform = Transform().translation(0, 0, -0.25)
+        B.transform = translation(0, 0, -0.25)
         B.material.refractive_index = 2.0
 
         C = GlassSphere()
-        C.transform = Transform().translation(0, 0, 0.25)
+        C.transform = translation(0, 0, 0.25)
         C.material.refractive_index = 2.5
 
         r = Ray(Point(0, 0, -4), Vector(0, 0, 1))
@@ -106,7 +107,7 @@ class TestIntersection(unittest.TestCase):
     def test_prepare_computations_under_point(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         shape = GlassSphere()
-        shape.transform = Transform().translation(0, 0, 1)
+        shape.transform = translation(0, 0, 1)
         i = Intersection(5, shape)
         xs = Intersections([i])
         comps = i.prepare_computations(r, xs)

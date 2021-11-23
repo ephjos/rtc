@@ -19,6 +19,7 @@ def demo_all(*args):
     demo_plane()
     demo_ray()
     demo_reflection()
+    demo_refraction()
     demo_transform()
     demo_tuples()
 

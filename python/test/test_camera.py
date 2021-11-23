@@ -3,7 +3,8 @@ import unittest
 
 from rtc.camera import Camera
 from rtc.color import Color
-from rtc.transform import Transform, ViewTransform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import *
 from rtc.utils import req
 from rtc.world import DefaultWorld
@@ -19,7 +20,7 @@ class TestCamera(unittest.TestCase):
         self.assertEqual(c.hsize, 160)
         self.assertEqual(c.vsize, 120)
         self.assertEqual(c.fov, math.pi / 2)
-        self.assertEqual(c.transform, Transform())
+        self.assertEqual(c.transform, IdentityMatrix())
 
     def test_camera_horizontal_pixel_size(self):
         c = Camera(200, 125, math.pi / 2)
@@ -43,7 +44,7 @@ class TestCamera(unittest.TestCase):
 
     def test_ray_when_transformed(self):
         c = Camera(201, 101, math.pi / 2)
-        c.transform = Transform().translation(0, -2, 5).rotation_y(math.pi / 4)
+        c.transform = matrix_mul(rotation_y(math.pi / 4), translation(0, -2, 5))
         r = c.ray_for_pixel(100, 50)
         self.assertTrue(
             tuple4_eq(r.direction, Vector(math.sqrt(2) / 2, 0, -math.sqrt(2) / 2))

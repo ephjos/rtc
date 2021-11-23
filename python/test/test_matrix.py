@@ -1,6 +1,6 @@
 import unittest
 
-from rtc.matrix import Matrix, IdentityMatrix
+from rtc.matrix import *
 from rtc.tuples import Tuple4
 
 
@@ -24,13 +24,13 @@ class TestMatrix(unittest.TestCase):
             15.5,
             16.5,
         )
-        self.assertEqual(m.a, 1)
-        self.assertEqual(m.d, 4)
-        self.assertEqual(m.e, 5.5)
-        self.assertEqual(m.g, 7.5)
-        self.assertEqual(m.k, 11)
-        self.assertEqual(m.m, 13.5)
-        self.assertEqual(m.o, 15.5)
+        self.assertEqual(m[0], 1)
+        self.assertEqual(m[3], 4)
+        self.assertEqual(m[4], 5.5)
+        self.assertEqual(m[6], 7.5)
+        self.assertEqual(m[10], 11)
+        self.assertEqual(m[12], 13.5)
+        self.assertEqual(m[14], 15.5)
 
     def test_matrix_equality(self):
         A = Matrix(1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2)
@@ -50,7 +50,7 @@ class TestMatrix(unittest.TestCase):
             20, 22, 50, 48, 44, 54, 114, 108, 40, 58, 110, 102, 16, 26, 46, 42
         )
 
-        self.assertEqual(A.matmul(B), expected)
+        self.assertEqual(matrix_mul(A, B), expected)
 
     def test_matrix_multiply_tuple(self):
         A = Matrix(1, 2, 3, 4, 2, 4, 4, 2, 8, 6, 4, 1, 0, 0, 0, 1)
@@ -58,43 +58,42 @@ class TestMatrix(unittest.TestCase):
 
         expected = Tuple4(18, 24, 33, 1)
 
-        self.assertEqual(A.matmul_tuple(b), expected)
+        self.assertEqual(matrix_mul_tuple(A, b), expected)
 
     def test_matrix_multiply_identity(self):
         A = Matrix(0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32)
         I = IdentityMatrix()
-        self.assertEqual(A.matmul(I), A)
+        self.assertEqual(matrix_mul(A, I), A)
 
     def test_matrix_multiply_identity_tuple(self):
         a = Tuple4(1, 2, 3, 4)
         I = IdentityMatrix()
-        self.assertEqual(I.matmul_tuple(a), a)
+        self.assertEqual(matrix_mul_tuple(I, a), a)
 
     def test_matrix_transpose(self):
         A = Matrix(0, 9, 3, 0, 9, 8, 0, 8, 1, 8, 5, 3, 0, 0, 5, 8)
         AT = Matrix(0, 9, 1, 0, 9, 8, 8, 0, 3, 0, 5, 5, 0, 8, 3, 8)
-        self.assertEqual(A.T, AT)
+        self.assertTrue(matrix_eq(matrix_transpose(A), AT))
 
     def test_matrix_identity_transpose(self):
         A = IdentityMatrix()
-        self.assertEqual(A.T, A)
+        self.assertTrue(matrix_eq(matrix_transpose(A), A))
 
     def test_matrix_4x4_determinant(self):
         A = Matrix(-2, -8, 3, 5, -3, 1, 7, 3, 1, 2, -9, 6, -6, 7, 7, -9)
-        self.assertEqual(A.determinant(), -4071)
+        self.assertEqual(matrix_determinant(A), -4071)
 
     def test_matrix_invertible(self):
         A = Matrix(6, 4, 4, 4, 5, 5, 7, 6, 4, -9, 3, -7, 9, 1, 7, -6)
-        self.assertEqual(A.determinant(), -2120)
-        self.assertTrue(A.is_invertible())
+        self.assertEqual(matrix_determinant(A), -2120)
+        self.assertTrue(matrix_is_invertible(A))
 
         A = Matrix(-4, 2, -2, -3, 9, 6, 2, 6, 0, -5, 1, -5, 0, 0, 0, 0)
-        self.assertEqual(A.determinant(), 0)
-        self.assertFalse(A.is_invertible())
+        self.assertEqual(matrix_determinant(A), 0)
+        self.assertFalse(matrix_is_invertible(A))
 
     def test_matrix_inverse(self):
         A = Matrix(-5, 2, 6, -8, 1, -5, 1, 8, 7, 7, -6, -7, 1, -3, 7, 4)
-        A.inverse()
 
         expected = Matrix(
             0.21805,
@@ -115,7 +114,7 @@ class TestMatrix(unittest.TestCase):
             0.30639,
         )
 
-        self.assertEqual(A.determinant(), 532)
+        self.assertEqual(matrix_determinant(A), 532)
 
         A = Matrix(8, -5, 9, 2, 7, 5, 6, 1, -6, 0, 9, 6, -3, 0, -9, -4)
         expected = Matrix(
@@ -137,7 +136,7 @@ class TestMatrix(unittest.TestCase):
             -1.92308,
         )
 
-        self.assertEqual(A.inverse(), expected)
+        self.assertTrue(matrix_eq(matrix_inverse(A), expected))
 
         A = Matrix(9, 3, 0, 9, -5, -2, -6, -3, -4, 9, 6, 4, -7, 6, 6, 2)
         expected = Matrix(
@@ -158,10 +157,10 @@ class TestMatrix(unittest.TestCase):
             -0.26667,
             0.33333,
         )
-        self.assertEqual(A.inverse(), expected)
+        self.assertTrue(matrix_eq(matrix_inverse(A), expected))
 
     def test_matrix_multiply_inverse(self):
         A = Matrix(3, -9, 7, 3, 3, -8, 2, -9, -4, 4, 4, 1, -6, 5, 1, 1)
         B = Matrix(8, 2, 2, 2, 3, -1, 7, 0, 7, 0, 5, 4, 6, -2, 0, 5)
-        C = A.matmul(B)
-        self.assertEqual(C.matmul(B.inverse()), A)
+        C = matrix_mul(A, B)
+        self.assertTrue(matrix_eq(matrix_mul(C, matrix_inverse(B)), A))

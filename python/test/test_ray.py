@@ -1,7 +1,8 @@
 import unittest
 
 from rtc.ray import Ray
-from rtc.transform import Transform
+from rtc.matrix import *
+from rtc.transform import *
 from rtc.tuples import Point, Vector
 
 
@@ -24,7 +25,7 @@ class TestRay(unittest.TestCase):
 
     def test_ray_translate(self):
         r = Ray(Point(1, 2, 3), Vector(0, 1, 0))
-        m = Transform().translation(3, 4, 5)
+        m = translation(3, 4, 5)
 
         r2 = Ray(Point(0,0,0), Vector(0,0,0))
         r.transform(m, r2)
@@ -33,7 +34,7 @@ class TestRay(unittest.TestCase):
 
     def test_ray_scale(self):
         r = Ray(Point(1, 2, 3), Vector(0, 1, 0))
-        m = Transform().scaling(2, 3, 4)
+        m = scaling(2, 3, 4)
 
         r2 = Ray(Point(0,0,0), Vector(0,0,0))
         r.transform(m, r2)
