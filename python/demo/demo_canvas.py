@@ -22,7 +22,7 @@ def demo_canvas(*args):
     def print_prj(p):
         print("{:6.2f} {:6.2f}".format(p.position[0], p.position[1]))
 
-    p = Projectile(Point(0, 1, 0), tuple4_normalize(tuple4_scale(Vector(1, 1.8, 0), 11.25)))
+    p = Projectile(Point(0, 1, 0), tuple4_scale(tuple4_normalize(Vector(1, 1.8, 0)), 11.25))
     e = Environment(Vector(0, -0.1, 0), Vector(-0.01, 0, 0))
 
     c = Canvas(900, 550)
