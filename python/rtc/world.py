@@ -51,7 +51,7 @@ class World:
             out += surface + reflected + refracted
         return out
 
-    def color_at(self, ray: "Ray", remaining: int = 2) -> "Color":
+    def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
         intersections = self.intersect(ray)
         hit = intersections.hit()
 
