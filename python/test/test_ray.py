@@ -26,7 +26,8 @@ class TestRay(unittest.TestCase):
         r = Ray(Point(1, 2, 3), Vector(0, 1, 0))
         m = Transform().translation(3, 4, 5)
 
-        r2 = r.transform(m)
+        r2 = Ray(Point(0,0,0), Vector(0,0,0))
+        r.transform(m, r2)
         self.assertEqual(r2.origin, Point(4, 6, 8))
         self.assertEqual(r2.direction, Vector(0, 1, 0))
 
@@ -34,6 +35,7 @@ class TestRay(unittest.TestCase):
         r = Ray(Point(1, 2, 3), Vector(0, 1, 0))
         m = Transform().scaling(2, 3, 4)
 
-        r2 = r.transform(m)
+        r2 = Ray(Point(0,0,0), Vector(0,0,0))
+        r.transform(m, r2)
         self.assertEqual(r2.origin, Point(2, 6, 12))
         self.assertEqual(r2.direction, Vector(0, 3, 0))

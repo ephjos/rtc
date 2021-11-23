@@ -39,16 +39,16 @@ class Shape:
         # For testing
         self.saved_ray = ray
 
-    def intersect(self, ray: "Ray") -> "Intersections":
-        ray = ray.transform(self.inverse_transform)
-        return self.local_intersect(ray)
+    def intersect(self, ray: "Ray", out_ray: "Ray" = None) -> "Intersections":
+        ray.transform(self.inverse_transform, out_ray)
+        return self.local_intersect(out_ray)
 
     def local_normal_at(self, point: Tuple4) -> Tuple4:
         return Vector(point[0], point[1], point[2])
 
     def normal_at(self, world_point: Tuple4) -> Tuple4:
-        local_point = self.inverse_transform @ world_point
+        local_point = self.inverse_transform.matmul_tuple(world_point)
         local_normal = self.local_normal_at(local_point)
-        world_normal = self.inverse_transform.T @ local_normal
+        world_normal = self.inverse_transform.T.matmul_tuple(local_normal)
         world_normal[3] = 0.0
         return tuple4_normalize(world_normal)

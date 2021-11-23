@@ -7,6 +7,7 @@ from rtc.shape import Shape
 from rtc.transform import Transform
 from rtc.tuples import *
 
+out_ray = Ray(Point(0,0,0), Vector(0,0,0))
 
 class TestShape(unittest.TestCase):
     def test_shape_default_transformation(self):
@@ -36,7 +37,7 @@ class TestShape(unittest.TestCase):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Shape()
         s.transform = Transform().scaling(2, 2, 2)
-        s.intersect(r)
+        s.intersect(r, out_ray)
         self.assertTrue(tuple4_eq(s.saved_ray.origin, Point(0, 0, -2.5)))
         self.assertTrue(tuple4_eq(s.saved_ray.direction, Vector(0, 0, 0.5)))
 
@@ -44,7 +45,7 @@ class TestShape(unittest.TestCase):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Shape()
         s.transform = Transform().translation(5, 0, 0)
-        s.intersect(r)
+        s.intersect(r, out_ray)
         self.assertTrue(tuple4_eq(s.saved_ray.origin, Point(-5, 0, -5)))
         self.assertTrue(tuple4_eq(s.saved_ray.direction, Vector(0, 0, 1)))
 

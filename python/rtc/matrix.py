@@ -46,10 +46,7 @@ class Matrix:
             and req(self.p, other.p)
         )
 
-    def __matmul_matrix__(self, other) -> "Matrix":
-        if not isinstance(other, Matrix):
-            raise NotImplementedError()
-
+    def matmul(self, other) -> "Matrix":
         aa = self.a
         ab = self.b
         ac = self.c
@@ -103,7 +100,7 @@ class Matrix:
             am * bd + an * bh + ao * bl + ap * bp,
         )
 
-    def __matmul_tuple__(self, other) -> Tuple4:
+    def matmul_tuple(self, other) -> Tuple4:
         aa = self.a
         ab = self.b
         ac = self.c
@@ -132,11 +129,6 @@ class Matrix:
             ai * ba + aj * bb + ak * bc + al * bd,
             am * ba + an * bb + ao * bc + ap * bd,
         )
-
-    def __matmul__(self, other) -> Union["Matrix", Tuple4]:
-        if isinstance(other, Matrix):
-            return self.__matmul_matrix__(other)
-        return self.__matmul_tuple__(other)
 
     @property
     def T(self) -> "Matrix":

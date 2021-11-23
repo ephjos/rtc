@@ -45,8 +45,8 @@ class Camera:
         world_x = self.half_width - xoffset
         world_y = self.half_height - yoffset
 
-        pixel = self.inverse_transform @ Point(world_x, world_y, -1)
-        origin = self.inverse_transform @ Point(0, 0, 0)
+        pixel = self.inverse_transform.matmul_tuple(Point(world_x, world_y, -1))
+        origin = self.inverse_transform.matmul_tuple(Point(0, 0, 0))
         direction = tuple4_normalize(tuple4_sub(pixel, origin))
 
         return Ray(origin, direction)

@@ -29,8 +29,8 @@ class Pattern:
         return Color(point[0], point[1], point[2])
 
     def pattern_at_shape(self, shape: "Shape", point: "Tuple4") -> "Color":
-        shape_point = shape.inverse_transform @ point
-        pattern_point = self.inverse_transform @ shape_point
+        shape_point = shape.inverse_transform.matmul_tuple(point)
+        pattern_point = self.inverse_transform.matmul_tuple(shape_point)
         return self.pattern_at(pattern_point)
 
 

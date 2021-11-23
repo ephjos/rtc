@@ -16,7 +16,7 @@ class Transform(Matrix):
         return self
 
     def apply(self, temp):
-        self = temp @ self
+        self = temp.matmul(self)
         self.__class__ = Transform
         return self
 
@@ -123,4 +123,4 @@ def ViewTransform(at: "Tuple4", to: "Tuple4", up: "Tuple4") -> Transform:
         1,
     )
 
-    return orientation @ Transform().translation(-at[0], -at[1], -at[2])
+    return orientation.matmul(Transform().translation(-at[0], -at[1], -at[2]))

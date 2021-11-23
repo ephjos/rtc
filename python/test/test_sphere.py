@@ -9,12 +9,13 @@ from rtc.transform import Transform
 from rtc.tuples import *
 from rtc.utils import *
 
+out_ray = Ray(Point(0,0,0), Vector(0,0,0))
 
 class TestSphere(unittest.TestCase):
     def test_sphere_intersect(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].t, 4.0)
@@ -23,7 +24,7 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_tangent(self):
         r = Ray(Point(0, 1, -5), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].t, 5.0)
@@ -32,14 +33,14 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_miss(self):
         r = Ray(Point(0, 2, -5), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 0)
 
     def test_sphere_intersect_inside(self):
         r = Ray(Point(0, 0, 0), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].t, -1.0)
@@ -48,7 +49,7 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_behind(self):
         r = Ray(Point(0, 0, 5), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].t, -6.0)
@@ -57,7 +58,7 @@ class TestSphere(unittest.TestCase):
     def test_sphere_intersect_set_shape(self):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].shape, s)
@@ -132,7 +133,7 @@ class TestSphere(unittest.TestCase):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
         s.transform = Transform().scaling(2, 2, 2)
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 2)
         self.assertEqual(xs[0].t, 3)
@@ -142,7 +143,7 @@ class TestSphere(unittest.TestCase):
         r = Ray(Point(0, 0, -5), Vector(0, 0, 1))
         s = Sphere()
         s.transform = Transform().translation(5, 0, 0)
-        xs = s.intersect(r)
+        xs = s.intersect(r, out_ray)
 
         self.assertEqual(len(xs), 0)
 

@@ -11,6 +11,7 @@ from rtc.tuples import *
 
 from dataclasses import dataclass
 
+out_ray = Ray(Point(0,0,0), Vector(0,0,0))
 
 @dataclass
 class World:
@@ -20,7 +21,7 @@ class World:
     def intersect(self, ray: "Ray") -> "Intersections":
         intersections: list[Intersection] = []
         for o in self.shapes:
-            for i in o.intersect(ray):
+            for i in o.intersect(ray, out_ray):
                 intersections.append(i)
 
         return Intersections(sorted(intersections, key=lambda i: i.t))
@@ -50,7 +51,7 @@ class World:
             out += surface + reflected + refracted
         return out
 
-    def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
+    def color_at(self, ray: "Ray", remaining: int = 2) -> "Color":
         intersections = self.intersect(ray)
         hit = intersections.hit()
 
@@ -85,7 +86,7 @@ class World:
         color = self.color_at(reflect_ray, remaining - 1)
         return color * reflective
 
-    def refracted_color(self, comps, remaining):
+    def refracted_color(self, comps, remaining: int = 5):
         if remaining == 0:
             return Color(0, 0, 0)
         if comps.shape.material.transparency == 0:
