@@ -10,13 +10,14 @@ from rtc.transform import *
 from rtc.tuples import *
 
 from dataclasses import dataclass
+from typing import List
 
 out_ray = Ray(Point(0,0,0), Vector(0,0,0))
 
 @dataclass
 class World:
-    shapes: list["Shape"]
-    lights: list["Light"]
+    shapes: List["Shape"]
+    lights: List["Light"]
 
     def intersect(self, ray: "Ray") -> "Intersections":
         intersections: list[Intersection] = []

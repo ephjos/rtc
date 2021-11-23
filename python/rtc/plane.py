@@ -15,7 +15,7 @@ class Plane(Shape):
 
     def local_intersect(self, ray: "Ray") -> Intersections:
         if req(ray.direction[1], 0):
-            return Intersections()
+            return Intersections([])
 
         t = -ray.origin[1] / ray.direction[1]
         return Intersections([Intersection(t, self)])

@@ -21,7 +21,7 @@ class Sphere(Shape):
         discriminant = (b * b) - 4 * a * c
 
         if discriminant < 0:
-            return Intersections()
+            return Intersections([])
 
         t1 = (-b - math.sqrt(discriminant)) / (2 * a)
         t2 = (-b + math.sqrt(discriminant)) / (2 * a)

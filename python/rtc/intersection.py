@@ -6,7 +6,7 @@ from rtc.tuples import *
 from rtc.utils import EPSILON
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass
@@ -99,7 +99,7 @@ class Intersection:
 
 @dataclass
 class Intersections:
-    data: list[Intersection] = field(default_factory=list)
+    data: List[Intersection]
     i: int = 0
 
     def __getitem__(self, index: int) -> Intersection:
