@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import List
 
 out_ray = Ray(Point(0, 0, 0), Vector(0, 0, 0))
+RAY_BOUNCE_DEPTH = 4
 
 
 @dataclass
@@ -28,7 +29,7 @@ class World:
 
         return Intersections(sorted(intersections, key=lambda i: i.t))
 
-    def shade_hit(self, comps: "Computations", remaining: int = 5) -> "Color":
+    def shade_hit(self, comps: "Computations", remaining: int = RAY_BOUNCE_DEPTH) -> "Color":
         out = Color(0, 0, 0)
         for light in self.lights:
             material = comps.shape.material
@@ -53,7 +54,7 @@ class World:
             out += surface + reflected + refracted
         return out
 
-    def color_at(self, ray: "Ray", remaining: int = 5) -> "Color":
+    def color_at(self, ray: "Ray", remaining: int = RAY_BOUNCE_DEPTH) -> "Color":
         intersections = self.intersect(ray)
         hit = intersections.hit()
 
@@ -79,7 +80,7 @@ class World:
 
         return False
 
-    def reflected_color(self, comps: "Computations", remaining: int = 5) -> "Color":
+    def reflected_color(self, comps: "Computations", remaining: int = RAY_BOUNCE_DEPTH) -> "Color":
         reflective = comps.shape.material.reflective
         if reflective == 0 or remaining < 1:
             return Color(0, 0, 0)
@@ -88,7 +89,7 @@ class World:
         color = self.color_at(reflect_ray, remaining - 1)
         return color * reflective
 
-    def refracted_color(self, comps, remaining: int = 5):
+    def refracted_color(self, comps, remaining: int = RAY_BOUNCE_DEPTH):
         if remaining == 0:
             return Color(0, 0, 0)
         if comps.shape.material.transparency == 0:

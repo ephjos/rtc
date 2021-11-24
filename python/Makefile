@@ -1,7 +1,7 @@
 
 .PHONY: test
 test:
-	python -m unittest discover
+	pypy3 -m unittest discover
 
 .PHONY: lint
 lint:

@@ -3,6 +3,8 @@ import cProfile
 import yaml
 
 from rtc.camera import Camera
+from rtc.cone import Cone
+from rtc.cylinder import Cylinder
 from rtc.cube import Cube
 from rtc.color import Color
 from rtc.lights import PointLight
@@ -112,20 +114,35 @@ def parse_shape(row, lookup):
     shape = row["add"]
     shape_class = None
     if shape == "plane":
-        shape_class = Plane
+        s = Plane()
     elif shape == "sphere":
-        shape_class = Sphere
+        s = Sphere()
     elif shape == "cube":
-        shape_class = Cube
-
-    if shape_class is None:
+        s = Cube()
+    elif shape == "cylinder":
+        s = Cylinder()
+        if 'args' in row:
+            args = row['args']
+            s.minimum = args[0]
+            s.maximum = args[1]
+            s.closed = args[2]
+    elif shape == "cone":
+        s = Cone()
+        if 'args' in row:
+            args = row['args']
+            s.minimum = args[0]
+            s.maximum = args[1]
+            s.closed = args[2]
+    else:
         raise Exception("Unknown shape: " + shape)
 
-    transform = parse_transform(row["transform"], lookup)
-    material = parse_material(row["material"], lookup)
+    if 'transform' in row:
+        transform = parse_transform(row["transform"], lookup)
+        s.transform = transform
 
-    s = shape_class(material)
-    s.transform = transform
+    if 'material' in row:
+        material = parse_material(row["material"], lookup)
+        s.material = material
 
     if "shadow" in row:
         s.cast_shadow = row["shadow"]
