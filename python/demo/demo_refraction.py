@@ -23,8 +23,8 @@ def demo_refraction(*args):
     wall_material.pattern = StripePattern(
         Color(0.45, 0.45, 0.45), Color(0.55, 0.55, 0.55)
     )
-    wall_material.pattern.transform = (
-        matrix_mul(scaling(0.25, 0.25, 0.25),rotation_y(1.5708))
+    wall_material.pattern.transform = matrix_mul(
+        scaling(0.25, 0.25, 0.25), rotation_y(1.5708)
     )
     wall_material.ambient = 0
     wall_material.diffuse = 0.4
@@ -46,14 +46,14 @@ def demo_refraction(*args):
 
     west_wall = Plane()
     west_wall.material = wall_material
-    west_wall.transform = (
-        matrix_mul(translation(-5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708)))
+    west_wall.transform = matrix_mul(
+        translation(-5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708))
     )
 
     east_wall = Plane()
     east_wall.material = wall_material
-    east_wall.transform = (
-        matrix_mul(translation(5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708)))
+    east_wall.transform = matrix_mul(
+        translation(5, 0, 0), matrix_mul(rotation_y(1.5708), rotation_z(1.5708))
     )
 
     north_wall = Plane()
@@ -65,29 +65,29 @@ def demo_refraction(*args):
     south_wall.transform = matrix_mul(translation(0, 0, -5), rotation_x(1.5708))
 
     background_sphere_1 = Sphere()
-    background_sphere_1.transform = (
-        matrix_mul(translation(4.6, 0.4, 1), scaling(0.4, 0.4, 0.4))
+    background_sphere_1.transform = matrix_mul(
+        translation(4.6, 0.4, 1), scaling(0.4, 0.4, 0.4)
     )
     background_sphere_1.material.color = Color(0.8, 0.5, 0.3)
     background_sphere_1.material.shininess = 50
 
     background_sphere_2 = Sphere()
-    background_sphere_2.transform = (
-        matrix_mul(translation(4.7, 0.3, 4), scaling(0.3, 0.3, 0.3))
+    background_sphere_2.transform = matrix_mul(
+        translation(4.7, 0.3, 4), scaling(0.3, 0.3, 0.3)
     )
     background_sphere_2.material.color = Color(0.9, 0.4, 0.5)
     background_sphere_2.material.shininess = 50
 
     background_sphere_3 = Sphere()
-    background_sphere_3.transform = (
-        matrix_mul(translation(-1, 0.5, 4.5), scaling(0.5, 0.5, 0.5))
+    background_sphere_3.transform = matrix_mul(
+        translation(-1, 0.5, 4.5), scaling(0.5, 0.5, 0.5)
     )
     background_sphere_3.material.color = Color(0.4, 0.9, 0.6)
     background_sphere_3.material.shininess = 50
 
     background_sphere_4 = Sphere()
-    background_sphere_4.transform = (
-        matrix_mul(translation(-1.7, 0.3, 4.7), scaling(0.3, 0.3, 0.3))
+    background_sphere_4.transform = matrix_mul(
+        translation(-1.7, 0.3, 4.7), scaling(0.3, 0.3, 0.3)
     )
     background_sphere_4.material.color = Color(0.4, 0.6, 0.9)
     background_sphere_4.material.shininess = 50
@@ -99,8 +99,8 @@ def demo_refraction(*args):
     red_sphere.material.shininess = 50
 
     blue_glass_sphere = Sphere()
-    blue_glass_sphere.transform = (
-        matrix_mul(translation(0.6, 0.7, -0.6), scaling(0.7, 0.7, 0.7))
+    blue_glass_sphere.transform = matrix_mul(
+        translation(0.6, 0.7, -0.6), scaling(0.7, 0.7, 0.7)
     )
     blue_glass_sphere.material.color = Color(0, 0, 0.2)
     blue_glass_sphere.material.ambient = 0
@@ -112,8 +112,8 @@ def demo_refraction(*args):
     blue_glass_sphere.material.refractive_index = 1.5
 
     green_glass_sphere = Sphere()
-    green_glass_sphere.transform = (
-        matrix_mul(translation(-0.7, 0.5, -0.8), scaling(0.5, 0.5, 0.5))
+    green_glass_sphere.transform = matrix_mul(
+        translation(-0.7, 0.5, -0.8), scaling(0.5, 0.5, 0.5)
     )
     green_glass_sphere.material.color = Color(0, 0.2, 0)
     green_glass_sphere.material.ambient = 0

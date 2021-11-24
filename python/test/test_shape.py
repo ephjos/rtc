@@ -8,7 +8,8 @@ from rtc.matrix import *
 from rtc.transform import *
 from rtc.tuples import *
 
-out_ray = Ray(Point(0,0,0), Vector(0,0,0))
+out_ray = Ray(Point(0, 0, 0), Vector(0, 0, 0))
+
 
 class TestShape(unittest.TestCase):
     def test_shape_default_transformation(self):
@@ -19,9 +20,7 @@ class TestShape(unittest.TestCase):
         s = Shape()
         s.transform = translation(2, 3, 4)
         self.assertEqual(s.transform, translation(2, 3, 4))
-        self.assertEqual(
-            s.inverse_transform, matrix_inverse(translation(2, 3, 4))
-        )
+        self.assertEqual(s.inverse_transform, matrix_inverse(translation(2, 3, 4)))
 
     def test_shape_default_material(self):
         s = Shape()

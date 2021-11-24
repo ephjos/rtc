@@ -50,6 +50,8 @@ class Shape:
     def normal_at(self, world_point: Tuple4) -> Tuple4:
         local_point = matrix_mul_tuple(self.inverse_transform, world_point)
         local_normal = self.local_normal_at(local_point)
-        world_normal = matrix_mul_tuple(matrix_transpose(self.inverse_transform), local_normal)
+        world_normal = matrix_mul_tuple(
+            matrix_transpose(self.inverse_transform), local_normal
+        )
         world_normal[3] = 0.0
         return tuple4_normalize(world_normal)

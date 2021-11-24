@@ -27,17 +27,23 @@ def parse_transform(transforms, lookup):
         elif name == "rotate-z":
             transform = matrix_mul(rotation_z(float(transform_row[1])), transform)
         elif name == "translate":
-            transform = matrix_mul(translation(
-                float(transform_row[1]),
-                float(transform_row[2]),
-                float(transform_row[3]),
-            ), transform)
+            transform = matrix_mul(
+                translation(
+                    float(transform_row[1]),
+                    float(transform_row[2]),
+                    float(transform_row[3]),
+                ),
+                transform,
+            )
         elif name == "scale":
-            transform = matrix_mul(scaling(
-                float(transform_row[1]),
-                float(transform_row[2]),
-                float(transform_row[3]),
-            ), transform)
+            transform = matrix_mul(
+                scaling(
+                    float(transform_row[1]),
+                    float(transform_row[2]),
+                    float(transform_row[3]),
+                ),
+                transform,
+            )
         else:
             transform = parse_transform(lookup[transform_row], lookup)
     return transform

@@ -49,7 +49,10 @@ class TestTransform(unittest.TestCase):
         full_quarter = rotation_x(math.pi / 2)
 
         self.assertTrue(
-            tuple4_eq(matrix_mul_tuple(half_quarter, p), Point(0, math.sqrt(2) / 2, math.sqrt(2) / 2))
+            tuple4_eq(
+                matrix_mul_tuple(half_quarter, p),
+                Point(0, math.sqrt(2) / 2, math.sqrt(2) / 2),
+            )
         )
         self.assertTrue(tuple4_eq(matrix_mul_tuple(full_quarter, p), Point(0, 0, 1)))
         self.assertTrue(
@@ -65,7 +68,10 @@ class TestTransform(unittest.TestCase):
         full_quarter = rotation_y(math.pi / 2)
 
         self.assertTrue(
-            tuple4_eq(matrix_mul_tuple(half_quarter, p), Point(math.sqrt(2) / 2, 0, math.sqrt(2) / 2))
+            tuple4_eq(
+                matrix_mul_tuple(half_quarter, p),
+                Point(math.sqrt(2) / 2, 0, math.sqrt(2) / 2),
+            )
         )
         self.assertTrue(tuple4_eq(matrix_mul_tuple(full_quarter, p), Point(1, 0, 0)))
 
@@ -75,7 +81,10 @@ class TestTransform(unittest.TestCase):
         full_quarter = rotation_z(math.pi / 2)
 
         self.assertTrue(
-            tuple4_eq(matrix_mul_tuple(half_quarter, p), Point(-math.sqrt(2) / 2, math.sqrt(2) / 2, 0))
+            tuple4_eq(
+                matrix_mul_tuple(half_quarter, p),
+                Point(-math.sqrt(2) / 2, math.sqrt(2) / 2, 0),
+            )
         )
         self.assertTrue(tuple4_eq(matrix_mul_tuple(full_quarter, p), Point(-1, 0, 0)))
 
@@ -124,8 +133,9 @@ class TestTransform(unittest.TestCase):
         self.assertTrue(tuple4_eq(matrix_mul_tuple(T, p), Point(15, 0, 7)))
 
         # pylint: disable=no-member
-        T2 = matrix_mul(translation(10, 5, 7),
-                        matrix_mul(scaling(5, 5, 5), rotation_x(math.pi / 2)))
+        T2 = matrix_mul(
+            translation(10, 5, 7), matrix_mul(scaling(5, 5, 5), rotation_x(math.pi / 2))
+        )
         self.assertTrue(matrix_eq(T, T2))
         self.assertTrue(tuple4_eq(matrix_mul_tuple(T2, p), Point(15, 0, 7)))
 

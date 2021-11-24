@@ -10,7 +10,8 @@ from rtc.transform import *
 from rtc.tuples import *
 from rtc.utils import *
 
-out_ray = Ray(Point(0,0,0), Vector(0,0,0))
+out_ray = Ray(Point(0, 0, 0), Vector(0, 0, 0))
+
 
 class TestSphere(unittest.TestCase):
     def test_sphere_intersect(self):

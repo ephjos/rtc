@@ -22,8 +22,8 @@ def demo_reflection(*args):
     middle.transform = translation(-0.5, 1, 0.5)
     middle.material = Material()
     middle.material.pattern = RingPattern(Color(0, 0, 0), Color(1, 1, 1))
-    middle.material.pattern.transform = (
-        matrix_mul(scaling(0.2, 0.2, 0.2), rotation_x(math.pi / 2))
+    middle.material.pattern.transform = matrix_mul(
+        scaling(0.2, 0.2, 0.2), rotation_x(math.pi / 2)
     )
     middle.material.color = Color(0.1, 1, 0.5)
     middle.material.diffuse = 0.7
@@ -34,8 +34,8 @@ def demo_reflection(*args):
     right.transform = matrix_mul(translation(1.5, 0.5, -0.5), scaling(0.5, 0.5, 0.5))
     right.material = Material()
     right.material.pattern = StripePattern(Color(0, 0.2, 0.7), Color(1, 0.7, 0.1))
-    right.material.pattern.transform = (
-        matrix_mul(scaling(2, 0.5, 1), rotation_z(math.pi / 2))
+    right.material.pattern.transform = matrix_mul(
+        scaling(2, 0.5, 1), rotation_z(math.pi / 2)
     )
     right.material.color = Color(0.5, 1, 0.1)
     right.material.diffuse = 0.7
@@ -43,13 +43,13 @@ def demo_reflection(*args):
     right.material.reflective = 0.01
 
     left = Sphere()
-    left.transform = (
-        matrix_mul(translation(-1.5, 0.33, -0.75),scaling(0.33, 0.33, 0.33))
+    left.transform = matrix_mul(
+        translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33)
     )
     left.material = Material()
     left.material.pattern = CheckersPattern(Color(0.0, 0.7, 0.2), Color(0.5, 0.5, 0.0))
-    left.material.pattern.transform = (
-        matrix_mul(translation(2, 0.5, 1), rotation_y(math.pi / 6))
+    left.material.pattern.transform = matrix_mul(
+        translation(2, 0.5, 1), rotation_y(math.pi / 6)
     )
     left.material.color = Color(1, 0.8, 0.1)
     left.material.diffuse = 0.7

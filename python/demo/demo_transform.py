@@ -15,10 +15,9 @@ def demo_transform(*args):
     for i in range(12):
         p = Point(1, 0, 0)
         r = i * (math.pi / 6)
-        T = (
-            matrix_mul(translation(size / 2, size / 2, 0),
-                matrix_mul(rotation_z(r),
-                    scaling(size / 4, size / 4, size / 4)))
+        T = matrix_mul(
+            translation(size / 2, size / 2, 0),
+            matrix_mul(rotation_z(r), scaling(size / 4, size / 4, size / 4)),
         )
         Tp = matrix_mul_tuple(T, p)
         x = round(Tp[0])

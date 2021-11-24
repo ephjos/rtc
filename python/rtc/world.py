@@ -12,7 +12,8 @@ from rtc.tuples import *
 from dataclasses import dataclass
 from typing import List
 
-out_ray = Ray(Point(0,0,0), Vector(0,0,0))
+out_ray = Ray(Point(0, 0, 0), Vector(0, 0, 0))
+
 
 @dataclass
 class World:

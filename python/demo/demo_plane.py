@@ -30,8 +30,8 @@ def demo_plane(*args):
     right.material.specular = 0.3
 
     left = Sphere()
-    left.transform = (
-        matrix_mul(translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33))
+    left.transform = matrix_mul(
+        translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33)
     )
     left.material = Material()
     left.material.color = Color(1, 0.8, 0.1)

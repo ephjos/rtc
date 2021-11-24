@@ -3,34 +3,38 @@ import array
 from rtc.tuples import Tuple4
 from rtc.utils import req
 
-from typing import Union
 
 def Matrix(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p):
-    return array.array('f', [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p])
+    return array.array("f", [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p])
+
 
 def IdentityMatrix():
     return Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 
-def matrix_eq(a,b):
+
+def matrix_eq(a, b):
     for i in range(16):
         if not req(a[i], b[i]):
             return False
     return True
 
-def matrix_mul(a,b):
-    result = Matrix(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+
+def matrix_mul(a, b):
+    result = Matrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     for i in range(4):
         for j in range(4):
             for k in range(4):
-                result[(i*4)+j] += a[(i*4)+k] * b[(k*4)+j]
+                result[(i * 4) + j] += a[(i * 4) + k] * b[(k * 4) + j]
     return result
 
-def matrix_mul_tuple(a,b):
-    result = Tuple4(0,0,0,0)
+
+def matrix_mul_tuple(a, b):
+    result = Tuple4(0, 0, 0, 0)
     for i in range(4):
         for k in range(4):
-            result[i] += a[(i*4)+k] * b[k]
+            result[i] += a[(i * 4) + k] * b[k]
     return result
+
 
 def matrix_inverse(M) -> "Matrix":
     a = M[0]
@@ -93,6 +97,7 @@ def matrix_inverse(M) -> "Matrix":
         cp / det,
     )
 
+
 def matrix_transpose(M):
     return Matrix(
         M[0],
@@ -112,6 +117,7 @@ def matrix_transpose(M):
         M[11],
         M[15],
     )
+
 
 def matrix_determinant(M):
     a = M[0]
@@ -137,6 +143,7 @@ def matrix_determinant(M):
     cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m)
 
     return a * ca + b * cb + c * cc + d * cd
+
 
 def matrix_is_invertible(M):
     return matrix_determinant(M) != 0

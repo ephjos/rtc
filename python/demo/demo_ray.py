@@ -4,7 +4,8 @@ from rtc.ray import Ray
 from rtc.sphere import Sphere
 from rtc.tuples import *
 
-out_ray = Ray(Point(0,0,0), Vector(0,0,0))
+out_ray = Ray(Point(0, 0, 0), Vector(0, 0, 0))
+
 
 def demo_ray(*args):
     origin = Point(0, 0, -5)

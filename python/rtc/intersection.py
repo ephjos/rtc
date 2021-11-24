@@ -5,7 +5,7 @@ from rtc.shape import Shape
 from rtc.tuples import *
 from rtc.utils import EPSILON
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, List
 
 

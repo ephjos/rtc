@@ -19,20 +19,22 @@ def demo_camera(*args):
     floor.material.specular = 0
 
     left_wall = Sphere()
-    left_wall.transform = (
-        matrix_mul(translation(0, 0, 5),
-            matrix_mul(rotation_x(math.pi / 2),
-                       matrix_mul(rotation_y(-math.pi / 4),
-                                  scaling(10, 0.01, 10))))
+    left_wall.transform = matrix_mul(
+        translation(0, 0, 5),
+        matrix_mul(
+            rotation_x(math.pi / 2),
+            matrix_mul(rotation_y(-math.pi / 4), scaling(10, 0.01, 10)),
+        ),
     )
     left_wall.material = floor.material
 
     right_wall = Sphere()
-    right_wall.transform = (
-        matrix_mul(translation(0, 0, 5),
-            matrix_mul(rotation_x(math.pi / 2),
-                       matrix_mul(rotation_y(math.pi / 4),
-                                  scaling(10, 0.01, 10))))
+    right_wall.transform = matrix_mul(
+        translation(0, 0, 5),
+        matrix_mul(
+            rotation_x(math.pi / 2),
+            matrix_mul(rotation_y(math.pi / 4), scaling(10, 0.01, 10)),
+        ),
     )
     right_wall.material = floor.material
 
@@ -51,8 +53,8 @@ def demo_camera(*args):
     right.material.specular = 0.3
 
     left = Sphere()
-    left.transform = (
-        matrix_mul(translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33))
+    left.transform = matrix_mul(
+        translation(-1.5, 0.33, -0.75), scaling(0.33, 0.33, 0.33)
     )
     left.material = Material()
     left.material.color = Color(1, 0.8, 0.1)
