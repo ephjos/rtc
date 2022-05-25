@@ -240,7 +240,6 @@ TEST_CASE(the_cross_product_of_two_vectors) {
 	ASSERT_TRUE(vec4_eq(vec4_cross(b, a), vector(1, -2, 1)));
 }
 
-
 void vec4_demo() {
 	typedef struct env_t {
 		vec4_t gravity;

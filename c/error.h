@@ -1,0 +1,4 @@
+#pragma once
+
+#define ERROR_WRITE_PPM_HEADER 1000
+#define ERROR_CANVAS_DEMO_FILE_OPEN 1001
