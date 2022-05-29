@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "error.h"
 #include "matrix.h"
 #include "util.h"
 #include "vec4.h"
@@ -93,6 +94,100 @@ matrix_t matrix_transpose(matrix_t a) {
 	return m;
 }
 
+float matrix_determinant(matrix_t M) {
+	float a = M._00;
+	float b = M._01;
+	float c = M._02;
+	float d = M._03;
+	float e = M._10;
+	float f = M._11;
+	float g = M._12;
+	float h = M._13;
+	float i = M._20;
+	float j = M._21;
+	float k = M._22;
+	float l = M._23;
+	float m = M._30;
+	float n = M._31;
+	float o = M._32;
+	float p = M._33;
+
+	float ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
+	float cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
+	float cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
+	float cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
+
+	return a * ca + b * cb + c * cc + d * cd;
+}
+
+bool matrix_is_invertible(matrix_t a) {
+	return matrix_determinant(a) != 0;
+}
+
+matrix_t matrix_inverse(matrix_t M) {
+	float a = M._00;
+	float b = M._01;
+	float c = M._02;
+	float d = M._03;
+	float e = M._10;
+	float f = M._11;
+	float g = M._12;
+	float h = M._13;
+	float i = M._20;
+	float j = M._21;
+	float k = M._22;
+	float l = M._23;
+	float m = M._30;
+	float n = M._31;
+	float o = M._32;
+	float p = M._33;
+
+	float ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
+	float cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
+	float cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
+	float cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
+
+	float det = a * ca + b * cb + c * cc + d * cd;
+	if (det == 0) {
+		fprintf(stderr, "Matrix is not invertible\n");
+		exit(ERROR_MATRIX_NONINVERTIBLE);
+	}
+
+	float ce = -b * (k * p - l * o) + c * (j * p - l * n) - d * (j * o - k * n);
+	float cf = a * (k * p - l * o) - c * (i * p - l * m) + d * (i * o - k * m);
+	float cg = -a * (j * p - l * n) + b * (i * p - l * m) - d * (i * n - j * m);
+	float ch = a * (j * o - k * n) - b * (i * o - k * m) + c * (i * n - j * m);
+
+	float ci = b * (g * p - h * o) - c * (f * p - h * n) + d * (f * o - g * n);
+	float cj = -a * (g * p - h * o) + c * (e * p - h * m) - d * (e * o - g * m);
+	float ck = a * (f * p - h * n) - b * (e * p - h * m) + d * (e * n - f * m);
+	float cl = -a * (f * o - g * n) + b * (e * o - g * m) - c * (e * n - f * m);
+
+	float cm = -b * (g * l - h * k) + c * (f * l - h * j) - d * (f * k - g * j);
+	float cn = a * (g * l - h * k) - c * (e * l - h * i) + d * (e * k - g * i);
+	float co = -a * (f * l - h * j) + b * (e * l - h * i) - d * (e * j - f * i);
+	float cp = a * (f * k - g * j) - b * (e * k - g * i) + c * (e * j - f * i);
+
+	return matrix(
+			ca / det,
+			ce / det,
+			ci / det,
+			cm / det,
+			cb / det,
+			cf / det,
+			cj / det,
+			cn / det,
+			cc / det,
+			cg / det,
+			ck / det,
+			co / det,
+			cd / det,
+			ch / det,
+			cl / det,
+			cp / det
+			);
+}
+
 TEST_CASE(construct_4x4_matrix) {
 	matrix_t m = matrix(
 			1, 2, 3, 4,
@@ -179,4 +274,95 @@ TEST_CASE(transpose_matrix) {
 TEST_CASE(transpose_identity_matrix) {
 	matrix_t I = matrix_identity();
 	ASSERT_TRUE(matrix_eq(matrix_transpose(I), I));
+}
+
+TEST_CASE(invertible_matrix) {
+	matrix_t a = matrix(
+			6, 4, 4, 4,
+			5, 5, 7, 6,
+			4, -9, 3, -7,
+			9, 1, 7, -6
+			);
+	ASSERT_TRUE(req(matrix_determinant(a), -2120));
+	ASSERT_TRUE(matrix_is_invertible(a));
+}
+
+TEST_CASE(noninvertible_matrix) {
+	matrix_t a = matrix(
+			-4, 2, -2, -3,
+			9, 6, 2, 6,
+			0, -5, 1, -5,
+			0, 0, 0, 0
+			);
+	ASSERT_TRUE(req(matrix_determinant(a), 0));
+	ASSERT_FALSE(matrix_is_invertible(a));
+}
+
+TEST_CASE(calculate_matrix_inverse) {
+	matrix_t A = matrix(
+			-5, 2, 6, -8,
+			1, -5, 1, 8,
+			7, 7, -6, -7,
+			1, -3, 7, 4
+			);
+	matrix_t B = matrix_inverse(A);
+	ASSERT_TRUE(req(matrix_determinant(A), 532));
+	ASSERT_TRUE(req(B._32, -160.0/532.0));
+	ASSERT_TRUE(req(B._23, 105.0/532.0));
+
+	matrix_t exp = matrix(
+			0.21805, 0.45113, 0.24060, -0.04511,
+			-0.80827, -1.45677, -0.44361, 0.52068,
+			-0.07895, -0.22368, -0.05263, 0.19737,
+			-0.52256, -0.81391, -0.30075, 0.30639
+			);
+
+	ASSERT_TRUE(matrix_eq(B, exp));
+}
+
+TEST_CASE(calculate_matrix_inverse_more) {
+	matrix_t A = matrix(
+			8, -5, 9, 2,
+			7, 5, 6, 1,
+			-6, 0, 9, 6,
+			-3, 0, -9, -4
+			);
+
+	ASSERT_TRUE(matrix_eq(matrix_inverse(A), matrix(
+					-0.15385, -0.15385, -0.28205, -0.53846,
+					-0.07692,  0.12308,  0.02564,  0.03077,
+					0.35897,  0.35897,  0.43590,  0.92308,
+					-0.69231, -0.69231, -0.76923, -1.92308
+					)));
+
+	A = matrix(
+			9,  3,  0,  9,
+			-5, -2, -6, -3,
+			-4,  9,  6,  4,
+			-7,  6,  6,  2
+			);
+
+	ASSERT_TRUE(matrix_eq(matrix_inverse(A), matrix(
+					-0.04074, -0.07778,  0.14444, -0.22222,
+					-0.07778,  0.03333,  0.36667, -0.33333,
+					-0.02901, -0.14630, -0.10926,  0.12963,
+					0.17778,  0.06667, -0.26667,  0.33333
+					)));
+}
+
+TEST_CASE(multiply_product_by_inverse) {
+	matrix_t A = matrix(
+			3, -9,  7,  3,
+			3, -8,  2, -9,
+			-4,  4,  4,  1,
+			-6,  5, -1,  1
+			);
+	matrix_t B = matrix(
+			8,  2,  2,  2,
+			3, -1,  7,  0,
+			7,  0,  5,  4,
+			6, -2,  0,  5
+			);
+	matrix_t C = matrix_mul(A, B);
+	ASSERT_TRUE(matrix_eq(matrix_mul(C, matrix_inverse(B)), A));
 }

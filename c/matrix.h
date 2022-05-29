@@ -25,5 +25,8 @@ bool matrix_eq(matrix_t a, matrix_t b);
 matrix_t matrix_mul(matrix_t a, matrix_t b);
 vec4_t matrix_mul_vec4(matrix_t a, vec4_t b);
 matrix_t matrix_transpose(matrix_t a);
+float matrix_determinant(matrix_t M);
+bool matrix_is_invertible(matrix_t a);
+matrix_t matrix_inverse(matrix_t M);
 
 
