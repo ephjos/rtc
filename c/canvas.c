@@ -122,6 +122,19 @@ void canvas_demo() {
 		return proj;
 	}
 
+	void canvas_write_proj(canvas_t* c, int x, int y, color_t p) {
+		const int w = 5;
+		for (int i = -w; i <= w; i++) {
+			for (int j = -w; j <= w; j++) {
+				int ii = x-i;
+				int jj = y-j;
+				if (ii >= 0 && ii < c->width && jj >= 0 && jj < c->height) {
+					canvas_write(c, ii, jj, p);
+				}
+			}
+		}
+	}
+
 	proj_t p;
 	p.position = point(0, 1, 0);
 	p.velocity = vec4_muls(vec4_normalize(vector(1, 1.8, 0)), 11.25);
@@ -134,11 +147,11 @@ void canvas_demo() {
 	color_t red = color(1, 0, 0);
 
 	while (p.position.y > 0) {
-		canvas_write(&c, p.position.x, 550-p.position.y, red);
+		canvas_write_proj(&c, p.position.x, 550-p.position.y, red);
 		p = tick(e, p);
 	}
 
-	canvas_write(&c, MIN(p.position.x, 899), 549, red);
+	canvas_write_proj(&c, MIN(p.position.x, 899), 549, red);
 
 	FILE *fp = fopen("./canvas_demo.ppm", "w");
 	if (fp == NULL) {

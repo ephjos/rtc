@@ -1,0 +1,182 @@
+
+#include "labrat.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include "matrix.h"
+#include "util.h"
+#include "vec4.h"
+
+matrix_t matrix(
+		float _00, float _01, float _02, float _03,
+		float _10, float _11, float _12, float _13,
+		float _20, float _21, float _22, float _23,
+		float _30, float _31, float _32, float _33
+		) {
+	matrix_t m;
+	m._00 = _00; m._01 = _01; m._02 = _02; m._03 = _03;
+	m._10 = _10; m._11 = _11; m._12 = _12; m._13 = _13;
+	m._20 = _20; m._21 = _21; m._22 = _22; m._23 = _23;
+	m._30 = _30; m._31 = _31; m._32 = _32; m._33 = _33;
+	return m;
+}
+
+matrix_t matrix_identity() {
+	matrix_t m;
+	m._00 = 1; m._01 = 0; m._02 = 0; m._03 = 0;
+	m._10 = 0; m._11 = 1; m._12 = 0; m._13 = 0;
+	m._20 = 0; m._21 = 0; m._22 = 1; m._23 = 0;
+	m._30 = 0; m._31 = 0; m._32 = 0; m._33 = 1;
+	return m;
+}
+
+bool matrix_eq(matrix_t a, matrix_t b) {
+	return req(a._00, b._00) &&
+		req(a._01, b._01) &&
+		req(a._02, b._02) &&
+		req(a._03, b._03) &&
+		req(a._10, b._10) &&
+		req(a._11, b._11) &&
+		req(a._12, b._12) &&
+		req(a._13, b._13) &&
+		req(a._20, b._20) &&
+		req(a._21, b._21) &&
+		req(a._22, b._22) &&
+		req(a._23, b._23) &&
+		req(a._30, b._30) &&
+		req(a._31, b._31) &&
+		req(a._32, b._32) &&
+		req(a._33, b._33);
+}
+
+matrix_t matrix_mul(matrix_t a, matrix_t b) {
+	matrix_t m;
+	m._00 = (a._00 * b._00) + (a._01 * b._10) + (a._02 * b._20) + (a._03 * b._30);
+	m._01 = (a._00 * b._01) + (a._01 * b._11) + (a._02 * b._21) + (a._03 * b._31);
+	m._02 = (a._00 * b._02) + (a._01 * b._12) + (a._02 * b._22) + (a._03 * b._32);
+	m._03 = (a._00 * b._03) + (a._01 * b._13) + (a._02 * b._23) + (a._03 * b._33);
+
+	m._10 = (a._10 * b._00) + (a._11 * b._10) + (a._12 * b._20) + (a._13 * b._30);
+	m._11 = (a._10 * b._01) + (a._11 * b._11) + (a._12 * b._21) + (a._13 * b._31);
+	m._12 = (a._10 * b._02) + (a._11 * b._12) + (a._12 * b._22) + (a._13 * b._32);
+	m._13 = (a._10 * b._03) + (a._11 * b._13) + (a._12 * b._23) + (a._13 * b._33);
+
+	m._20 = (a._20 * b._00) + (a._21 * b._10) + (a._22 * b._20) + (a._23 * b._30);
+	m._21 = (a._20 * b._01) + (a._21 * b._11) + (a._22 * b._21) + (a._23 * b._31);
+	m._22 = (a._20 * b._02) + (a._21 * b._12) + (a._22 * b._22) + (a._23 * b._32);
+	m._23 = (a._20 * b._03) + (a._21 * b._13) + (a._22 * b._23) + (a._23 * b._33);
+
+	m._30 = (a._30 * b._00) + (a._31 * b._10) + (a._32 * b._20) + (a._33 * b._30);
+	m._31 = (a._30 * b._01) + (a._31 * b._11) + (a._32 * b._21) + (a._33 * b._31);
+	m._32 = (a._30 * b._02) + (a._31 * b._12) + (a._32 * b._22) + (a._33 * b._32);
+	m._33 = (a._30 * b._03) + (a._31 * b._13) + (a._32 * b._23) + (a._33 * b._33);
+	return m;
+}
+
+vec4_t matrix_mul_vec4(matrix_t a, vec4_t b) {
+	vec4_t v;
+	v.x = (a._00 * b.x) + (a._01 * b.y) + (a._02 * b.z) + (a._03 * b.w);
+	v.y = (a._10 * b.x) + (a._11 * b.y) + (a._12 * b.z) + (a._13 * b.w);
+	v.z = (a._20 * b.x) + (a._21 * b.y) + (a._22 * b.z) + (a._23 * b.w);
+	v.w = (a._30 * b.x) + (a._31 * b.y) + (a._32 * b.z) + (a._33 * b.w);
+	return v;
+}
+
+matrix_t matrix_transpose(matrix_t a) {
+	matrix_t m;
+	m._00 = a._00; m._10 = a._01; m._20 = a._02; m._30 = a._03;
+	m._01 = a._10; m._11 = a._11; m._21 = a._12; m._31 = a._13;
+	m._02 = a._20; m._12 = a._21; m._22 = a._22; m._32 = a._23;
+	m._03 = a._30; m._13 = a._31; m._23 = a._32; m._33 = a._33;
+	return m;
+}
+
+TEST_CASE(construct_4x4_matrix) {
+	matrix_t m = matrix(
+			1, 2, 3, 4,
+			5.5, 6.5, 7.5, 8.5,
+			9, 10, 11, 12,
+			13.5, 14.5, 15.5, 16.5
+			);
+
+	ASSERT_EQ(m._00, 1.0, "%f");
+	ASSERT_EQ(m._03, 4.0, "%f");
+	ASSERT_EQ(m._10, 5.5, "%f");
+	ASSERT_EQ(m._12, 7.5, "%f");
+	ASSERT_EQ(m._22, 11.0, "%f");
+	ASSERT_EQ(m._30, 13.5, "%f");
+	ASSERT_EQ(m._32, 15.5, "%f");
+}
+
+TEST_CASE(multiplying_two_matrices) {
+	matrix_t a = matrix(
+			1, 2, 3, 4,
+			5, 6, 7, 8,
+			9, 8, 7, 6,
+			5, 4, 3, 2
+			);
+	matrix_t b = matrix(
+			-2, 1, 2, 3,
+			3, 2, 1, -1,
+			4, 3, 6, 5,
+			1, 2, 7, 8
+			);
+	matrix_t exp = matrix(
+			20, 22, 50, 48,
+			44, 54, 114, 108,
+			40, 58, 110, 102,
+			16, 26, 46, 42
+			);
+	ASSERT_TRUE(matrix_eq(matrix_mul(a,b), exp));
+}
+
+TEST_CASE(matrix_multiply_tuple) {
+	matrix_t A = matrix(
+			1, 2, 3, 4,
+			2, 4, 4, 2,
+			8, 6, 4, 1,
+			0, 0, 0, 1
+			);
+	vec4_t b = tuple(1, 2, 3, 1);
+	ASSERT_TRUE(vec4_eq(matrix_mul_vec4(A, b), tuple(18, 24, 33, 1)));
+}
+
+TEST_CASE(multiply_by_identity) {
+	matrix_t A = matrix(
+			0, 1, 2, 4,
+			1, 2, 4, 8,
+			2, 4, 8, 16,
+			4, 8, 16, 32
+			);
+	matrix_t I = matrix_identity();
+	ASSERT_TRUE(matrix_eq(matrix_mul(A, I), A));
+}
+
+TEST_CASE(multiply_vec__by_identity) {
+	matrix_t I = matrix_identity();
+	vec4_t a = tuple(1, 2, 3, 4);
+	ASSERT_TRUE(vec4_eq(matrix_mul_vec4(I, a), a));
+}
+
+TEST_CASE(transpose_matrix) {
+	matrix_t A = matrix(
+			0, 9, 3, 0,
+			9, 8, 0, 8,
+			1, 8, 5, 3,
+			0, 0, 5, 8
+			);
+	matrix_t exp = matrix(
+			0, 9, 1, 0,
+			9, 8, 8, 0,
+			3, 0, 5, 5,
+			0, 8, 3, 8
+			);
+	ASSERT_TRUE(matrix_eq(matrix_transpose(A), exp));
+}
+
+TEST_CASE(transpose_identity_matrix) {
+	matrix_t I = matrix_identity();
+	ASSERT_TRUE(matrix_eq(matrix_transpose(I), I));
+}
