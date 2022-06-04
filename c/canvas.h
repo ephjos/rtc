@@ -19,3 +19,4 @@ void canvas_free(canvas_t c);
 char* canvas_to_ppm(canvas_t c);
 
 void canvas_demo();
+void canvas_save(canvas_t c, char *filename);

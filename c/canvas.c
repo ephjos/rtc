@@ -38,7 +38,7 @@ void canvas_free(canvas_t c) {
 char* canvas_to_ppm(canvas_t c) {
 	int byte_count = 0;
 	byte_count += 3; // magic
-	byte_count += 2 + (log10(c.width*c.height)) + 1; // dimensions
+	byte_count += 2 + (int)log10(c.width) + 1 + (int)log10(c.height) + 1; // dimensions
 	byte_count += 4; // color
 	int header_bytes = byte_count+1;
 	byte_count += (c.width*c.height) * 12; // safe assumes 4 bytes per channel (will overallocate)
@@ -67,6 +67,18 @@ char* canvas_to_ppm(canvas_t c) {
 	return ppm;
 }
 
+void canvas_save(canvas_t c, char *filename) {
+	FILE *fp = fopen(filename, "w");
+	if (fp == NULL) {
+		fprintf(stderr, "Could not open %s\n", filename);
+		exit(ERROR_CANVAS_DEMO_FILE_OPEN);
+	}
+
+	char *ppm = canvas_to_ppm(c);
+	fprintf(fp, "%s", ppm);
+	free(ppm);
+	fclose(fp);
+}
 
 
 TEST_CASE(creating_a_canvas) {
@@ -153,16 +165,6 @@ void canvas_demo() {
 
 	canvas_write_proj(&c, MIN(p.position.x, 899), 549, red);
 
-	FILE *fp = fopen("./canvas_demo.ppm", "w");
-	if (fp == NULL) {
-		fprintf(stderr, "Could not open canvas_demo.ppm\n");
-		exit(ERROR_CANVAS_DEMO_FILE_OPEN);
-	}
-
-	char *ppm = canvas_to_ppm(c);
-	fprintf(fp, "%s", ppm);
-	free(ppm);
-	fclose(fp);
-
+	canvas_save(c, "./canvas_demo.ppm");
 	canvas_free(c);
 }
