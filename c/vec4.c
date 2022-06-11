@@ -8,7 +8,7 @@
 #include "vec4.h"
 #include "util.h"
 
-vec4_t vec4_print(vec4_t v) {
+void vec4_print(vec4_t v) {
 	printf("[%0.2f, %0.2f, %0.2f, %0.2f]\n", v.x, v.y, v.z, v.w);
 }
 
@@ -240,23 +240,23 @@ TEST_CASE(the_cross_product_of_two_vectors) {
 	ASSERT_TRUE(vec4_eq(vec4_cross(b, a), vector(1, -2, 1)));
 }
 
+typedef struct env_t {
+	vec4_t gravity;
+	vec4_t wind;
+} env_t;
+typedef struct proj_t {
+	vec4_t position;
+	vec4_t velocity;
+} proj_t;
+
+static proj_t tick(env_t e, proj_t p) {
+	proj_t proj;
+	proj.position = vec4_add(p.position, p.velocity);
+	proj.velocity = vec4_add(vec4_add(p.velocity, e.gravity), e.wind);
+	return proj;
+}
+
 void vec4_demo() {
-	typedef struct env_t {
-		vec4_t gravity;
-		vec4_t wind;
-	} env_t;
-	typedef struct proj_t {
-		vec4_t position;
-		vec4_t velocity;
-	} proj_t;
-
-	proj_t tick(env_t e, proj_t p) {
-		proj_t proj;
-		proj.position = vec4_add(p.position, p.velocity);
-		proj.velocity = vec4_add(vec4_add(p.velocity, e.gravity), e.wind);
-		return proj;
-	}
-
 	proj_t p;
 	p.position = point(0, 1, 0);
 	p.velocity = vec4_normalize(vector(1, 1, 0));

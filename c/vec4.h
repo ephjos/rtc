@@ -11,7 +11,7 @@ typedef struct vec4_t {
 
 static const vec4_t VEC4_ZERO = {0, 0, 0, 0};
 
-vec4_t vec4_print(vec4_t v);
+void vec4_print(vec4_t v);
 
 vec4_t tuple(float x, float y, float z, float w);
 vec4_t point(float x, float y, float z);

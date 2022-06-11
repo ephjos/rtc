@@ -246,24 +246,23 @@ TEST_CASE(transform_func) {
 	ASSERT_TRUE(vec4_eq(p, point(15, 0, 7)));
 }
 
-
-void transform_demo() {
-	void canvas_write_tick(canvas_t* c, int x, int y, color_t p) {
-		const int w = 5;
-		for (int i = -w; i <= w; i++) {
-			for (int j = -w; j <= w; j++) {
-				int ii = x-i;
-				int jj = y-j;
-				if (ii >= 0 && ii < c->width && jj >= 0 && jj < c->height) {
-					canvas_write(c, ii, jj, p);
-				}
+static void canvas_write_tick(canvas_t* c, int x, int y, color_t p) {
+	const int w = 5;
+	for (int i = -w; i <= w; i++) {
+		for (int j = -w; j <= w; j++) {
+			int ii = x-i;
+			int jj = y-j;
+			if (ii >= 0 && ii < c->width && jj >= 0 && jj < c->height) {
+				canvas_write(c, ii, jj, p);
 			}
 		}
 	}
+}
 
+void transform_demo() {
 	color_t red = color(1, 0, 0);
 
-	const int SIZE = 256;
+	const float SIZE = 256;
 	canvas_t c = canvas(SIZE, SIZE);
 
 	vec4_t p = point(0, 0, SIZE/4);

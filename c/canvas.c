@@ -117,36 +117,36 @@ TEST_CASE(constructing_ppm_pixel_data) {
 	ASSERT_TRUE(strcmp(ppm, "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255 \n") == 0);
 }
 
-void canvas_demo() {
-	typedef struct env_t {
-		vec4_t gravity;
-		vec4_t wind;
-	} env_t;
-	typedef struct proj_t {
-		vec4_t position;
-		vec4_t velocity;
-	} proj_t;
+typedef struct env_t {
+	vec4_t gravity;
+	vec4_t wind;
+} env_t;
+typedef struct proj_t {
+	vec4_t position;
+	vec4_t velocity;
+} proj_t;
 
-	proj_t tick(env_t e, proj_t p) {
-		proj_t proj;
-		proj.position = vec4_add(p.position, p.velocity);
-		proj.velocity = vec4_add(vec4_add(p.velocity, e.gravity), e.wind);
-		return proj;
-	}
+static proj_t tick(env_t e, proj_t p) {
+	proj_t proj;
+	proj.position = vec4_add(p.position, p.velocity);
+	proj.velocity = vec4_add(vec4_add(p.velocity, e.gravity), e.wind);
+	return proj;
+}
 
-	void canvas_write_proj(canvas_t* c, int x, int y, color_t p) {
-		const int w = 5;
-		for (int i = -w; i <= w; i++) {
-			for (int j = -w; j <= w; j++) {
-				int ii = x-i;
-				int jj = y-j;
-				if (ii >= 0 && ii < c->width && jj >= 0 && jj < c->height) {
-					canvas_write(c, ii, jj, p);
-				}
+static void canvas_write_proj(canvas_t* c, int x, int y, color_t p) {
+	const int w = 5;
+	for (int i = -w; i <= w; i++) {
+		for (int j = -w; j <= w; j++) {
+			int ii = x-i;
+			int jj = y-j;
+			if (ii >= 0 && ii < c->width && jj >= 0 && jj < c->height) {
+				canvas_write(c, ii, jj, p);
 			}
 		}
 	}
+}
 
+void canvas_demo() {
 	proj_t p;
 	p.position = point(0, 1, 0);
 	p.velocity = vec4_muls(vec4_normalize(vector(1, 1.8, 0)), 11.25);

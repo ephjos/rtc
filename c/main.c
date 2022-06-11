@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 {
 	LR_PRELUDE(argc, argv);
 
-	//vec4_demo();
+	vec4_demo();
 	canvas_demo();
 	transform_demo();
 
