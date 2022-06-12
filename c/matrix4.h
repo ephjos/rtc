@@ -4,29 +4,29 @@
 
 #include "vec4.h"
 
-//typedef float matrix_t[16];
-typedef struct matrix_t {
+//typedef float matrix4_t[16];
+typedef struct matrix4_t {
 	float _00; float _01; float _02; float _03;
 	float _10; float _11; float _12; float _13;
 	float _20; float _21; float _22; float _23;
 	float _30; float _31; float _32; float _33;
-} matrix_t;
+} matrix4_t;
 
-matrix_t matrix(
+matrix4_t matrix4(
 		float _00, float _01, float _02, float _03,
 		float _10, float _11, float _12, float _13,
 		float _20, float _21, float _22, float _23,
 		float _30, float _31, float _32, float _33
 		);
-matrix_t matrix_identity();
+matrix4_t matrix4_identity();
 
-bool matrix_eq(matrix_t a, matrix_t b);
+bool matrix4_eq(matrix4_t a, matrix4_t b);
 
-matrix_t matrix_mul(matrix_t a, matrix_t b);
-vec4_t matrix_mul_vec4(matrix_t a, vec4_t b);
-matrix_t matrix_transpose(matrix_t a);
-float matrix_determinant(matrix_t M);
-bool matrix_is_invertible(matrix_t a);
-matrix_t matrix_inverse(matrix_t M);
+matrix4_t matrix4_mul(matrix4_t a, matrix4_t b);
+vec4_t matrix4_mul_vec4(matrix4_t a, vec4_t b);
+matrix4_t matrix4_transpose(matrix4_t a);
+float matrix4_determinant(matrix4_t M);
+bool matrix4_is_invertible(matrix4_t a);
+matrix4_t matrix4_inverse(matrix4_t M);
 
 

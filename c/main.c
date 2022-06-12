@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "canvas.h"
+#include "ray.h"
 #include "transform.h"
 #include "vec4.h"
 
@@ -17,6 +18,7 @@ int main(int argc, char **argv)
 	vec4_demo();
 	canvas_demo();
 	transform_demo();
+	ray_demo();
 
 	return 0;
 }

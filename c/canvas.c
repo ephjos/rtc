@@ -78,6 +78,7 @@ void canvas_save(canvas_t c, char *filename) {
 	fprintf(fp, "%s", ppm);
 	free(ppm);
 	fclose(fp);
+	printf("Saved %s\n", filename);
 }
 
 
@@ -90,6 +91,7 @@ TEST_CASE(creating_a_canvas) {
 			ASSERT_TRUE(color_eq(canvas_get(c, i, j), color(0,0,0)));
 		}
 	}
+	canvas_free(c);
 }
 
 TEST_CASE(writing_pixels_to_a_canvas) {
@@ -97,12 +99,15 @@ TEST_CASE(writing_pixels_to_a_canvas) {
 	color_t red = color(1, 0, 0);
 	canvas_write(&c, 2, 3, red);
 	ASSERT_TRUE(color_eq(canvas_get(c, 2, 3), red));
+	canvas_free(c);
 }
 
 TEST_CASE(constructing_the_ppm_header) {
 	canvas_t c = canvas(5, 3);
 	char *ppm = canvas_to_ppm(c);
 	ASSERT_TRUE(strncmp(ppm, "P3\n5 3\n255\n", 11) == 0);
+	free(ppm);
+	canvas_free(c);
 }
 
 TEST_CASE(constructing_ppm_pixel_data) {
@@ -115,6 +120,8 @@ TEST_CASE(constructing_ppm_pixel_data) {
 	canvas_write(&c, 4, 2, c3);
 	char *ppm = canvas_to_ppm(c);
 	ASSERT_TRUE(strcmp(ppm, "P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 \n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255 \n") == 0);
+	free(ppm);
+	canvas_free(c);
 }
 
 typedef struct env_t {
