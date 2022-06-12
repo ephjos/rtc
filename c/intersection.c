@@ -34,6 +34,11 @@ void free_intersection_list(intersection_list_t ilist) {
 }
 
 void add_intersection(intersection_list_t *ilist, intersection_t item) {
+	// OPT: can we avoid heap allocations all together???????
+	//      hit could be tracked on the stack
+	//      we need to track something else behind for reflection/refraction
+
+
 	// Update the hit if item is > 0 and less than the current hit
 	if (item.t > 0 && (ilist->hit == NULL || item.t < ilist->hit->t)) {
 		// If this is the first positive item, initialize the hit

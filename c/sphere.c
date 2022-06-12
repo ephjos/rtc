@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #include "error.h"
+#include "materials.h"
 #include "matrix4.h"
 #include "ray.h"
 #include "shape.h"
@@ -19,6 +20,7 @@ sphere_t sphere(int id) {
   s.id = id;
   s.transform = matrix4_identity();
   s.inverse_transform = matrix4_identity();
+  s.material = material_default();
   return s;
 }
 
@@ -61,6 +63,14 @@ intersection_list_t sphere_intersect(sphere_t s, ray_t r) {
 void sphere_set_transform(sphere_t *s, matrix4_t t) {
   s->transform = t;
   s->inverse_transform = matrix4_inverse(t);
+}
+
+vec4_t sphere_normal_at(sphere_t s, vec4_t p) {
+  vec4_t object_point = matrix4_mul_vec4(s.inverse_transform, p);
+  vec4_t object_normal = vec4_sub(object_point, point(0, 0, 0));
+  vec4_t world_normal = matrix4_mul_vec4(matrix4_transpose(s.inverse_transform), object_normal);
+  world_normal.w = 0;
+  return vec4_normalize(world_normal);
 }
 
 TEST_CASE(ray_intersects_sphere_at_two_point) {
@@ -165,4 +175,77 @@ TEST_CASE(intersecting_a_translated_sphere) {
   intersection_list_t ilist = sphere_intersect(s, r);
   ASSERT_EQ(ilist.size, 0, "%d");
   free_intersection_list(ilist);
+}
+
+TEST_CASE(sphere_normal_on_x_axis) {
+  sphere_t s = sphere(1);
+  vec4_t n = sphere_normal_at(s, point(1, 0, 0));
+
+  ASSERT_TRUE(vec4_eq(n, vector(1, 0, 0)));
+}
+
+TEST_CASE(sphere_normal_on_y_axis) {
+  sphere_t s = sphere(1);
+  vec4_t n = sphere_normal_at(s, point(0, 1, 0));
+
+  ASSERT_TRUE(vec4_eq(n, vector(0, 1, 0)));
+}
+
+TEST_CASE(sphere_normal_on_z_axis) {
+  sphere_t s = sphere(1);
+  vec4_t n = sphere_normal_at(s, point(0, 0, 1));
+
+  ASSERT_TRUE(vec4_eq(n, vector(0, 0, 1)));
+}
+
+TEST_CASE(sphere_normal_on_nonaxial_point) {
+  float r3_3 = sqrtf(3) / 3;
+  sphere_t s = sphere(1);
+  vec4_t n = sphere_normal_at(s, point(r3_3, r3_3, r3_3));
+
+  ASSERT_TRUE(vec4_eq(n, vector(r3_3, r3_3, r3_3)));
+}
+
+TEST_CASE(sphere_normal_is_normalized) {
+  float r3_3 = sqrtf(3) / 3;
+  sphere_t s = sphere(1);
+  vec4_t n = sphere_normal_at(s, point(r3_3, r3_3, r3_3));
+
+  ASSERT_TRUE(vec4_eq(n, vec4_normalize(n)));
+}
+
+TEST_CASE(sphere_normal_when_translated) {
+  sphere_t s = sphere(1);
+  sphere_set_transform(&s, translation(0, 1, 0));
+  vec4_t n = sphere_normal_at(s, point(0, 1.70711, -0.70711));
+
+  ASSERT_TRUE(vec4_eq(n, vector(0, 0.70711, -0.70711)));
+}
+
+TEST_CASE(sphere_normal_when_transformed) {
+  sphere_t s = sphere(1);
+  matrix4_t ts[] = {
+    rotate_z(M_PI / 5),
+    scaling(1, 0.5, 1),
+  };
+  sphere_set_transform(&s, transform(ts, 2));
+  vec4_t n = sphere_normal_at(s, point(0, sqrtf(2)/2, -sqrtf(2)/2));
+
+  ASSERT_TRUE(vec4_eq(n, vector(0, 0.97014, -0.24254)));
+}
+
+TEST_CASE(sphere_has_default_material) {
+  sphere_t s = sphere(1);
+  material_t m = s.material;
+
+  ASSERT_TRUE(material_eq(m, material_default()));
+}
+
+TEST_CASE(sphere_may_be_assigned_material) {
+  sphere_t s = sphere(1);
+  material_t m = material_default();
+  m.ambient = 1;
+  s.material = m;
+
+  ASSERT_TRUE(material_eq(s.material, m));
 }

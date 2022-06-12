@@ -30,6 +30,7 @@ float vec4_magnitude(vec4_t v);
 vec4_t vec4_normalize(vec4_t v);
 float vec4_dot(vec4_t a, vec4_t b);
 vec4_t vec4_cross(vec4_t a, vec4_t b);
+vec4_t vec4_reflect(vec4_t in, vec4_t normal);
 
 void vec4_demo();
 

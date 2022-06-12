@@ -106,6 +106,10 @@ vec4_t vec4_cross(vec4_t a, vec4_t b) {
 			);
 }
 
+vec4_t vec4_reflect(vec4_t in, vec4_t normal) {
+	return vec4_sub(in, vec4_muls(normal, 2*vec4_dot(in, normal)));
+}
+
 TEST_CASE(a_tuple_with_w_1_is_a_point) {
 	vec4_t a = tuple(4.3, -4.2, 3.1, 1.0);
 	ASSERT_TRUE(req(a.x, 4.3));
@@ -271,4 +275,20 @@ void vec4_demo() {
 	}
 
 	vec4_print(p.position);
+}
+
+TEST_CASE(reflecting_incoming_45_degrees) {
+	vec4_t v = vector(1, -1, 0);
+	vec4_t n = vector(0, 1, 0);
+	vec4_t r = vec4_reflect(v, n);
+
+	ASSERT_TRUE(vec4_eq(r, vector(1,1,0)));
+}
+
+TEST_CASE(reflecting_off_slanted_surface) {
+	vec4_t v = vector(0, -1, 0);
+	vec4_t n = vector(sqrtf(2)/2, sqrtf(2)/2, 0);
+	vec4_t r = vec4_reflect(v, n);
+
+	ASSERT_TRUE(vec4_eq(r, vector(1,0,0)));
 }

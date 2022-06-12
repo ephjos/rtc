@@ -18,6 +18,7 @@ typedef struct intersection_list_t {
 
 // Caller responsible for freeing
 intersection_list_t intersection_list();
+
 void free_intersection_list(intersection_list_t ilist);
 void add_intersection(intersection_list_t *ilist, intersection_t item);
 intersection_t* hit(intersection_list_t ilist);
