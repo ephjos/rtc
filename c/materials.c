@@ -164,7 +164,8 @@ void material_demo() {
 		for (int j = 0; j < SIZE; j++) {
 			float x = (-WALL_SIZE/2) + PIXEL_SIZE * j;
 			ray_t r = ray(from, vec4_normalize(vec4_sub(point(x, y, WALL_Z), from)));
-			intersection_list_t ilist = sphere_intersect(s, r);
+			intersection_list_t ilist = intersection_list();
+			sphere_intersect(s, r, &ilist);
 			if (ilist.hit != NULL) {
 				vec4_t p = ray_position(r, ilist.hit->t);
 				vec4_t n = sphere_normal_at(s, p);

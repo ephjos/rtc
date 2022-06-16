@@ -24,11 +24,16 @@ sphere_t sphere(int id) {
   return s;
 }
 
-intersection_list_t sphere_intersect(sphere_t s, ray_t r) {
+bool sphere_eq(sphere_t a, sphere_t b) {
+  return a.id == b.id &&
+		matrix4_eq(a.transform, b.transform) &&
+		matrix4_eq(a.inverse_transform, b.inverse_transform) &&
+		material_eq(a.material, b.material);
+}
+
+void sphere_intersect(sphere_t s, ray_t r, intersection_list_t *ilist) {
   // local ray
   ray_t lr = ray_transform(r, s.inverse_transform);
-
-  intersection_list_t ilist = intersection_list();
 
   vec4_t sphere_to_ray = vec4_sub(lr.origin, point(0, 0, 0));
 
@@ -39,7 +44,7 @@ intersection_list_t sphere_intersect(sphere_t s, ray_t r) {
   float discriminant = (b*b) - 4 * a * c;
 
   if (discriminant < 0) {
-    return ilist;
+    return;
   }
 
   float sqrtd = sqrtf(discriminant);
@@ -54,10 +59,9 @@ intersection_list_t sphere_intersect(sphere_t s, ray_t r) {
   i2.type = TYPE_SPHERE;
   i2.id = s.id;
 
-  add_intersection(&ilist, i1);
-  add_intersection(&ilist, i2);
-
-  return ilist;
+  add_intersection(ilist, i1);
+  add_intersection(ilist, i2);
+  return;
 }
 
 void sphere_set_transform(sphere_t *s, matrix4_t t) {
@@ -76,7 +80,8 @@ vec4_t sphere_normal_at(sphere_t s, vec4_t p) {
 TEST_CASE(ray_intersects_sphere_at_two_point) {
   ray_t r = ray(point(0, 0, -5), vector(0, 0, 1));
   sphere_t s = sphere(0);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].t, 4.0));
@@ -87,7 +92,8 @@ TEST_CASE(ray_intersects_sphere_at_two_point) {
 TEST_CASE(ray_intersects_sphere_at_tangent) {
   ray_t r = ray(point(0, 1, -5), vector(0, 0, 1));
   sphere_t s = sphere(0);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].t, 5.0));
@@ -98,7 +104,8 @@ TEST_CASE(ray_intersects_sphere_at_tangent) {
 TEST_CASE(ray_misses_sphere) {
   ray_t r = ray(point(0, 2, -5), vector(0, 0, 1));
   sphere_t s = sphere(0);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 0, "%d");
   free_intersection_list(ilist);
@@ -107,7 +114,8 @@ TEST_CASE(ray_misses_sphere) {
 TEST_CASE(ray_inside_sphere) {
   ray_t r = ray(point(0, 0, 0), vector(0, 0, 1));
   sphere_t s = sphere(0);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].t, -1.0));
@@ -118,7 +126,8 @@ TEST_CASE(ray_inside_sphere) {
 TEST_CASE(ray_behind_sphere) {
   ray_t r = ray(point(0, 0, 5), vector(0, 0, 1));
   sphere_t s = sphere(0);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].t, -6.0));
@@ -130,7 +139,8 @@ TEST_CASE(ray_behind_sphere) {
 TEST_CASE(intersect_sets_object) {
   ray_t r = ray(point(0, 0, -5), vector(0, 0, 1));
   sphere_t s = sphere(123);
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
 
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].type, TYPE_SPHERE));
@@ -160,7 +170,8 @@ TEST_CASE(intersecting_a_scaled_sphere) {
   sphere_t s = sphere(1);
   sphere_set_transform(&s, scaling(2, 2, 2));
 
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
   ASSERT_EQ(ilist.size, 2, "%d");
   ASSERT_TRUE(req(ilist.items[0].t, 3));
   ASSERT_TRUE(req(ilist.items[1].t, 7));
@@ -172,7 +183,8 @@ TEST_CASE(intersecting_a_translated_sphere) {
   sphere_t s = sphere(1);
   sphere_set_transform(&s, translation(5, 0, 0));
 
-  intersection_list_t ilist = sphere_intersect(s, r);
+  intersection_list_t ilist = intersection_list();
+	sphere_intersect(s, r, &ilist);
   ASSERT_EQ(ilist.size, 0, "%d");
   free_intersection_list(ilist);
 }

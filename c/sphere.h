@@ -13,8 +13,9 @@ typedef struct sphere_t {
 } sphere_t;
 
 sphere_t sphere();
+bool sphere_eq(sphere_t a, sphere_t b);
 
-intersection_list_t sphere_intersect(sphere_t s, ray_t r);
+void sphere_intersect(sphere_t s, ray_t r, intersection_list_t *ilist);
 void sphere_set_transform(sphere_t *s, matrix4_t t);
 
 vec4_t sphere_normal_at(sphere_t s, vec4_t p);
