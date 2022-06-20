@@ -10,7 +10,6 @@
 #include "lights.h"
 #include "matrix4.h"
 #include "ray.h"
-#include "sphere.h"
 #include "transform.h"
 #include "util.h"
 #include "vec4.h"

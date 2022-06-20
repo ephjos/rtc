@@ -11,7 +11,7 @@
 #include "materials.h"
 #include "matrix4.h"
 #include "ray.h"
-#include "sphere.h"
+#include "shape.h"
 #include "transform.h"
 #include "util.h"
 #include "vec4.h"
@@ -137,7 +137,7 @@ TEST_CASE(lighting_with_light_behind_surface) {
 
 void material_demo() {
 	vec4_t from = point(0, 0, 0);
-	sphere_t s = sphere(1);
+	shape_t s = sphere();
 	s.material.color = color(1, 0.2, 1);
 
 	matrix4_t st[] = {
@@ -146,7 +146,7 @@ void material_demo() {
 		rotate_z(0.5),
 	};
 
-	sphere_set_transform(&s, transform(st, 1));
+	shape_set_transform(&s, transform(st, 1));
 
 	vec4_t light_position = point(-10, 10, -10);
 	color_t light_color = color(1, 1, 1);
@@ -175,6 +175,8 @@ void material_demo() {
 			free_intersection_list(ilist);
 		}
 	}
+
+  shape_free(s);
 
 	canvas_save(c, "./material_demo.ppm");
 	canvas_free(c);

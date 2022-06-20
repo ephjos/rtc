@@ -9,7 +9,7 @@
 #include "error.h"
 #include "matrix4.h"
 #include "ray.h"
-#include "sphere.h"
+#include "shape.h"
 #include "transform.h"
 #include "util.h"
 #include "vec4.h"
@@ -70,13 +70,13 @@ TEST_CASE(scaling_a_ray) {
 
 void ray_demo() {
   vec4_t from = point(0, 0, 0);
-  sphere_t s = sphere(1);
+  shape_t s = sphere(0);
   matrix4_t st[] = {
     translation(0, 0, 7),
     scaling(1, 2, 1),
     rotate_z(0.5),
   };
-  sphere_set_transform(&s, transform(st, 3));
+  shape_set_transform(&s, transform(st, 3));
 
   color_t red = color(1, 0, 0);
   const float WALL_Z = 14;
@@ -99,6 +99,8 @@ void ray_demo() {
     }
   }
 
-	canvas_save(c, "./ray_demo.ppm");
-	canvas_free(c);
+  shape_free(s);
+
+  canvas_save(c, "./ray_demo.ppm");
+  canvas_free(c);
 }
