@@ -13,7 +13,7 @@ typedef struct world_t {
 } world_t;
 
 world_t world();
-void free_world(world_t w);
+void world_free(world_t w);
 world_t default_world();
 
 intersection_list_t world_intersect_ray(world_t w, ray_t r);

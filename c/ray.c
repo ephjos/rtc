@@ -95,7 +95,7 @@ void ray_demo() {
       if (ilist.hit != NULL) {
         canvas_write(&c, j, i, red);
       }
-      free_intersection_list(ilist);
+      intersection_list_free(ilist);
     }
   }
 

@@ -172,7 +172,7 @@ void material_demo() {
 				vec4_t eye = vec4_neg(r.direction);
 				canvas_write(&c, j, i, lighting(s.material, pl, p, eye, n));
 			}
-			free_intersection_list(ilist);
+			intersection_list_free(ilist);
 		}
 	}
 

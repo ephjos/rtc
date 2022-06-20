@@ -25,7 +25,7 @@ world_t world() {
 	return w;
 }
 
-void free_world(world_t w) {
+void world_free(world_t w) {
 	free(w.point_lights);
 	for (int i = 0; i < w.n_shapes; i++) {
 		shape_free(w.shapes[i]);
@@ -92,7 +92,7 @@ TEST_CASE(the_default_world) {
 
 	shape_free(s1);
 	shape_free(s2);
-	free_world(w);
+	world_free(w);
 }
 
 TEST_CASE(intersect_world_with_a_ray) {
@@ -105,6 +105,6 @@ TEST_CASE(intersect_world_with_a_ray) {
 	ASSERT_TRUE(req(ilist.items[1].t, 4.5));
 	ASSERT_TRUE(req(ilist.items[2].t, 5.5));
 	ASSERT_TRUE(req(ilist.items[3].t, 6));
-	free_intersection_list(ilist);
-	free_world(w);
+	intersection_list_free(ilist);
+	world_free(w);
 }

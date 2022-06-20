@@ -94,7 +94,7 @@ intersection_list_t intersection_list() {
 	return ilist;
 }
 
-void free_intersection_list(intersection_list_t ilist) {
+void intersection_list_free(intersection_list_t ilist) {
 	free(ilist.items);
 	free(ilist.hit);
 }
@@ -165,7 +165,7 @@ TEST_CASE(intersections_are_kept_in_order) {
 			ASSERT_TRUE(ilist.items[i].t <= ilist.items[i+1].t);
 		}
 		shape_free(s);
-		free_intersection_list(ilist);
+		intersection_list_free(ilist);
 	}
 }
 
@@ -188,7 +188,7 @@ TEST_CASE(hit_all_intersections_positive) {
 	ASSERT_TRUE(req(i1.t, h->t));
 	ASSERT_TRUE(shape_eq(i1.s, h->s));
 	shape_free(s);
-	free_intersection_list(ilist);
+	intersection_list_free(ilist);
 }
 
 TEST_CASE(hit_some_intersections_negative) {
@@ -210,7 +210,7 @@ TEST_CASE(hit_some_intersections_negative) {
 	ASSERT_TRUE(req(i2.t, h->t));
 	ASSERT_TRUE(shape_eq(i2.s, h->s));
 	shape_free(s);
-	free_intersection_list(ilist);
+	intersection_list_free(ilist);
 }
 
 TEST_CASE(hit_all_intersections_negative) {
@@ -230,7 +230,7 @@ TEST_CASE(hit_all_intersections_negative) {
 
 	ASSERT_TRUE(h == NULL);
 	shape_free(s);
-	free_intersection_list(ilist);
+	intersection_list_free(ilist);
 }
 
 TEST_CASE(hit_is_lowest_nonnegative) {
@@ -262,7 +262,7 @@ TEST_CASE(hit_is_lowest_nonnegative) {
 	ASSERT_TRUE(req(i4.t, h->t));
 	ASSERT_TRUE(shape_eq(i4.s, h->s));
 	shape_free(s);
-	free_intersection_list(ilist);
+	intersection_list_free(ilist);
 }
 
 TEST_CASE(ray_intersects_sphere_at_two_point) {
@@ -275,7 +275,7 @@ TEST_CASE(ray_intersects_sphere_at_two_point) {
   ASSERT_TRUE(req(ilist.items[0].t, 4.0));
   ASSERT_TRUE(req(ilist.items[1].t, 6.0));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -289,7 +289,7 @@ TEST_CASE(ray_intersects_sphere_at_tangent) {
   ASSERT_TRUE(req(ilist.items[0].t, 5.0));
   ASSERT_TRUE(req(ilist.items[1].t, 5.0));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -301,7 +301,7 @@ TEST_CASE(ray_misses_sphere) {
 
   ASSERT_EQ(ilist.size, 0, "%d");
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -315,7 +315,7 @@ TEST_CASE(ray_inside_sphere) {
   ASSERT_TRUE(req(ilist.items[0].t, -1.0));
   ASSERT_TRUE(req(ilist.items[1].t, 1.0));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -329,7 +329,7 @@ TEST_CASE(ray_behind_sphere) {
   ASSERT_TRUE(req(ilist.items[0].t, -6.0));
   ASSERT_TRUE(req(ilist.items[1].t, -4.0));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -344,7 +344,7 @@ TEST_CASE(intersect_sets_object) {
 	ASSERT_TRUE(shape_eq(ilist.items[0].s, s));
 	ASSERT_TRUE(shape_eq(ilist.items[1].s, s));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 
 	shape_free(s);
 }
@@ -379,7 +379,7 @@ TEST_CASE(intersecting_a_scaled_sphere) {
   ASSERT_TRUE(req(ilist.items[0].t, 3));
   ASSERT_TRUE(req(ilist.items[1].t, 7));
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
@@ -392,7 +392,7 @@ TEST_CASE(intersecting_a_translated_sphere) {
 	sphere_intersect(s, r, &ilist);
   ASSERT_EQ(ilist.size, 0, "%d");
 
-  free_intersection_list(ilist);
+  intersection_list_free(ilist);
 	shape_free(s);
 }
 
