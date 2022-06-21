@@ -62,6 +62,35 @@ intersection_list_t world_intersect_ray(world_t w, ray_t r) {
 	return ilist;
 }
 
+color_t world_shade_hit(world_t w, computations_t c) {
+	color_t res = color(0, 0, 0);
+
+	for (int i = 0; i < w.n_point_lights; i++) {
+		color_t hit = lighting(
+					c.s.material,
+					w.point_lights[0],
+					c.point,
+					c.eyev,
+					c.normalv
+					);
+		res = color_add(res, hit);
+	}
+
+	return res;
+}
+
+color_t world_color_at(world_t w, ray_t r) {
+	intersection_list_t ilist = world_intersect_ray(w, r);
+	if (ilist.hit == NULL) {
+		intersection_list_free(ilist);
+		return color(0, 0, 0);
+	}
+
+	computations_t comps = prepare_computations(*ilist.hit, r);
+	intersection_list_free(ilist);
+	return world_shade_hit(w, comps);
+}
+
 TEST_CASE(creating_a_world) {
 	world_t w = world();
 	ASSERT_TRUE(w.n_point_lights == 0);
@@ -106,5 +135,60 @@ TEST_CASE(intersect_world_with_a_ray) {
 	ASSERT_TRUE(req(ilist.items[2].t, 5.5));
 	ASSERT_TRUE(req(ilist.items[3].t, 6));
 	intersection_list_free(ilist);
+	world_free(w);
+}
+
+TEST_CASE(shading_an_intersection) {
+	world_t w = default_world();
+	ray_t r = ray(point(0, 0, -5), vector(0, 0, 1));
+	shape_t s = w.shapes[0];
+	intersection_t i = {
+		.t = 4,
+		.s = s,
+	};
+	computations_t comps = prepare_computations(i, r);
+	color_t c = world_shade_hit(w, comps);
+	ASSERT_TRUE(color_eq(c, color(0.38066, 0.47583, 0.2855)));
+	world_free(w);
+}
+
+TEST_CASE(shading_an_intersection_from_the_inside) {
+	world_t w = default_world();
+	w.point_lights[0] = point_light(point(0, 0.25, 0), color(1, 1, 1));
+	ray_t r = ray(point(0, 0, 0), vector(0, 0, 1));
+	shape_t s = w.shapes[1];
+	intersection_t i = {
+		.t = 0.5,
+		.s = s,
+	};
+	computations_t comps = prepare_computations(i, r);
+	color_t c = world_shade_hit(w, comps);
+	ASSERT_TRUE(color_eq(c, color(0.90498, 0.90498, 0.90498)));
+	world_free(w);
+}
+
+TEST_CASE(the_color_when_a_ray_misses) {
+	world_t w = default_world();
+	ray_t r = ray(point(0, 0, -5), vector(0, 1, 0));
+	color_t c = world_color_at(w, r);
+	ASSERT_TRUE(color_eq(c, color(0, 0, 0)));
+	world_free(w);
+}
+
+TEST_CASE(the_color_when_a_ray_hits) {
+	world_t w = default_world();
+	ray_t r = ray(point(0, 0, -5), vector(0, 0, 1));
+	color_t c = world_color_at(w, r);
+	ASSERT_TRUE(color_eq(c, color(0.38066, 0.47583, 0.2855)));
+	world_free(w);
+}
+
+TEST_CASE(the_color_with_an_intersection_behind_the_ray) {
+	world_t w = default_world();
+	w.shapes[0].material.ambient = 1;
+	w.shapes[1].material.ambient = 1;
+	ray_t r = ray(point(0, 0, 0.75), vector(0, 0, -1));
+	color_t c = world_color_at(w, r);
+	ASSERT_TRUE(color_eq(c, w.shapes[1].material.color));
 	world_free(w);
 }

@@ -80,6 +80,20 @@ matrix4_t transform(matrix4_t *ms, int n) {
 	return res;
 }
 
+matrix4_t view_transform(vec4_t from, vec4_t to, vec4_t up) {
+	vec4_t forward = vec4_normalize(vec4_sub(to, from));
+	vec4_t upn = vec4_normalize(up);
+	vec4_t left = vec4_cross(forward, upn);
+	vec4_t true_up = vec4_cross(left, forward);
+	matrix4_t orientation = matrix4(
+			left.x, left.y, left.z, 0,
+			true_up.x, true_up.y, true_up.z, 0,
+			-forward.x, -forward.y, -forward.z, 0,
+			0, 0, 0, 1
+			);
+	return matrix4_mul(orientation, translation(-from.x, -from.y, -from.z));
+}
+
 TEST_CASE(multiplying_by_translation) {
 	vec4_t p = point(-3, 4, 5);
 	matrix4_t transform = translation(5, -3, 2);
@@ -244,6 +258,47 @@ TEST_CASE(transform_func) {
 
 	p = matrix4_mul_vec4(T, p);
 	ASSERT_TRUE(vec4_eq(p, point(15, 0, 7)));
+}
+
+TEST_CASE(view_transform_default) {
+	vec4_t from = point(0, 0, 0);
+	vec4_t to = point(0, 0, -1);
+	vec4_t up = vector(0, 1, 0);
+
+	matrix4_t t = view_transform(from, to, up);
+	ASSERT_TRUE(matrix4_eq(t, matrix4_identity()));
+}
+
+TEST_CASE(view_transform_positive_z) {
+	vec4_t from = point(0, 0, 0);
+	vec4_t to = point(0, 0, 1);
+	vec4_t up = vector(0, 1, 0);
+
+	matrix4_t t = view_transform(from, to, up);
+	ASSERT_TRUE(matrix4_eq(t, scaling(-1, 1, -1)));
+}
+
+TEST_CASE(view_transform_moves_world) {
+	vec4_t from = point(0, 0, 8);
+	vec4_t to = point(0, 0, 0);
+	vec4_t up = vector(0, 1, 0);
+
+	matrix4_t t = view_transform(from, to, up);
+	ASSERT_TRUE(matrix4_eq(t, translation(0, 0, -8)));
+}
+
+TEST_CASE(arbitrary_view_transform) {
+	vec4_t from = point(1, 3, 2);
+	vec4_t to = point(4, -2, 8);
+	vec4_t up = vector(1, 1, 0);
+
+	matrix4_t t = view_transform(from, to, up);
+	ASSERT_TRUE(matrix4_eq(t, matrix4(
+					-0.50709, 0.50709, 0.67612, -2.36643,
+					0.76772, 0.60609, 0.12122, -2.82843,
+					-0.35857, 0.59761, -0.71714, 0,
+					0, 0, 0, 1
+					)));
 }
 
 static void canvas_write_tick(canvas_t* c, int x, int y, color_t p) {

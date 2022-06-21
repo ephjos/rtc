@@ -9,6 +9,7 @@ typedef struct shape_t shape_t;
 typedef struct sphere_t sphere_t;
 typedef struct intersection_t intersection_t;
 typedef struct intersection_list_t intersection_list_t;
+typedef struct computations_t computations_t;
 
 // Shape
 typedef struct shape_t {
@@ -57,3 +58,14 @@ void add_intersection(intersection_list_t *ilist, intersection_t item);
 intersection_t* hit(intersection_list_t ilist);
 
 // Computations
+
+typedef struct computations_t {
+	float t;
+	shape_t s;
+	vec4_t point;
+	vec4_t eyev;
+	vec4_t normalv;
+	bool inside;
+} computations_t;
+
+computations_t prepare_computations(intersection_t i, ray_t r);

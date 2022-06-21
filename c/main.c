@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "camera.h"
 #include "canvas.h"
 #include "materials.h"
 #include "ray.h"
@@ -21,6 +22,7 @@ int main(int argc, char **argv)
 	transform_demo();
 	ray_demo();
 	material_demo();
+	camera_demo();
 
 	return 0;
 }
