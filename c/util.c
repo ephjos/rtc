@@ -4,6 +4,6 @@
 
 #include "util.h"
 
-bool req(float a, float b) {
-	return fabs(a - b) < 0.00001;
+bool req(double a, double b) {
+	return fabs(a - b) < EPSILON;
 }

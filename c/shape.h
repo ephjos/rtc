@@ -37,7 +37,7 @@ shape_t sphere();
 
 // Intersections
 typedef struct intersection_t {
-	float t;
+	double t;
 	shape_t s;
 } intersection_t;
 
@@ -60,12 +60,13 @@ intersection_t* hit(intersection_list_t ilist);
 // Computations
 
 typedef struct computations_t {
-	float t;
+	double t;
 	shape_t s;
 	vec4_t point;
 	vec4_t eyev;
 	vec4_t normalv;
 	bool inside;
+	vec4_t over_point;
 } computations_t;
 
 computations_t prepare_computations(intersection_t i, ray_t r);

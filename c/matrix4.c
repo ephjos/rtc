@@ -11,10 +11,10 @@
 #include "vec4.h"
 
 matrix4_t matrix4(
-		float _00, float _01, float _02, float _03,
-		float _10, float _11, float _12, float _13,
-		float _20, float _21, float _22, float _23,
-		float _30, float _31, float _32, float _33
+		double _00, double _01, double _02, double _03,
+		double _10, double _11, double _12, double _13,
+		double _20, double _21, double _22, double _23,
+		double _30, double _31, double _32, double _33
 		) {
 	matrix4_t m;
 	m._00 = _00; m._01 = _01; m._02 = _02; m._03 = _03;
@@ -94,28 +94,28 @@ matrix4_t matrix4_transpose(matrix4_t a) {
 	return m;
 }
 
-float matrix4_determinant(matrix4_t M) {
-	float a = M._00;
-	float b = M._01;
-	float c = M._02;
-	float d = M._03;
-	float e = M._10;
-	float f = M._11;
-	float g = M._12;
-	float h = M._13;
-	float i = M._20;
-	float j = M._21;
-	float k = M._22;
-	float l = M._23;
-	float m = M._30;
-	float n = M._31;
-	float o = M._32;
-	float p = M._33;
+double matrix4_determinant(matrix4_t M) {
+	double a = M._00;
+	double b = M._01;
+	double c = M._02;
+	double d = M._03;
+	double e = M._10;
+	double f = M._11;
+	double g = M._12;
+	double h = M._13;
+	double i = M._20;
+	double j = M._21;
+	double k = M._22;
+	double l = M._23;
+	double m = M._30;
+	double n = M._31;
+	double o = M._32;
+	double p = M._33;
 
-	float ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
-	float cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
-	float cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
-	float cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
+	double ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
+	double cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
+	double cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
+	double cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
 
 	return a * ca + b * cb + c * cc + d * cd;
 }
@@ -125,48 +125,48 @@ bool matrix4_is_invertible(matrix4_t a) {
 }
 
 matrix4_t matrix4_inverse(matrix4_t M) {
-	float a = M._00;
-	float b = M._01;
-	float c = M._02;
-	float d = M._03;
-	float e = M._10;
-	float f = M._11;
-	float g = M._12;
-	float h = M._13;
-	float i = M._20;
-	float j = M._21;
-	float k = M._22;
-	float l = M._23;
-	float m = M._30;
-	float n = M._31;
-	float o = M._32;
-	float p = M._33;
+	double a = M._00;
+	double b = M._01;
+	double c = M._02;
+	double d = M._03;
+	double e = M._10;
+	double f = M._11;
+	double g = M._12;
+	double h = M._13;
+	double i = M._20;
+	double j = M._21;
+	double k = M._22;
+	double l = M._23;
+	double m = M._30;
+	double n = M._31;
+	double o = M._32;
+	double p = M._33;
 
-	float ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
-	float cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
-	float cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
-	float cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
+	double ca = f * (k * p - l * o) - g * (j * p - l * n) + h * (j * o - k * n);
+	double cb = -e * (k * p - l * o) + g * (i * p - l * m) - h * (i * o - k * m);
+	double cc = e * (j * p - l * n) - f * (i * p - l * m) + h * (i * n - j * m);
+	double cd = -e * (j * o - k * n) + f * (i * o - k * m) - g * (i * n - j * m);
 
-	float det = a * ca + b * cb + c * cc + d * cd;
+	double det = a * ca + b * cb + c * cc + d * cd;
 	if (det == 0) {
 		fprintf(stderr, "Matrix is not invertible\n");
 		exit(ERROR_MATRIX_NONINVERTIBLE);
 	}
 
-	float ce = -b * (k * p - l * o) + c * (j * p - l * n) - d * (j * o - k * n);
-	float cf = a * (k * p - l * o) - c * (i * p - l * m) + d * (i * o - k * m);
-	float cg = -a * (j * p - l * n) + b * (i * p - l * m) - d * (i * n - j * m);
-	float ch = a * (j * o - k * n) - b * (i * o - k * m) + c * (i * n - j * m);
+	double ce = -b * (k * p - l * o) + c * (j * p - l * n) - d * (j * o - k * n);
+	double cf = a * (k * p - l * o) - c * (i * p - l * m) + d * (i * o - k * m);
+	double cg = -a * (j * p - l * n) + b * (i * p - l * m) - d * (i * n - j * m);
+	double ch = a * (j * o - k * n) - b * (i * o - k * m) + c * (i * n - j * m);
 
-	float ci = b * (g * p - h * o) - c * (f * p - h * n) + d * (f * o - g * n);
-	float cj = -a * (g * p - h * o) + c * (e * p - h * m) - d * (e * o - g * m);
-	float ck = a * (f * p - h * n) - b * (e * p - h * m) + d * (e * n - f * m);
-	float cl = -a * (f * o - g * n) + b * (e * o - g * m) - c * (e * n - f * m);
+	double ci = b * (g * p - h * o) - c * (f * p - h * n) + d * (f * o - g * n);
+	double cj = -a * (g * p - h * o) + c * (e * p - h * m) - d * (e * o - g * m);
+	double ck = a * (f * p - h * n) - b * (e * p - h * m) + d * (e * n - f * m);
+	double cl = -a * (f * o - g * n) + b * (e * o - g * m) - c * (e * n - f * m);
 
-	float cm = -b * (g * l - h * k) + c * (f * l - h * j) - d * (f * k - g * j);
-	float cn = a * (g * l - h * k) - c * (e * l - h * i) + d * (e * k - g * i);
-	float co = -a * (f * l - h * j) + b * (e * l - h * i) - d * (e * j - f * i);
-	float cp = a * (f * k - g * j) - b * (e * k - g * i) + c * (e * j - f * i);
+	double cm = -b * (g * l - h * k) + c * (f * l - h * j) - d * (f * k - g * j);
+	double cn = a * (g * l - h * k) - c * (e * l - h * i) + d * (e * k - g * i);
+	double co = -a * (f * l - h * j) + b * (e * l - h * i) - d * (e * j - f * i);
+	double cp = a * (f * k - g * j) - b * (e * k - g * i) + c * (e * j - f * i);
 
 	return matrix4(
 			ca / det,

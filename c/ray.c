@@ -21,7 +21,7 @@ ray_t ray(vec4_t origin, vec4_t direction) {
   return r;
 }
 
-vec4_t ray_position(ray_t r, float t) {
+vec4_t ray_position(ray_t r, double t) {
   return vec4_add(r.origin, vec4_muls(r.direction, t));
 }
 
@@ -79,16 +79,16 @@ void ray_demo() {
   shape_set_transform(&s, transform(st, 3));
 
   color_t red = color(1, 0, 0);
-  const float WALL_Z = 14;
-  const float WALL_SIZE = 10;
-  const float SIZE = 128;
+  const double WALL_Z = 14;
+  const double WALL_SIZE = 10;
+  const double SIZE = 128;
   canvas_t c = canvas(SIZE, SIZE);
-  const float PIXEL_SIZE = WALL_SIZE / SIZE;
+  const double PIXEL_SIZE = WALL_SIZE / SIZE;
 
   for (int i = 0; i < SIZE; i++) {
-    float y = (WALL_SIZE/2) - PIXEL_SIZE * i;
+    double y = (WALL_SIZE/2) - PIXEL_SIZE * i;
     for (int j = 0; j < SIZE; j++) {
-      float x = (-WALL_SIZE/2) + PIXEL_SIZE * j;
+      double x = (-WALL_SIZE/2) + PIXEL_SIZE * j;
       ray_t r = ray(from, vec4_sub(point(x, y, WALL_Z), from));
       intersection_list_t ilist = intersection_list();
       sphere_intersect(s, r, &ilist);

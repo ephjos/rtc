@@ -8,7 +8,7 @@
 #include "color.h"
 #include "util.h"
 
-color_t color(float r, float g, float b) {
+color_t color(double r, double g, double b) {
 	color_t c;
 	c.r = r;
 	c.g = g;
@@ -36,7 +36,7 @@ color_t color_sub(color_t a, color_t b) {
 			);
 }
 
-color_t color_muls(color_t a, float s) {
+color_t color_muls(color_t a, double s) {
 	return color(
 			a.r * s,
 			a.g * s,

@@ -13,15 +13,15 @@
 #include "world.h"
 #include "util.h"
 
-camera_t camera(int hsize, int vsize, float fov) {
+camera_t camera(int hsize, int vsize, double fov) {
 	camera_t c;
 	c.hsize = hsize;
 	c.vsize = vsize;
 	c.fov = fov;
 	c.transform = matrix4_identity();
 
-	float half_view = tan(c.fov/2);
-	float aspect = (float)c.hsize / (float)c.vsize;
+	double half_view = tan(c.fov/2);
+	double aspect = (double)c.hsize / (double)c.vsize;
 
 	if (aspect >= 1) {
 		c.half_width = half_view;
@@ -39,11 +39,11 @@ camera_t camera(int hsize, int vsize, float fov) {
 ray_t camera_ray_for_pixel(camera_t c, int x, int y) {
 	ray_t r;
 
-	float xoffset = (x + 0.5) * c.pixel_size;
-	float yoffset = (y + 0.5) * c.pixel_size;
+	double xoffset = (x + 0.5) * c.pixel_size;
+	double yoffset = (y + 0.5) * c.pixel_size;
 
-	float world_x = c.half_width - xoffset;
-	float world_y = c.half_height - yoffset;
+	double world_x = c.half_width - xoffset;
+	double world_y = c.half_height - yoffset;
 
 	vec4_t pixel = matrix4_mul_vec4(matrix4_inverse(c.transform), point(world_x, world_y, -1));
 	vec4_t origin = matrix4_mul_vec4(matrix4_inverse(c.transform), point(0, 0, 0));
@@ -69,7 +69,7 @@ canvas_t camera_render(camera_t c, world_t w) {
 TEST_CASE(constructing_a_camera) {
 	int hsize = 160;
 	int vsize = 120;
-	float fov = M_PI/2;
+	double fov = M_PI/2;
 	camera_t c = camera(hsize, vsize, fov);
 
 	ASSERT_TRUE(req(c.hsize, 160));
@@ -187,20 +187,16 @@ void camera_demo() {
 	point_light_t light_source = point_light(point(-10, 10, -10), color(1, 1, 1));
 
 	world_t w = world();
-	w.n_point_lights = 1;
-	w.point_lights = calloc(w.n_point_lights, sizeof(point_light_t));
-	w.point_lights[0] = light_source;
+	world_add_point_light(&w, light_source);
 
-	w.n_shapes = 6;
-	w.shapes = calloc(w.n_shapes, sizeof(shape_t));
-	w.shapes[0] = floor;
-	w.shapes[1] = left_wall;
-	w.shapes[2] = right_wall;
-	w.shapes[3] = left;
-	w.shapes[4] = middle;
-	w.shapes[5] = right;
+	world_add_shape(&w, floor);
+	world_add_shape(&w, left_wall);
+	world_add_shape(&w, right_wall);
+	world_add_shape(&w, left);
+	world_add_shape(&w, middle);
+	world_add_shape(&w, right);
 
-	camera_t c = camera(1000, 500, M_PI/3);
+	camera_t c = camera(200, 100, M_PI/3);
 	c.transform = view_transform(point(0, 1.5, -5), point(0, 1, 0), vector(0, 1, 0));
 
 	canvas_t cvs = camera_render(c, w);

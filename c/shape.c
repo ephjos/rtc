@@ -1,7 +1,6 @@
 
 #include "labrat.h"
 
-#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,17 +37,17 @@ void sphere_intersect(shape_t s, ray_t r, intersection_list_t *ilist) {
 
   vec4_t sphere_to_ray = vec4_sub(lr.origin, point(0, 0, 0));
 
-  float a = vec4_dot(lr.direction, lr.direction);
-  float b = 2 * vec4_dot(lr.direction, sphere_to_ray);
-  float c = vec4_dot(sphere_to_ray, sphere_to_ray) - 1;
+  double a = vec4_dot(lr.direction, lr.direction);
+  double b = 2 * vec4_dot(lr.direction, sphere_to_ray);
+  double c = vec4_dot(sphere_to_ray, sphere_to_ray) - 1;
 
-  float discriminant = (b*b) - 4 * a * c;
+  double discriminant = (b*b) - 4 * a * c;
 
   if (discriminant < 0) {
     return;
   }
 
-  float sqrtd = sqrtf(discriminant);
+  double sqrtd = sqrtf(discriminant);
 
   intersection_t i1;
   i1.t = (-b - sqrtd) / (2*a);
@@ -162,6 +161,8 @@ computations_t prepare_computations(intersection_t i, ray_t r) {
 	} else {
 		c.inside = false;
 	}
+
+	c.over_point = vec4_add(c.point, vec4_muls(c.normalv, EPSILON));
 
 	return c;
 }
@@ -442,7 +443,7 @@ TEST_CASE(sphere_normal_on_z_axis) {
 }
 
 TEST_CASE(sphere_normal_on_nonaxial_point) {
-  float r3_3 = sqrtf(3) / 3;
+  double r3_3 = sqrtf(3) / 3;
   shape_t s = sphere();
   vec4_t n = sphere_normal_at(s, point(r3_3, r3_3, r3_3));
 
@@ -452,7 +453,7 @@ TEST_CASE(sphere_normal_on_nonaxial_point) {
 }
 
 TEST_CASE(sphere_normal_is_normalized) {
-  float r3_3 = sqrtf(3) / 3;
+  double r3_3 = sqrtf(3) / 3;
   shape_t s = sphere();
   vec4_t n = sphere_normal_at(s, point(r3_3, r3_3, r3_3));
 
@@ -549,6 +550,22 @@ TEST_CASE(the_hit_with_intersection_inside) {
 	ASSERT_TRUE(vec4_eq(c.eyev, vector(0, 0, -1)));
 	ASSERT_TRUE(vec4_eq(c.normalv, vector(0, 0, -1)));
 	ASSERT_TRUE(c.inside);
+
+	shape_free(s);
+}
+
+TEST_CASE(the_hit_should_offset_the_point) {
+	ray_t r = ray(point(0, 0, -5), vector(0, 0, 1));
+	shape_t s = sphere();
+	shape_set_transform(&s, translation(0, 0, 1));
+
+	intersection_t i = {
+		.t = 5,
+		.s = s,
+	};
+	computations_t comps = prepare_computations(i, r);
+	ASSERT_TRUE(comps.over_point.z < (-EPSILON / 2));
+	ASSERT_TRUE(comps.point.z > comps.over_point.z);
 
 	shape_free(s);
 }

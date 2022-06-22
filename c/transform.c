@@ -18,7 +18,7 @@
 #define R2_2 (0.7071067811865476) // sqrt(2)/2
 
 
-matrix4_t translation(float x, float y, float z) {
+matrix4_t translation(double x, double y, double z) {
 	matrix4_t m;
 	m._00 = 1; m._01 = 0; m._02 = 0; m._03 = x;
 	m._10 = 0; m._11 = 1; m._12 = 0; m._13 = y;
@@ -27,7 +27,7 @@ matrix4_t translation(float x, float y, float z) {
 	return m;
 }
 
-matrix4_t scaling(float x, float y, float z) {
+matrix4_t scaling(double x, double y, double z) {
 	matrix4_t m;
 	m._00 = x; m._01 = 0; m._02 = 0; m._03 = 0;
 	m._10 = 0; m._11 = y; m._12 = 0; m._13 = 0;
@@ -36,7 +36,7 @@ matrix4_t scaling(float x, float y, float z) {
 	return m;
 }
 
-matrix4_t rotate_x(float r) {
+matrix4_t rotate_x(double r) {
 	matrix4_t m;
 	m._00 = 1; m._01 = 0; m._02 = 0; m._03 = 0;
 	m._10 = 0; m._11 = cos(r); m._12 = -sin(r); m._13 = 0;
@@ -45,7 +45,7 @@ matrix4_t rotate_x(float r) {
 	return m;
 }
 
-matrix4_t rotate_y(float r) {
+matrix4_t rotate_y(double r) {
 	matrix4_t m;
 	m._00 = cos(r); m._01 = 0; m._02 = sin(r); m._03 = 0;
 	m._10 = 0; m._11 = 1; m._12 = 0; m._13 = 0;
@@ -54,7 +54,7 @@ matrix4_t rotate_y(float r) {
 	return m;
 }
 
-matrix4_t rotate_z(float r) {
+matrix4_t rotate_z(double r) {
 	matrix4_t m;
 	m._00 = cos(r); m._01 = -sin(r); m._02 = 0; m._03 = 0;
 	m._10 = sin(r); m._11 = cos(r); m._12 = 0; m._13 = 0;
@@ -63,7 +63,7 @@ matrix4_t rotate_z(float r) {
 	return m;
 }
 
-matrix4_t shearing(float a, float b, float c, float d, float e, float f) {
+matrix4_t shearing(double a, double b, double c, double d, double e, double f) {
 	matrix4_t m;
 	m._00 = 1; m._01 = a; m._02 = b; m._03 = 0;
 	m._10 = c; m._11 = 1; m._12 = d; m._13 = 0;
@@ -317,11 +317,11 @@ static void canvas_write_tick(canvas_t* c, int x, int y, color_t p) {
 void transform_demo() {
 	color_t red = color(1, 0, 0);
 
-	const float SIZE = 256;
+	const double SIZE = 256;
 	canvas_t c = canvas(SIZE, SIZE);
 
 	vec4_t p = point(0, 0, SIZE/4);
-	const float STEP = (2*M_PI)/12;
+	const double STEP = (2*M_PI)/12;
 
 	for (int i = 0; i < 12; i++) {
 		matrix4_t rotate = rotate_y(i*STEP);

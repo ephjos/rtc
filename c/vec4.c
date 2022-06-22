@@ -12,7 +12,7 @@ void vec4_print(vec4_t v) {
 	printf("[%0.2f, %0.2f, %0.2f, %0.2f]\n", v.x, v.y, v.z, v.w);
 }
 
-vec4_t tuple(float x, float y, float z, float w) {
+vec4_t tuple(double x, double y, double z, double w) {
 	vec4_t v;
 	v.x = x;
 	v.y = y;
@@ -21,10 +21,10 @@ vec4_t tuple(float x, float y, float z, float w) {
 	return v;
 }
 
-vec4_t point(float x, float y, float z) {
+vec4_t point(double x, double y, double z) {
 	return tuple(x, y, z, 1.0);
 }
-vec4_t vector(float x, float y, float z) {
+vec4_t vector(double x, double y, double z) {
 	return tuple(x, y, z, 0.0);
 }
 
@@ -62,7 +62,7 @@ vec4_t vec4_neg(vec4_t a) {
 	return vec4_sub(VEC4_ZERO, a);
 }
 
-vec4_t vec4_muls(vec4_t a, float s) {
+vec4_t vec4_muls(vec4_t a, double s) {
 	return tuple(
 			a.x * s,
 			a.y * s,
@@ -71,8 +71,8 @@ vec4_t vec4_muls(vec4_t a, float s) {
 			);
 }
 
-vec4_t vec4_divs(vec4_t a, float s) {
-	float d = 1.0 / s;
+vec4_t vec4_divs(vec4_t a, double s) {
+	double d = 1.0 / s;
 	return tuple(
 			a.x * d,
 			a.y * d,
@@ -81,7 +81,7 @@ vec4_t vec4_divs(vec4_t a, float s) {
 			);
 }
 
-float vec4_magnitude(vec4_t v) {
+double vec4_magnitude(vec4_t v) {
 	return sqrt(
 			(v.x*v.x) +
 			(v.y*v.y) +
@@ -94,7 +94,7 @@ vec4_t vec4_normalize(vec4_t v) {
 	return vec4_divs(v, vec4_magnitude(v));
 }
 
-float vec4_dot(vec4_t a, vec4_t b) {
+double vec4_dot(vec4_t a, vec4_t b) {
 	return (a.x*b.x)+(a.y*b.y)+(a.z*b.z)+(a.w*b.w);
 }
 
@@ -220,7 +220,7 @@ TEST_CASE(normalize_vectors) {
 	vec4_t v = vector(4, 0, 0);
 	ASSERT_TRUE(vec4_eq(vec4_normalize(v), vector(1, 0, 0)));
 
-	float r14 = sqrt(14);
+	double r14 = sqrt(14);
 	v = vector(1, 2, 3);
 	ASSERT_TRUE(vec4_eq(vec4_normalize(v), vector(1/r14, 2/r14, 3/r14)));
 }
