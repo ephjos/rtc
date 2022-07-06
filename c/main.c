@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 	ray_demo();
 	material_demo();
 	camera_demo();
+	plane_demo();
 
 	return 0;
 }

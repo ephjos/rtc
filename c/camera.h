@@ -20,4 +20,5 @@ ray_t camera_ray_for_pixel(camera_t c, int x, int y);
 canvas_t camera_render(camera_t c, world_t w);
 
 void camera_demo();
+void plane_demo();
 

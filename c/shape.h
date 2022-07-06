@@ -27,13 +27,20 @@ void shape_set_transform(shape_t *s, matrix4_t t);
 void shape_free(shape_t s);
 
 // Sphere
-
 typedef struct sphere_t {
 } sphere_t;
 
 void sphere_intersect(shape_t s, ray_t r, intersection_list_t *ilist);
 vec4_t sphere_normal_at(shape_t s, vec4_t p);
 shape_t sphere();
+
+// Plane
+typedef struct plane_t {
+} plane_t;
+
+void plane_intersect(shape_t s, ray_t r, intersection_list_t *ilist);
+vec4_t plane_normal_at(shape_t s, vec4_t p);
+shape_t plane();
 
 // Intersections
 typedef struct intersection_t {

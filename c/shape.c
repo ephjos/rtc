@@ -81,6 +81,42 @@ shape_t sphere() {
 	return s;
 }
 
+// Plane
+void plane_intersect(shape_t s, ray_t r, intersection_list_t *ilist) {
+  // local ray
+  ray_t lr = ray_transform(r, s.inverse_transform);
+
+	if (fabs(lr.direction.y) < EPSILON) {
+		return;
+	}
+
+
+	intersection_t i;
+	i.t = -lr.origin.y / lr.direction.y;
+	i.s = s;
+
+  add_intersection(ilist, i);
+}
+
+vec4_t plane_normal_at(shape_t s, vec4_t p) {
+  vec4_t object_point = matrix4_mul_vec4(s.inverse_transform, p);
+  vec4_t object_normal = vector(0, 1, 0);
+  vec4_t world_normal = matrix4_mul_vec4(matrix4_transpose(s.inverse_transform), object_normal);
+  world_normal.w = 0;
+  return vec4_normalize(world_normal);
+}
+
+shape_t plane() {
+	shape_t s;
+	s.transform = matrix4_identity();
+	s.inverse_transform = matrix4_identity();
+	s.material = material_default();
+	s.instance = calloc(1, sizeof(sphere_t));
+	s.intersect = plane_intersect;
+	s.normal_at = plane_normal_at;
+	return s;
+}
+
 // Intersections
 intersection_list_t intersection_list() {
 	intersection_list_t ilist;
@@ -146,7 +182,6 @@ void add_intersection(intersection_list_t *ilist, intersection_t item) {
 }
 
 // Computations
-
 computations_t prepare_computations(intersection_t i, ray_t r) {
 	computations_t c;
 
@@ -568,4 +603,55 @@ TEST_CASE(the_hit_should_offset_the_point) {
 	ASSERT_TRUE(comps.point.z > comps.over_point.z);
 
 	shape_free(s);
+}
+
+TEST_CASE(the_normal_of_plane_is_constant) {
+	shape_t p = plane();
+	vec4_t n1 = plane_normal_at(p, point(0, 0, 0));
+	vec4_t n2 = plane_normal_at(p, point(10, 0, -10));
+	vec4_t n3 = plane_normal_at(p, point(-5, 0, 150));
+
+	ASSERT_TRUE(vec4_eq(n1, vector(0, 1, 0)));
+	ASSERT_TRUE(vec4_eq(n2, vector(0, 1, 0)));
+	ASSERT_TRUE(vec4_eq(n3, vector(0, 1, 0)));
+}
+
+TEST_CASE(intersect_ray_parallel_plane) {
+	shape_t p = plane();
+	ray_t r = ray(point(0, 10, 0), vector(0, 0, 1));
+	intersection_list_t ilist = intersection_list();
+	plane_intersect(p, r, &ilist);
+
+	ASSERT_TRUE(ilist.hit == NULL);
+}
+
+TEST_CASE(intersect_ray_coplanar_plane) {
+	shape_t p = plane();
+	ray_t r = ray(point(0, 0, 0), vector(0, 0, 1));
+	intersection_list_t ilist = intersection_list();
+	plane_intersect(p, r, &ilist);
+
+	ASSERT_TRUE(ilist.hit == NULL);
+}
+
+TEST_CASE(intersect_ray_plane_above) {
+	shape_t p = plane();
+	ray_t r = ray(point(0, 1, 0), vector(0, -1, 0));
+	intersection_list_t ilist = intersection_list();
+	plane_intersect(p, r, &ilist);
+
+	ASSERT_TRUE(ilist.size == 1);
+  ASSERT_TRUE(req(ilist.items[0].t, 1));
+	ASSERT_TRUE(shape_eq(ilist.items[0].s, p));
+}
+
+TEST_CASE(intersect_ray_plane_below) {
+	shape_t p = plane();
+	ray_t r = ray(point(0, -1, 0), vector(0, 1, 0));
+	intersection_list_t ilist = intersection_list();
+	plane_intersect(p, r, &ilist);
+
+	ASSERT_TRUE(ilist.size == 1);
+  ASSERT_TRUE(req(ilist.items[0].t, 1));
+	ASSERT_TRUE(shape_eq(ilist.items[0].s, p));
 }
