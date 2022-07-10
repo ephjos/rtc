@@ -5,12 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "camera.h"
-#include "canvas.h"
-#include "materials.h"
-#include "ray.h"
-#include "transform.h"
-#include "vec4.h"
+#include "rtc.h"
 
 
 int main(int argc, char **argv)

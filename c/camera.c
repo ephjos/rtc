@@ -5,13 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "camera.h"
-#include "ray.h"
-#include "shape.h"
-#include "transform.h"
-#include "vec4.h"
-#include "world.h"
-#include "util.h"
+#include "rtc.h"
 
 camera_t camera(int hsize, int vsize, double fov) {
 	camera_t c;

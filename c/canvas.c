@@ -5,11 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "canvas.h"
-#include "color.h"
-#include "error.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 canvas_t canvas(int width, int height) {
 	canvas_t c;

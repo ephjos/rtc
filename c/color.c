@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "color.h"
-#include "util.h"
+#include "rtc.h"
 
 color_t color(double r, double g, double b) {
 	color_t c;

@@ -5,14 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "color.h"
-#include "error.h"
-#include "ray.h"
-#include "shape.h"
-#include "transform.h"
-#include "vec4.h"
-#include "world.h"
-#include "util.h"
+#include "rtc.h"
 
 world_t world() {
 	world_t w;

@@ -5,12 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "canvas.h"
-#include "error.h"
-#include "matrix4.h"
-#include "transform.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 #define PI_2 (M_PI / 2)
 #define PI_4 (M_PI / 4)

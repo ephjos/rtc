@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "vec4.h"
-#include "util.h"
+#include "rtc.h"
 
 void vec4_print(vec4_t v) {
 	printf("[%0.2f, %0.2f, %0.2f, %0.2f]\n", v.x, v.y, v.z, v.w);

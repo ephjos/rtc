@@ -5,14 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "canvas.h"
-#include "error.h"
-#include "lights.h"
-#include "matrix4.h"
-#include "ray.h"
-#include "transform.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 point_light_t point_light(vec4_t position, color_t intensity) {
 	point_light_t pl;

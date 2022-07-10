@@ -4,15 +4,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-#include "error.h"
-#include "matrix4.h"
-#include "ray.h"
-#include "shape.h"
-#include "transform.h"
-#include "util.h"
-
+#include "rtc.h"
 
 // Shape
 bool shape_eq(shape_t a, shape_t b) {

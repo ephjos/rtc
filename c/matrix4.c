@@ -5,10 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "error.h"
-#include "matrix4.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 matrix4_t matrix4(
 		double _00, double _01, double _02, double _03,

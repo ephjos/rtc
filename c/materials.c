@@ -5,16 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "canvas.h"
-#include "error.h"
-#include "lights.h"
-#include "materials.h"
-#include "matrix4.h"
-#include "ray.h"
-#include "shape.h"
-#include "transform.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 #define R2_2 (0.7071067811865476) // sqrt(2)/2
 

@@ -5,14 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "canvas.h"
-#include "error.h"
-#include "matrix4.h"
-#include "ray.h"
-#include "shape.h"
-#include "transform.h"
-#include "util.h"
-#include "vec4.h"
+#include "rtc.h"
 
 ray_t ray(vec4_t origin, vec4_t direction) {
   ray_t r;
