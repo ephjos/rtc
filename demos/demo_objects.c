@@ -40,9 +40,9 @@ void demo_objects()
 
   {
     char *ppm = canvas_to_ppm(c);
-    FILE *fp = fopen("./images/demo_objects.ppm", "w");
+    FILE *fp = fopen("./demo-out/demo_objects.ppm", "w");
     if (fp == NULL) {
-      perror("Failed to open images/demo_objects.ppm for writing");
+      perror("Failed to open demo-out/demo_objects.ppm for writing");
       free(ppm);
       canvas_free(c);
       return;
@@ -51,7 +51,7 @@ void demo_objects()
     fprintf(fp, "%s", ppm);
     fclose(fp);
 
-    printf("wrote images/demo_objects.ppm\n");
+    printf("wrote demo-out/demo_objects.ppm\n");
 
     free(ppm);
     canvas_free(c);

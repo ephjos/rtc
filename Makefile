@@ -23,7 +23,10 @@ all: main_debug main_release test_debug test_release demo_debug demo_release
 
 .PHONY: clean
 clean: 
-	rm -fv main_debug main_release test_debug test_release demo_debug demo_release
+	rm -rfv main_debug main_release test_debug test_release demo_debug demo_release demo-out
+
+demo-out: 
+	mkdir -p demo-out
 
 main_debug: src/main.c $(SRCS) $(HEADERS)
 	$(CC) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS)
@@ -39,9 +42,9 @@ test_release: tests/test_main.c $(SRCS) $(HEADERS) $(TESTS) $(TEST_HEADERS)
 	$(CC) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(TESTS)
 	$(STRIP) $@
 
-demo_debug: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS)
+demo_debug: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS) demo-out
 	$(CC) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
 
-demo_release: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS)
+demo_release: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS) demo-out
 	$(CC) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
 	$(STRIP) $@

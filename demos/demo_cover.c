@@ -181,9 +181,9 @@ void demo_cover()
 
   {
     char *ppm = canvas_to_ppm(c);
-    FILE *fp = fopen("./images/demo_cover.ppm", "w");
+    FILE *fp = fopen("./demo-out/demo_cover.ppm", "w");
     if (fp == NULL) {
-      perror("Failed to open images/demo_cover.ppm for writing");
+      perror("Failed to open demo-out/demo_cover.ppm for writing");
       free(ppm);
       canvas_free(c);
       return;
@@ -192,7 +192,7 @@ void demo_cover()
     fprintf(fp, "%s", ppm);
     fclose(fp);
 
-    printf("wrote images/demo_cover.ppm ");
+    printf("wrote demo-out/demo_cover.ppm ");
     render_stats_print(&s);
 
     free(ppm);
@@ -224,7 +224,7 @@ void render_and_save(world w, u32 frame, f64 step)
   canvas *c = camera_render(&v, &w, &s);
 
   char filepath[256] = {0};
-  sprintf(filepath, "./frames/cover_%05ld.ppm", frame);
+  sprintf(filepath, "./demo-out/cover_%05ld.ppm", frame);
 
   {
     char *ppm = canvas_to_ppm(c);

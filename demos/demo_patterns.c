@@ -205,9 +205,9 @@ void demo_patterns()
 
   {
     char *ppm = canvas_to_ppm(c);
-    FILE *fp = fopen("./images/demo_patterns.ppm", "w");
+    FILE *fp = fopen("./demo-out/demo_patterns.ppm", "w");
     if (fp == NULL) {
-      perror("Failed to open images/demo_patterns.ppm for writing");
+      perror("Failed to open demo-out/demo_patterns.ppm for writing");
       free(ppm);
       canvas_free(c);
       return;
@@ -216,7 +216,7 @@ void demo_patterns()
     fprintf(fp, "%s", ppm);
     fclose(fp);
 
-    printf("wrote images/demo_patterns.ppm ");
+    printf("wrote demo-out/demo_patterns.ppm ");
     render_stats_print(&s);
 
     free(ppm);
