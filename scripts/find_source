@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find . | grep -v ".ppm" | grep -v "_debug" | grep -v "_release"

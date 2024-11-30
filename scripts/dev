@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./scripts/find_source | entr -c -s 'make demo_debug && ./demo_debug'

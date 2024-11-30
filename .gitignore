@@ -1,0 +1,7 @@
+*.o
+*.ppm
+*.mp4
+*.prof
+*.aux
+*_debug
+*_release
