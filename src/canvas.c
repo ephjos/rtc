@@ -7,7 +7,7 @@ canvas *canvas_alloc(u32 width, u32 height)
   c->width = width;
   c->height = height;
 
-  u32 pixels_bytes = sizeof(vec4) * width * height;
+  u32 pixels_bytes = sizeof(v3) * width * height;
   c->pixels = malloc(pixels_bytes);
 
   memset(c->pixels, 0, pixels_bytes);
@@ -21,22 +21,21 @@ void canvas_free(canvas *c)
   free(c);
 }
 
-void canvas_write(canvas *c, u32 x, u32 y, vec4 color)
+void canvas_write(canvas *c, u32 x, u32 y, v3 color)
 {
   c->pixels[y * c->width + x][0] = color[0];
   c->pixels[y * c->width + x][1] = color[1];
   c->pixels[y * c->width + x][2] = color[2];
-  c->pixels[y * c->width + x][3] = color[3];
 }
 
-void canvas_safe_write(canvas *c, s32 x, s32 y, vec4 color)
+void canvas_safe_write(canvas *c, s32 x, s32 y, v3 color)
 {
   x = CLAMP(x, 0, (s32)c->width-1);
   y = CLAMP(y, 0, (s32)c->height-1);
   canvas_write(c, x, y, color);
 }
 
-vec4 *canvas_at(const canvas *c, u32 x, u32 y)
+v3 *canvas_at(const canvas *c, u32 x, u32 y)
 {
   return &c->pixels[y * c->width + x];
 }

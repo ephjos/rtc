@@ -13,7 +13,7 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    assert(vec4_eq(m.color, color(1, 1, 1)));
+    assert(v3_eq(m.color, color(1, 1, 1)));
     assert(req(m.ambient, 0.1));
     assert(req(m.diffuse, 0.9));
     assert(req(m.specular, 0.9));
@@ -28,18 +28,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, 0, -1);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, 0, -1);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 0, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 0, -10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(vec4_eq(result, color(1.9, 1.9, 1.9)));
+    assert(v3_eq(result, color(1.9, 1.9, 1.9)));
   }
 
   TEST {
@@ -47,18 +47,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, ROOT_2_2, -ROOT_2_2);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, ROOT_2_2, -ROOT_2_2);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 0, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 0, -10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(vec4_eq(result, color(1.0, 1.0, 1.0)));
+    assert(v3_eq(result, color(1.0, 1.0, 1.0)));
   }
 
   TEST {
@@ -66,18 +66,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, 0, -1);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, 0, -1);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 10, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 10, -10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(vec4_eq(result, color(0.7364f, 0.7364f, 0.7364f)));
+    assert(v3_eq(result, color(0.7364f, 0.7364f, 0.7364f)));
   }
 
   TEST {
@@ -85,18 +85,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, -ROOT_2_2, -ROOT_2_2);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, -ROOT_2_2, -ROOT_2_2);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 10, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 10, -10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(vec4_eq(result, color(1.6364f, 1.6364f, 1.6364f)));
+    assert(v3_eq(result, color(1.6364f, 1.6364f, 1.6364f)));
   }
 
   TEST {
@@ -104,18 +104,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, 0, -1);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, 0, -1);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 0, 10), color(1, 1, 1));
+    point_light_init(&l, point(0, 0, 10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(vec4_eq(result, color(0.1, 0.1, 0.1)));
+    assert(v3_eq(result, color(0.1, 0.1, 0.1)));
   }
 
   TEST {
@@ -123,18 +123,18 @@ void test_materials()
     material m = {0};
     material_init(&m);
 
-    vec4 position = point4_init(0, 0, 0);
+    v4 position = point_init(0, 0, 0);
 
-    vec4 eyev = vec4_init(0, 0, -1);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, 0, -1);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 0, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 0, -10), color(1, 1, 1));
 
-    vec4 result = {0};
+    v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, true, result);
 
-    assert(vec4_eq(result, color(0.1, 0.1, 0.1)));
+    assert(v3_eq(result, color(0.1, 0.1, 0.1)));
   }
 
   TEST {
@@ -150,19 +150,19 @@ void test_materials()
     m.diffuse = 0;
     m.specular = 0;
 
-    vec4 eyev = vec4_init(0, 0, -1);
-    vec4 normalv = vec4_init(0, 0, -1);
+    v4 eyev = vector_init(0, 0, -1);
+    v4 normalv = vector_init(0, 0, -1);
 
     light l = {0};
-    point_light_init(&l, point4(0, 0, -10), color(1, 1, 1));
+    point_light_init(&l, point(0, 0, -10), color(1, 1, 1));
 
-    vec4 c1 = {0};
-    material_lighting(&m, &l, &sphere, point4(0.9, 0, 0), eyev, normalv, false, c1);
-    assert(vec4_eq(c1, color(1, 1, 1)));
+    v3 c1 = {0};
+    material_lighting(&m, &l, &sphere, point(0.9, 0, 0), eyev, normalv, false, c1);
+    assert(v3_eq(c1, color(1, 1, 1)));
 
-    vec4 c2 = {0};
-    material_lighting(&m, &l, &sphere, point4(1.1, 0, 0), eyev, normalv, false, c2);
-    assert(vec4_eq(c2, color(0, 0, 0)));
+    v3 c2 = {0};
+    material_lighting(&m, &l, &sphere, point(1.1, 0, 0), eyev, normalv, false, c2);
+    assert(v3_eq(c2, color(0, 0, 0)));
   }
 }
 

@@ -11,8 +11,8 @@ void test_patterns()
     pattern s = {0};
     striped_pattern_init(&s, WHITE, BLACK);
 
-    assert(vec4_eq(s.value.striped.a, WHITE));
-    assert(vec4_eq(s.value.striped.b, BLACK));
+    assert(v3_eq(s.value.striped.a, WHITE));
+    assert(v3_eq(s.value.striped.b, BLACK));
   }
 
   TEST {
@@ -21,21 +21,21 @@ void test_patterns()
     striped_pattern_init(&s, WHITE, BLACK);
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 0, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 0, 0), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 1, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 1, 0), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 2, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 2, 0), out);
+      assert(v3_eq(out, WHITE));
     }
   }
 
@@ -45,21 +45,21 @@ void test_patterns()
     striped_pattern_init(&s, WHITE, BLACK);
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 0, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 0, 0), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 0, 1), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 0, 1), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 0, 2), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 0, 2), out);
+      assert(v3_eq(out, WHITE));
     }
   }
 
@@ -69,39 +69,39 @@ void test_patterns()
     striped_pattern_init(&s, WHITE, BLACK);
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0, 0, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0, 0, 0), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(0.9, 0, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(0.9, 0, 0), out);
+      assert(v3_eq(out, WHITE));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(1, 0, 0), out);
-      assert(vec4_eq(out, BLACK));
+      v3 out = {0};
+      pattern_color_at(&s, point(1, 0, 0), out);
+      assert(v3_eq(out, BLACK));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(-0.1, 0, 0), out);
-      assert(vec4_eq(out, BLACK));
+      v3 out = {0};
+      pattern_color_at(&s, point(-0.1, 0, 0), out);
+      assert(v3_eq(out, BLACK));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(-1, 0, 0), out);
-      assert(vec4_eq(out, BLACK));
+      v3 out = {0};
+      pattern_color_at(&s, point(-1, 0, 0), out);
+      assert(v3_eq(out, BLACK));
     }
 
     {
-      vec4 out = {0};
-      pattern_color_at(&s, point4(-1.1, 0, 0), out);
-      assert(vec4_eq(out, WHITE));
+      v3 out = {0};
+      pattern_color_at(&s, point(-1.1, 0, 0), out);
+      assert(v3_eq(out, WHITE));
     }
   }
 
@@ -111,7 +111,7 @@ void test_patterns()
     {
       sphere_init(&s);
 
-      matrix4 T = {0};
+      m4 T = {0};
       scaling(2, 2, 2, T);
 
       object_set_transform(&s, T);
@@ -120,9 +120,9 @@ void test_patterns()
     pattern p = {0};
     striped_pattern_init(&p, WHITE, BLACK);
 
-    vec4 result = {0};
-    pattern_object_color_at(&p, &s, point4(1.5, 0, 0), result);
-    assert(vec4_eq(result, WHITE));
+    v3 result = {0};
+    pattern_object_color_at(&p, &s, point(1.5, 0, 0), result);
+    assert(v3_eq(result, WHITE));
   }
 
   TEST {
@@ -133,20 +133,20 @@ void test_patterns()
     pattern p = {0};
     striped_pattern_init(&p, WHITE, BLACK);
     {
-      matrix4 T = {0};
+      m4 T = {0};
       scaling(2, 2, 2, T);
 
       pattern_set_transform(&p, T);
     }
 
-    vec4 result = {0};
-    pattern_object_color_at(&p, &s, point4(1.5, 0, 0), result);
-    assert(vec4_eq(result, WHITE));
+    v3 result = {0};
+    pattern_object_color_at(&p, &s, point(1.5, 0, 0), result);
+    assert(v3_eq(result, WHITE));
   }
 
   TEST {
     // Stripes with a pattern and object transformation
-    matrix4 T = {0};
+    m4 T = {0};
     scaling(2, 2, 2, T);
 
     object s = {0};
@@ -157,9 +157,9 @@ void test_patterns()
     striped_pattern_init(&p, WHITE, BLACK);
     pattern_set_transform(&p, T);
 
-    vec4 result = {0};
-    pattern_object_color_at(&p, &s, point4(1.5, 0, 0), result);
-    assert(vec4_eq(result, WHITE));
+    v3 result = {0};
+    pattern_object_color_at(&p, &s, point(1.5, 0, 0), result);
+    assert(v3_eq(result, WHITE));
   }
 
   TEST {
@@ -168,27 +168,27 @@ void test_patterns()
     gradient_pattern_init(&p, WHITE, BLACK);
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0.25, 0, 0), result);
-      assert(vec4_eq(result, color(0.75, 0.75, 0.75)));
+      v3 result = {0};
+      pattern_color_at(&p, point(0.25, 0, 0), result);
+      assert(v3_eq(result, color(0.75, 0.75, 0.75)));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0.5, 0, 0), result);
-      assert(vec4_eq(result, color(0.5, 0.5, 0.5)));
+      v3 result = {0};
+      pattern_color_at(&p, point(0.5, 0, 0), result);
+      assert(v3_eq(result, color(0.5, 0.5, 0.5)));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0.75, 0, 0), result);
-      assert(vec4_eq(result, color(0.25, 0.25, 0.25)));
+      v3 result = {0};
+      pattern_color_at(&p, point(0.75, 0, 0), result);
+      assert(v3_eq(result, color(0.25, 0.25, 0.25)));
     }
   }
 
@@ -198,27 +198,27 @@ void test_patterns()
     ring_pattern_init(&p, WHITE, BLACK);
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(1, 0, 0), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(1, 0, 0), result);
+      assert(v3_eq(result, BLACK));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 1), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 1), result);
+      assert(v3_eq(result, BLACK));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0.708, 0, 0.708), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(0.708, 0, 0.708), result);
+      assert(v3_eq(result, BLACK));
     }
   }
 
@@ -228,21 +228,21 @@ void test_patterns()
     checker_pattern_init(&p, WHITE, BLACK);
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0.99, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0.99, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(1.01, 0, 0), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(1.01, 0, 0), result);
+      assert(v3_eq(result, BLACK));
     }
   }
 
@@ -252,21 +252,21 @@ void test_patterns()
     checker_pattern_init(&p, WHITE, BLACK);
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0.99, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0.99, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 1.01, 0), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 1.01, 0), result);
+      assert(v3_eq(result, BLACK));
     }
   }
 
@@ -276,21 +276,21 @@ void test_patterns()
     checker_pattern_init(&p, WHITE, BLACK);
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 0.99), result);
-      assert(vec4_eq(result, WHITE));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 0.99), result);
+      assert(v3_eq(result, WHITE));
     }
 
     {
-      vec4 result = {0};
-      pattern_color_at(&p, point4(0, 0, 1.01), result);
-      assert(vec4_eq(result, BLACK));
+      v3 result = {0};
+      pattern_color_at(&p, point(0, 0, 1.01), result);
+      assert(v3_eq(result, BLACK));
     }
   }
 

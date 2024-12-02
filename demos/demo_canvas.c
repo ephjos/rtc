@@ -2,21 +2,21 @@
 
 
 typedef struct {
-  vec4 position;
-  vec4 velocity;
+  v4 position;
+  v4 velocity;
 } canvas_projectile;
 
 typedef struct {
-  vec4 gravity;
-  vec4 wind;
+  v4 gravity;
+  v4 wind;
 } canvas_environment;
 
 void canvas_tick(canvas_environment *e, canvas_projectile *p)
 {
-  vec4_add(p->position, p->velocity, p->position);
-  vec4 env_comp = {0};
-  vec4_add(e->gravity, e->wind, env_comp);
-  vec4_add(p->velocity, env_comp, p->velocity);
+  v4_add(p->position, p->velocity, p->position);
+  v4 env_comp = {0};
+  v4_add(e->gravity, e->wind, env_comp);
+  v4_add(p->velocity, env_comp, p->velocity);
 }
 
 #define CANVAS_DEMO_BLOCK(s) \
@@ -31,18 +31,18 @@ void demo_canvas()
   printf("-- demo canvas\n");
 
   canvas *c = canvas_alloc(900, 550);
-  vec4 red = color_init(1, 0, 0);
+  v3 red = color_init(1, 0, 0);
 
   canvas_projectile p = {
-    .position = point4_init(0, 1, 0),
-    .velocity = vec4_init(1, 1.8, 0),
+    .position = point_init(0, 1, 0),
+    .velocity = vector_init(1, 1.8, 0),
   };
-  vec4_norm(p.velocity, p.velocity);
-  vec4_scale(p.velocity, 11.25, p.velocity);
+  v4_norm(p.velocity, p.velocity);
+  v4_scale(p.velocity, 11.25, p.velocity);
 
   canvas_environment e = {
-    .gravity = vec4_init(0, -0.1, 0),
-    .wind = vec4_init(-0.01f, 0, 0),
+    .gravity = vector_init(0, -0.1, 0),
+    .wind = vector_init(-0.01f, 0, 0),
   };
 
   CANVAS_DEMO_BLOCK(3);

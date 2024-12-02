@@ -11,13 +11,13 @@ void demo_objects()
   const f64 pixel_size = (f64)wall_size / (f64)w;
   const f64 half = (f64)wall_size/2.0;
   canvas *c = canvas_alloc(w, w);
-  vec4 red = color_init(1, 0, 0);
+  v3 red = color_init(1, 0, 0);
 
   object s = {0};
   sphere_init(&s);
 
   ray r = {
-    .origin = point4_init(0, 0, -5),
+    .origin = point_init(0, 0, -5),
   };
 
   for (u32 i = 0; i < w; i++) {
@@ -25,9 +25,9 @@ void demo_objects()
     for (u32 j = 0; j < w; j++) {
       f64 world_x = -half + pixel_size * (f64)j;
 
-      vec4 target = point4_init((f64)world_x, (f64)world_y, (f64)wall_z);
-      vec4_sub(target, r.origin, r.direction);
-      vec4_norm(r.direction, r.direction);
+      v4 target = point_init((f64)world_x, (f64)world_y, (f64)wall_z);
+      v4_sub(target, r.origin, r.direction);
+      v4_norm(r.direction, r.direction);
 
       intersection_group ig = {0};
       ray_intersect(&r, &s, &ig);

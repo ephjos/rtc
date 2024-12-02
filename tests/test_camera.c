@@ -13,7 +13,7 @@ void test_camera()
       assert(c.hsize == 160);
       assert(c.vsize == 120);
       assert(req(c.fov, PI_2));
-      assert(matrix4_eq(c.transform, IDENTITY));
+      assert(m4_eq(c.transform, IDENTITY));
   }
 
   TEST {
@@ -41,8 +41,8 @@ void test_camera()
 
       camera_ray_for_pixel(&c, 100, 50, &r);
 
-      assert(vec4_eq(r.origin, point4(0, 0, 0)));
-      assert(vec4_eq(r.direction, vec4(0, 0, -1)));
+      assert(v4_eq(r.origin, point(0, 0, 0)));
+      assert(v4_eq(r.direction, vector(0, 0, -1)));
   }
 
   TEST {
@@ -54,8 +54,8 @@ void test_camera()
 
       camera_ray_for_pixel(&c, 0, 0, &r);
 
-      assert(vec4_eq(r.origin, point4(0, 0, 0)));
-      assert(vec4_eq(r.direction, vec4(0.66519f, 0.33259f, -0.66851f)));
+      assert(v4_eq(r.origin, point(0, 0, 0)));
+      assert(v4_eq(r.direction, vector(0.66519f, 0.33259f, -0.66851f)));
   }
 
   TEST {
@@ -64,14 +64,14 @@ void test_camera()
       camera_init(&c, 201, 101, PI_2);
 
       {
-        matrix4 R = {0};
+        m4 R = {0};
         rotation_y(PI_4, R);
 
-        matrix4 T = {0};
+        m4 T = {0};
         translation(0, -2, 5, T);
 
-        matrix4 Z = {0};
-        matrix4_mul(R, T, Z);
+        m4 Z = {0};
+        m4_mul(R, T, Z);
 
         camera_set_transform(&c, Z);
       }
@@ -80,8 +80,8 @@ void test_camera()
 
       camera_ray_for_pixel(&c, 100, 50, &r);
 
-      assert(vec4_eq(r.origin, point4(0, 2, -5)));
-      assert(vec4_eq(r.direction, vec4(ROOT_2_2, 0, -ROOT_2_2)));
+      assert(v4_eq(r.origin, point(0, 2, -5)));
+      assert(v4_eq(r.direction, vector(ROOT_2_2, 0, -ROOT_2_2)));
   }
 
   TEST {
@@ -91,11 +91,11 @@ void test_camera()
       camera v = {0};
       camera_init(&v, 11, 11, PI_2);
 
-      vec4 from = point4_init(0, 0, -5);
-      vec4 to = point4_init(0, 0, 0);
-      vec4 up = vec4_init(0, 1, 0);
+      v4 from = point_init(0, 0, -5);
+      v4 to = point_init(0, 0, 0);
+      v4 up = vector_init(0, 1, 0);
 
-      matrix4 T = {0};
+      m4 T = {0};
       view_transform(from, to, up, T);
 
       camera_set_transform(&v, T);
@@ -103,10 +103,10 @@ void test_camera()
       canvas *c = camera_render(&v, &w, NULL);
       assert(c != NULL);
 
-      vec4 *px = canvas_at(c, 5, 5);
+      v3 *px = canvas_at(c, 5, 5);
       assert(px != NULL);
 
-      assert(vec4_eq(*px, color(0.38066f, 0.47583f, 0.2855f)));
+      assert(v3_eq(*px, color(0.38066f, 0.47583f, 0.2855f)));
 
       canvas_free(c);
   }

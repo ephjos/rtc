@@ -11,8 +11,8 @@ void test_world()
     world_init(&w);
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {0};
@@ -31,8 +31,8 @@ void test_world()
     world_init(&w);
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {0};
@@ -41,10 +41,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[0], &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_shade_hit(&w, &c, 0, out);
 
-    assert(vec4_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
+    assert(v3_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
   }
 
   TEST {
@@ -52,12 +52,12 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    memcpy(w.lights[0].position, point4(0.0, 0.25f, 0.0), sizeof(vec4));
-    memcpy(w.lights[0].intensity, color(1, 1, 1), sizeof(vec4));
+    memcpy(w.lights[0].position, point(0.0, 0.25f, 0.0), sizeof(v4));
+    memcpy(w.lights[0].intensity, color(1, 1, 1), sizeof(v3));
 
     ray r = {
-      .origin = point4_init(0, 0, 0),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, 0),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {0};
@@ -66,10 +66,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[2], &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_shade_hit(&w, &c, 0, out);
 
-    assert(vec4_eq(out, color(0.90498f, 0.90498f, 0.90498f)));
+    assert(v3_eq(out, color(0.90498f, 0.90498f, 0.90498f)));
   }
 
   TEST {
@@ -78,14 +78,14 @@ void test_world()
     world_init(&w);
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 1, 0),
     };
 
-    vec4 out = {0};
+    v3 out = {0};
     world_color_at(&w, &r, 0, out);
 
-    assert(vec4_eq(out, color(0, 0, 0)));
+    assert(v3_eq(out, color(0, 0, 0)));
   }
 
   TEST {
@@ -94,14 +94,14 @@ void test_world()
     world_init(&w);
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
-    vec4 out = {0};
+    v3 out = {0};
     world_color_at(&w, &r, 0, out);
 
-    assert(vec4_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
+    assert(v3_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
   }
 
   TEST {
@@ -113,14 +113,14 @@ void test_world()
     w.objects[1].material.ambient = 1;
 
     ray r = {
-      .origin = point4_init(0, 0, 0.75),
-      .direction = vec4_init(0, 0, -1),
+      .origin = point_init(0, 0, 0.75),
+      .direction = vector_init(0, 0, -1),
     };
 
-    vec4 out = {0};
+    v3 out = {0};
     world_color_at(&w, &r, 0, out);
 
-    assert(vec4_eq(out, w.objects[1].material.color));
+    assert(v3_eq(out, w.objects[1].material.color));
   }
 
   TEST {
@@ -128,7 +128,7 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    vec4 p = point4_init(0, 10, 0);
+    v4 p = point_init(0, 10, 0);
 
     b32 is_shadowed = world_is_shadowed(&w, &w.lights[0], p);
 
@@ -140,7 +140,7 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    vec4 p = point4_init(10, -10, 10);
+    v4 p = point_init(10, -10, 10);
 
     b32 is_shadowed = world_is_shadowed(&w, &w.lights[0], p);
 
@@ -152,7 +152,7 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    vec4 p = point4_init(-20, 20, -20);
+    v4 p = point_init(-20, 20, -20);
 
     b32 is_shadowed = world_is_shadowed(&w, &w.lights[0], p);
 
@@ -164,7 +164,7 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    vec4 p = point4_init(-2, 2, -2);
+    v4 p = point_init(-2, 2, -2);
 
     b32 is_shadowed = world_is_shadowed(&w, &w.lights[0], p);
 
@@ -181,7 +181,7 @@ void test_world()
     {
       sphere_init(&s2);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, 0, 10, T);
 
       object_set_transform(&s2, T);
@@ -189,7 +189,7 @@ void test_world()
 
     light l = {0};
     {
-      point_light_init(&l, point4(0, 0, -10), color(1, 1, 1));
+      point_light_init(&l, point(0, 0, -10), color(1, 1, 1));
     }
 
     // Shade hit is given an intersection in shadow
@@ -205,8 +205,8 @@ void test_world()
     };
 
     ray r = {
-      .origin = point4_init(0, 0, 5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, 5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection i = {
@@ -217,10 +217,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&i, &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_shade_hit(&w, &c, 0, out);
 
-    assert(vec4_eq(out, color(0.1, 0.1, 0.1)));
+    assert(v3_eq(out, color(0.1, 0.1, 0.1)));
   }
 
   TEST {
@@ -229,8 +229,8 @@ void test_world()
     world_init(&w);
 
     ray r = {
-      .origin = point4_init(0, 0, 0),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, 0),
+      .direction = vector_init(0, 0, 1),
     };
 
     w.objects[1].material.ambient = 1;
@@ -243,10 +243,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&i, &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_reflected_color(&w, &c, 0, out);
 
-    assert(vec4_eq(out, color(0, 0, 0)));
+    assert(v3_eq(out, color(0, 0, 0)));
   }
 
   TEST {
@@ -260,7 +260,7 @@ void test_world()
 
       p.material.reflective = 0.5;
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -1, 0, T);
 
       object_set_transform(&p, T);
@@ -269,8 +269,8 @@ void test_world()
     w.objects[w.objects_count++] = p;
 
     ray r = {
-      .origin = point4_init(0, 0, -3),
-      .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+      .origin = point_init(0, 0, -3),
+      .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
     };
 
     intersection i = {
@@ -281,10 +281,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&i, &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_reflected_color(&w, &c, MAX_DEPTH, out);
 
-    assert(vec4_eq(out, color(0.19033, 0.23792, 0.14275)));
+    assert(v3_eq(out, color(0.19033, 0.23792, 0.14275)));
   }
 
   TEST {
@@ -298,7 +298,7 @@ void test_world()
 
       p.material.reflective = 0.5;
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -1, 0, T);
 
       object_set_transform(&p, T);
@@ -307,8 +307,8 @@ void test_world()
     w.objects[w.objects_count++] = p;
 
     ray r = {
-      .origin = point4_init(0, 0, -3),
-      .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+      .origin = point_init(0, 0, -3),
+      .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
     };
 
     intersection i = {
@@ -319,10 +319,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&i, &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_shade_hit(&w, &c, MAX_DEPTH, out);
 
-    assert(vec4_eq(out, color(0.87676, 0.92434, 0.82917)));
+    assert(v3_eq(out, color(0.87676, 0.92434, 0.82917)));
   }
 
   TEST {
@@ -336,7 +336,7 @@ void test_world()
 
       p.material.reflective = 0.5;
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -1, 0, T);
 
       object_set_transform(&p, T);
@@ -345,8 +345,8 @@ void test_world()
     w.objects[w.objects_count++] = p;
 
     ray r = {
-      .origin = point4_init(0, 0, -3),
-      .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+      .origin = point_init(0, 0, -3),
+      .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
     };
 
     intersection i = {
@@ -357,10 +357,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&i, &r, NULL, &c);
 
-    vec4 out = {0};
+    v3 out = {0};
     world_reflected_color(&w, &c, 0, out);
 
-    assert(vec4_eq(out, color(0, 0, 0)));
+    assert(v3_eq(out, color(0, 0, 0)));
   }
 
   TEST {
@@ -371,8 +371,8 @@ void test_world()
     object *shape = &w.objects[0];
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {
@@ -386,10 +386,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[0], &r, &ig, &c);
 
-    vec4 result = {0};
+    v3 result = {0};
     world_refracted_color(&w, &c, 5, result);
 
-    assert(vec4_eq(result, color(0, 0, 0)));
+    assert(v3_eq(result, color(0, 0, 0)));
   }
 
   TEST {
@@ -402,8 +402,8 @@ void test_world()
     shape->material.refractive_index = 1.5;
 
     ray r = {
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {
@@ -417,10 +417,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[0], &r, &ig, &c);
 
-    vec4 result = {0};
+    v3 result = {0};
     world_refracted_color(&w, &c, 0, result);
 
-    assert(vec4_eq(result, color(0, 0, 0)));
+    assert(v3_eq(result, color(0, 0, 0)));
   }
 
   TEST {
@@ -433,8 +433,8 @@ void test_world()
     shape->material.refractive_index = 1.5;
 
     ray r = {
-      .origin = point4_init(0, 0, ROOT_2_2),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, 0, ROOT_2_2),
+      .direction = vector_init(0, 1, 0),
     };
 
     intersection_group ig = {
@@ -448,10 +448,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[1], &r, &ig, &c);
 
-    vec4 result = {0};
+    v3 result = {0};
     world_refracted_color(&w, &c, 5, result);
 
-    assert(vec4_eq(result, color(0, 0, 0)));
+    assert(v3_eq(result, color(0, 0, 0)));
   }
 
   TEST {
@@ -467,8 +467,8 @@ void test_world()
     B->material.refractive_index = 1.5;
 
     ray r = {
-      .origin = point4_init(0, 0, 0.1),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, 0, 0.1),
+      .direction = vector_init(0, 1, 0),
     };
 
     intersection_group ig = {
@@ -484,13 +484,13 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[2], &r, &ig, &c);
 
-    vec4 result = {0};
+    v4 result = {0};
     world_refracted_color(&w, &c, 5, result);
 
     // Verified the below manually, not using test_pattern
-    // assert(vec4_eq(result, color(0, 0.99888, 0.04725)));
+    // assert(v3_eq(result, color(0, 0.99888, 0.04725)));
     // Here's the calculated color when this is correct
-    assert(vec4_eq(result, color(0.8, 1.0, 0.6)));
+    assert(v3_eq(result, color(0.8, 1.0, 0.6)));
   }
 
   TEST {
@@ -502,7 +502,7 @@ void test_world()
     {
       plane_init(&floor);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -1, 0, T);
       object_set_transform(&floor, T);
 
@@ -514,11 +514,11 @@ void test_world()
     {
       sphere_init(&ball);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -3.5, -0.5, T);
       object_set_transform(&ball, T);
 
-      memcpy(ball.material.color, color(1, 0, 0), sizeof(vec4));
+      memcpy(ball.material.color, color(1, 0, 0), sizeof(v3));
       ball.material.ambient = 0.5;
     }
 
@@ -526,8 +526,8 @@ void test_world()
     w.objects[w.objects_count++] = ball;
 
     ray r = {
-      .origin = point4_init(0, 0, -3),
-      .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+      .origin = point_init(0, 0, -3),
+      .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
     };
 
     intersection_group ig = {
@@ -540,10 +540,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[0], &r, &ig, &c);
 
-    vec4 result = {0};
+    v3 result = {0};
     world_shade_hit(&w, &c, 5, result);
 
-    assert(vec4_eq(result, color(0.93642, 0.68642, 0.68642)));
+    assert(v3_eq(result, color(0.93642, 0.68642, 0.68642)));
   }
 
   TEST {
@@ -555,7 +555,7 @@ void test_world()
     {
       plane_init(&floor);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -1, 0, T);
       object_set_transform(&floor, T);
 
@@ -568,11 +568,11 @@ void test_world()
     {
       sphere_init(&ball);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, -3.5, -0.5, T);
       object_set_transform(&ball, T);
 
-      memcpy(ball.material.color, color(1, 0, 0), sizeof(vec4));
+      memcpy(ball.material.color, color(1, 0, 0), sizeof(v3));
       ball.material.ambient = 0.5;
     }
 
@@ -580,8 +580,8 @@ void test_world()
     w.objects[w.objects_count++] = ball;
 
     ray r = {
-      .origin = point4_init(0, 0, -3),
-      .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+      .origin = point_init(0, 0, -3),
+      .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
     };
 
     intersection_group ig = {
@@ -594,10 +594,10 @@ void test_world()
     computations c = {0};
     computations_prepare(&ig.xs[0], &r, &ig, &c);
 
-    vec4 result = {0};
+    v3 result = {0};
     world_shade_hit(&w, &c, 5, result);
 
-    assert(vec4_eq(result, color(0.93391, 0.69643, 0.69243)));
+    assert(v3_eq(result, color(0.93391, 0.69643, 0.69243)));
   }
 }
 

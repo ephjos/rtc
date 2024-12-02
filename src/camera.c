@@ -24,10 +24,10 @@ void camera_init(camera *c, const u32 hsize, const u32 vsize, const f64 fov)
   }
 }
 
-void camera_set_transform(camera *c, const matrix4 T)
+void camera_set_transform(camera *c, const m4 T)
 {
-  memcpy(c->transform, T, sizeof(matrix4));
-  matrix4_inverse(c->transform, c->inverse_transform);
+  memcpy(c->transform, T, sizeof(m4));
+  m4_inverse(c->transform, c->inverse_transform);
 }
 
 // TODO: make x and y f64 as input, apply jittering to those inputs to
@@ -40,13 +40,13 @@ void camera_ray_for_pixel(const camera *c, const u32 x, const u32 y, ray *out)
   f64 world_x = c->half_width - x_offset;
   f64 world_y = c->half_height - y_offset;
 
-  vec4 pixel = {0};
-  matrix4_mulv(c->inverse_transform, point4(world_x, world_y, -1), pixel);
+  v4 pixel = {0};
+  m4_mulv(c->inverse_transform, point(world_x, world_y, -1), pixel);
 
-  matrix4_mulv(c->inverse_transform, point4(0, 0, 0), out->origin);
+  m4_mulv(c->inverse_transform, point(0, 0, 0), out->origin);
 
-  vec4_sub(pixel, out->origin, out->direction);
-  vec4_norm(out->direction, out->direction);
+  v4_sub(pixel, out->origin, out->direction);
+  v4_norm(out->direction, out->direction);
 }
 
 canvas *camera_render(const camera *v, const world *w, render_stats *s)
@@ -65,7 +65,7 @@ canvas *camera_render(const camera *v, const world *w, render_stats *s)
       ray r = {0};
       camera_ray_for_pixel(v, x, y, &r);
 
-      vec4 color_at = {0};
+      v3 color_at = {0};
       world_color_at(w, &r, MAX_DEPTH, color_at);
 
       canvas_write(c, x, y, color_at);

@@ -13,7 +13,7 @@ void test_canvas()
 
       for (u32 i = 0; i < c->height; i++) {
         for (u32 j = 0; j < c->width; j++) {
-          assert(vec4_eq(c->pixels[i * c->width + j], color(0.0, 0.0, 0.0)));
+          assert(v3_eq(c->pixels[i * c->width + j], color(0.0, 0.0, 0.0)));
         }
       }
 
@@ -23,10 +23,10 @@ void test_canvas()
   TEST {
       // Writing pixels to canvas
       canvas *c = canvas_alloc(10, 20);
-      vec4 red = color_init(1.0, 0.0, 0.0);
+      v3 red = color_init(1.0, 0.0, 0.0);
 
       canvas_write(c, 2, 3, red);
-      assert(vec4_eq(*canvas_at(c, 2, 3), red));
+      assert(v3_eq(*canvas_at(c, 2, 3), red));
 
       canvas_free(c);
   }
@@ -34,9 +34,9 @@ void test_canvas()
   TEST {
       // Constructing PPM string
       canvas *c = canvas_alloc(5, 3);
-      vec4 c1 = color_init(1.5, 0.0, 0.0);
-      vec4 c2 = color_init(0.0, 0.5, 0.0);
-      vec4 c3 = color_init(-0.5, 0.0, 1.0);
+      v3 c1 = color_init(1.5, 0.0, 0.0);
+      v3 c2 = color_init(0.0, 0.5, 0.0);
+      v3 c3 = color_init(-0.5, 0.0, 1.0);
 
       canvas_write(c, 0, 0, c1);
       canvas_write(c, 2, 1, c2);

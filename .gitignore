@@ -1,5 +1,7 @@
 demo-out/
 
+gmon*
+
 *.o
 *.ppm
 *.mp4

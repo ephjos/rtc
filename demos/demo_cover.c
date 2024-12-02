@@ -17,67 +17,67 @@ void demo_cover()
   };
 
   material blue_material = white_material;
-  memcpy(blue_material.color, color(0.537, 0.831, 0.914), sizeof(vec4));
+  memcpy(blue_material.color, color(0.537, 0.831, 0.914), sizeof(v3));
 
   material red_material = white_material;
-  memcpy(red_material.color, color(0.941, 0.322, 0.388), sizeof(vec4));
+  memcpy(red_material.color, color(0.941, 0.322, 0.388), sizeof(v3));
 
   material purple_material = white_material;
-  memcpy(purple_material.color, color(0.373, 0.404, 0.550), sizeof(vec4));
+  memcpy(purple_material.color, color(0.373, 0.404, 0.550), sizeof(v3));
 
   // Transforms
-  matrix4 standard_transform = {0};
+  m4 standard_transform = {0};
   {
-    matrix4 T = {0};
+    m4 T = {0};
     translation(1, -1, 1, T);
 
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(0.5, 0.5, 0.5, S);
 
-    matrix4_mul(S, T, standard_transform);
+    m4_mul(S, T, standard_transform);
   }
 
-  matrix4 large_object = {0};
+  m4 large_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(3.5, 3.5, 3.5, S);
 
-    matrix4_mul(S, standard_transform, large_object);
+    m4_mul(S, standard_transform, large_object);
   }
 
-  matrix4 medium_object = {0};
+  m4 medium_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(3, 3, 3, S);
 
-    matrix4_mul(S, standard_transform, medium_object);
+    m4_mul(S, standard_transform, medium_object);
   }
 
-  matrix4 small_object = {0};
+  m4 small_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(2, 2, 2, S);
 
-    matrix4_mul(S, standard_transform, small_object);
+    m4_mul(S, standard_transform, small_object);
   }
 
   // Objects
   object plane = {0};
   {
     plane_init(&plane);
-    memcpy(plane.material.color, color(1, 1, 1), sizeof(vec4));
+    memcpy(plane.material.color, color(1, 1, 1), sizeof(v3));
     plane.material.ambient = 1;
     plane.material.diffuse = 0;
     plane.material.specular = 0;
 
-    matrix4 R = {0};
+    m4 R = {0};
     rotation_x(PI_2, R);
 
-    matrix4 T = {0};
+    m4 T = {0};
     translation(0, 0, 500, T);
 
-    matrix4 Z = {0};
-    matrix4_mul(T, R, Z);
+    m4 Z = {0};
+    m4_mul(T, R, Z);
 
     object_set_transform(&plane, Z);
   }
@@ -85,7 +85,7 @@ void demo_cover()
   object sphere = {0};
   {
     sphere_init(&sphere);
-    memcpy(sphere.material.color, color(0.373, 0.404, 0.550), sizeof(vec4));
+    memcpy(sphere.material.color, color(0.373, 0.404, 0.550), sizeof(v3));
     sphere.material.ambient = 0;
     sphere.material.diffuse = 0.2;
     sphere.material.specular = 1.0;
@@ -99,39 +99,39 @@ void demo_cover()
 
   typedef struct {
     material *m;
-    matrix4 *X;
-    vec4 t;
+    m4 *X;
+    v4 t;
   } cube_params;
   cube_params cubes[] = {
-    { &white_material, &medium_object, vec4_init(4, 0, 0) },
-    { &blue_material, &large_object, vec4_init(8.5, 1.5, -0.5) },
-    { &red_material, &large_object, vec4_init(0, 0, 4) },
-    { &white_material, &small_object, vec4_init(4, 0, 4) },
-    { &purple_material, &medium_object, vec4_init(7.5, 0.5, 4) },
-    { &white_material, &medium_object, vec4_init(-0.25, 0.25, 8) },
-    { &blue_material, &large_object, vec4_init(4, 1, 7.5) },
-    { &red_material, &medium_object, vec4_init(10, 2, 7.5) },
-    { &white_material, &small_object, vec4_init(8, 2, 12) },
-    { &white_material, &small_object, vec4_init(20, 1, 9) },
-    { &blue_material, &large_object, vec4_init(-0.5, -5, 0.25) },
-    { &red_material, &large_object, vec4_init(4, -4, 0) },
-    { &white_material, &large_object, vec4_init(8.5, -4, 0) },
-    { &white_material, &large_object, vec4_init(0, -4, 4) },
-    { &purple_material, &large_object, vec4_init(-0.5, -4.5, 8) },
-    { &white_material, &large_object, vec4_init(0, -8, 4) },
-    { &white_material, &large_object, vec4_init(-0.5, -8.5, 8) },
+    { &white_material, &medium_object, vector_init(4, 0, 0) },
+    { &blue_material, &large_object, vector_init(8.5, 1.5, -0.5) },
+    { &red_material, &large_object, vector_init(0, 0, 4) },
+    { &white_material, &small_object, vector_init(4, 0, 4) },
+    { &purple_material, &medium_object, vector_init(7.5, 0.5, 4) },
+    { &white_material, &medium_object, vector_init(-0.25, 0.25, 8) },
+    { &blue_material, &large_object, vector_init(4, 1, 7.5) },
+    { &red_material, &medium_object, vector_init(10, 2, 7.5) },
+    { &white_material, &small_object, vector_init(8, 2, 12) },
+    { &white_material, &small_object, vector_init(20, 1, 9) },
+    { &blue_material, &large_object, vector_init(-0.5, -5, 0.25) },
+    { &red_material, &large_object, vector_init(4, -4, 0) },
+    { &white_material, &large_object, vector_init(8.5, -4, 0) },
+    { &white_material, &large_object, vector_init(0, -4, 4) },
+    { &purple_material, &large_object, vector_init(-0.5, -4.5, 8) },
+    { &white_material, &large_object, vector_init(0, -8, 4) },
+    { &white_material, &large_object, vector_init(-0.5, -8.5, 8) },
   };
   u32 L = sizeof(cubes) / sizeof(cube_params);
 
   // Lights
   light main_light = {0};
   {
-    point_light_init(&main_light, point4(50, 100, -50), color(1, 1, 1));
+    point_light_init(&main_light, point(50, 100, -50), color(1, 1, 1));
   }
 
   light optional_light = {0};
   {
-    point_light_init(&optional_light, point4(-400, 50, -10), color(0.2, 0.2, 0.2));
+    point_light_init(&optional_light, point(-400, 50, -10), color(0.2, 0.2, 0.2));
   }
 
   // World
@@ -154,11 +154,11 @@ void demo_cover()
       cube_init(&cube_i);
       object_set_material(&cube_i, params.m);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(params.t[0], params.t[1], params.t[2], T);
 
-      matrix4 Z = {0};
-      matrix4_mul(T, *params.X, Z);
+      m4 Z = {0};
+      m4_mul(T, *params.X, Z);
       object_set_transform(&cube_i, Z);
     }
 
@@ -170,8 +170,8 @@ void demo_cover()
   {
     camera_init(&v, W, H, 0.785);
 
-    matrix4 T = {0};
-    view_transform(point4(-6, 6, -10), point4(6, 0, 6), vec4(-0.45, 1, 0), T);
+    m4 T = {0};
+    view_transform(point(-6, 6, -10), point(6, 0, 6), vector(-0.45, 1, 0), T);
 
     camera_set_transform(&v, T);
   }
@@ -207,15 +207,15 @@ void render_and_save(world w, u32 frame, f64 step)
   {
     camera_init(&v, W, H, 0.785);
 
-    vec4 from = point4_init(-6, 6, -10);
+    v4 from = point_init(-6, 6, -10);
 
-    matrix4 R = {0};
+    m4 R = {0};
     rotation_y(PI_3 * step, R);
 
-    matrix4_mulv(R, from, from);
+    m4_mulv(R, from, from);
 
-    matrix4 T = {0};
-    view_transform(from, point4(6, 0, 6), vec4(-0.45, 1, 0), T);
+    m4 T = {0};
+    view_transform(from, point(6, 0, 6), vector(-0.45, 1, 0), T);
 
     camera_set_transform(&v, T);
   }
@@ -264,67 +264,67 @@ void demo_cover()
   };
 
   material blue_material = white_material;
-  memcpy(blue_material.color, color(0.537, 0.831, 0.914), sizeof(vec4));
+  memcpy(blue_material.color, color(0.537, 0.831, 0.914), sizeof(v3));
 
   material red_material = white_material;
-  memcpy(red_material.color, color(0.941, 0.322, 0.388), sizeof(vec4));
+  memcpy(red_material.color, color(0.941, 0.322, 0.388), sizeof(v3));
 
   material purple_material = white_material;
-  memcpy(purple_material.color, color(0.373, 0.404, 0.550), sizeof(vec4));
+  memcpy(purple_material.color, color(0.373, 0.404, 0.550), sizeof(v3));
 
   // Transforms
-  matrix4 standard_transform = {0};
+  m4 standard_transform = {0};
   {
-    matrix4 T = {0};
+    m4 T = {0};
     translation(1, -1, 1, T);
 
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(0.5, 0.5, 0.5, S);
 
-    matrix4_mul(S, T, standard_transform);
+    m4_mul(S, T, standard_transform);
   }
 
-  matrix4 large_object = {0};
+  m4 large_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(3.5, 3.5, 3.5, S);
 
-    matrix4_mul(S, standard_transform, large_object);
+    m4_mul(S, standard_transform, large_object);
   }
 
-  matrix4 medium_object = {0};
+  m4 medium_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(3, 3, 3, S);
 
-    matrix4_mul(S, standard_transform, medium_object);
+    m4_mul(S, standard_transform, medium_object);
   }
 
-  matrix4 small_object = {0};
+  m4 small_object = {0};
   {
-    matrix4 S = {0};
+    m4 S = {0};
     scaling(2, 2, 2, S);
 
-    matrix4_mul(S, standard_transform, small_object);
+    m4_mul(S, standard_transform, small_object);
   }
 
   // Objects
   object plane = {0};
   {
     plane_init(&plane);
-    memcpy(plane.material.color, color(1, 1, 1), sizeof(vec4));
+    memcpy(plane.material.color, color(1, 1, 1), sizeof(v3));
     plane.material.ambient = 1;
     plane.material.diffuse = 0;
     plane.material.specular = 0;
 
-    matrix4 R = {0};
+    m4 R = {0};
     rotation_x(PI_2, R);
 
-    matrix4 T = {0};
+    m4 T = {0};
     translation(0, 0, 500, T);
 
-    matrix4 Z = {0};
-    matrix4_mul(T, R, Z);
+    m4 Z = {0};
+    m4_mul(T, R, Z);
 
     object_set_transform(&plane, Z);
   }
@@ -332,7 +332,7 @@ void demo_cover()
   object sphere = {0};
   {
     sphere_init(&sphere);
-    memcpy(sphere.material.color, color(0.373, 0.404, 0.550), sizeof(vec4));
+    memcpy(sphere.material.color, color(0.373, 0.404, 0.550), sizeof(v3));
     sphere.material.ambient = 0;
     sphere.material.diffuse = 0.2;
     sphere.material.specular = 1.0;
@@ -346,39 +346,39 @@ void demo_cover()
 
   typedef struct {
     material *m;
-    matrix4 *X;
-    vec4 t;
+    m4 *X;
+    v4 t;
   } cube_params;
   cube_params cubes[] = {
-    { &white_material, &medium_object, vec4_init(4, 0, 0) },
-    { &blue_material, &large_object, vec4_init(8.5, 1.5, -0.5) },
-    { &red_material, &large_object, vec4_init(0, 0, 4) },
-    { &white_material, &small_object, vec4_init(4, 0, 4) },
-    { &purple_material, &medium_object, vec4_init(7.5, 0.5, 4) },
-    { &white_material, &medium_object, vec4_init(-0.25, 0.25, 8) },
-    { &blue_material, &large_object, vec4_init(4, 1, 7.5) },
-    { &red_material, &medium_object, vec4_init(10, 2, 7.5) },
-    { &white_material, &small_object, vec4_init(8, 2, 12) },
-    { &white_material, &small_object, vec4_init(20, 1, 9) },
-    { &blue_material, &large_object, vec4_init(-0.5, -5, 0.25) },
-    { &red_material, &large_object, vec4_init(4, -4, 0) },
-    { &white_material, &large_object, vec4_init(8.5, -4, 0) },
-    { &white_material, &large_object, vec4_init(0, -4, 4) },
-    { &purple_material, &large_object, vec4_init(-0.5, -4.5, 8) },
-    { &white_material, &large_object, vec4_init(0, -8, 4) },
-    { &white_material, &large_object, vec4_init(-0.5, -8.5, 8) },
+    { &white_material, &medium_object, vector_init(4, 0, 0) },
+    { &blue_material, &large_object, vector_init(8.5, 1.5, -0.5) },
+    { &red_material, &large_object, vector_init(0, 0, 4) },
+    { &white_material, &small_object, vector_init(4, 0, 4) },
+    { &purple_material, &medium_object, vector_init(7.5, 0.5, 4) },
+    { &white_material, &medium_object, vector_init(-0.25, 0.25, 8) },
+    { &blue_material, &large_object, vector_init(4, 1, 7.5) },
+    { &red_material, &medium_object, vector_init(10, 2, 7.5) },
+    { &white_material, &small_object, vector_init(8, 2, 12) },
+    { &white_material, &small_object, vector_init(20, 1, 9) },
+    { &blue_material, &large_object, vector_init(-0.5, -5, 0.25) },
+    { &red_material, &large_object, vector_init(4, -4, 0) },
+    { &white_material, &large_object, vector_init(8.5, -4, 0) },
+    { &white_material, &large_object, vector_init(0, -4, 4) },
+    { &purple_material, &large_object, vector_init(-0.5, -4.5, 8) },
+    { &white_material, &large_object, vector_init(0, -8, 4) },
+    { &white_material, &large_object, vector_init(-0.5, -8.5, 8) },
   };
   u32 L = sizeof(cubes) / sizeof(cube_params);
 
   // Lights
   light main_light = {0};
   {
-    point_light_init(&main_light, point4(50, 100, -50), color(1, 1, 1));
+    point_light_init(&main_light, point(50, 100, -50), color(1, 1, 1));
   }
 
   light optional_light = {0};
   {
-    point_light_init(&optional_light, point4(-400, 50, -10), color(0.2, 0.2, 0.2));
+    point_light_init(&optional_light, point(-400, 50, -10), color(0.2, 0.2, 0.2));
   }
 
   // World
@@ -401,11 +401,11 @@ void demo_cover()
       cube_init(&cube_i);
       object_set_material(&cube_i, params.m);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(params.t[0], params.t[1], params.t[2], T);
 
-      matrix4 Z = {0};
-      matrix4_mul(T, *params.X, Z);
+      m4 Z = {0};
+      m4_mul(T, *params.X, Z);
       object_set_transform(&cube_i, Z);
     }
 

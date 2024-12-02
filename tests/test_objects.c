@@ -8,38 +8,38 @@ void test_objects()
   TEST {
       // Creating a ray
       ray r = {
-        .origin = point4_init(1, 2, 3),
-        .direction = vec4_init(4, 5, 6),
+        .origin = point_init(1, 2, 3),
+        .direction = vector_init(4, 5, 6),
       };
-      assert(vec4_eq(r.origin, point4(1, 2, 3)));
-      assert(vec4_eq(r.direction, vec4(4, 5, 6)));
+      assert(v4_eq(r.origin, point(1, 2, 3)));
+      assert(v4_eq(r.direction, vector(4, 5, 6)));
   }
 
   TEST {
       ray r = {
-        .origin = point4_init(2, 3, 4),
-        .direction = vec4_init(1, 0, 0),
+        .origin = point_init(2, 3, 4),
+        .direction = vector_init(1, 0, 0),
       };
 
-      vec4 out = {0};
+      v4 out = {0};
       ray_position(&r, 0, out);
-      assert(vec4_eq(out, point4(2, 3, 4)));
+      assert(v4_eq(out, point(2, 3, 4)));
 
       ray_position(&r, 1, out);
-      assert(vec4_eq(out, point4(3, 3, 4)));
+      assert(v4_eq(out, point(3, 3, 4)));
 
       ray_position(&r, -1, out);
-      assert(vec4_eq(out, point4(1, 3, 4)));
+      assert(v4_eq(out, point(1, 3, 4)));
 
       ray_position(&r, 2.5, out);
-      assert(vec4_eq(out, point4(4.5, 3, 4)));
+      assert(v4_eq(out, point(4.5, 3, 4)));
   }
 
   TEST {
       // A ray intersects a sphere
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
@@ -56,8 +56,8 @@ void test_objects()
   TEST {
       // A ray intersects a sphere (tangent)
       ray r = {
-        .origin = point4_init(0, 1, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 1, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
@@ -74,8 +74,8 @@ void test_objects()
   TEST {
       // A ray intersects a sphere (miss)
       ray r = {
-        .origin = point4_init(0, 2, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 2, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
@@ -90,8 +90,8 @@ void test_objects()
   TEST {
       // A ray intersects a sphere (inside)
       ray r = {
-        .origin = point4_init(0, 0, 0),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, 0),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
@@ -108,8 +108,8 @@ void test_objects()
   TEST {
       // A ray intersects a sphere (behind)
       ray r = {
-        .origin = point4_init(0, 0, 5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, 5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
@@ -204,34 +204,34 @@ void test_objects()
 
   TEST {
       ray r = {
-        .origin = point4_init(1, 2, 3),
-        .direction = vec4_init(0, 1, 0),
+        .origin = point_init(1, 2, 3),
+        .direction = vector_init(0, 1, 0),
       };
 
-      matrix4 m = {0};
+      m4 m = {0};
       translation(3, 4, 5, m);
 
       ray out = {0};
       ray_transform(&r, m, &out);
 
-      assert(vec4_eq(out.origin, point4(4, 6, 8)));
-      assert(vec4_eq(out.direction, vec4(0, 1, 0)));
+      assert(v4_eq(out.origin, point(4, 6, 8)));
+      assert(v4_eq(out.direction, vector(0, 1, 0)));
   }
 
   TEST {
       ray r = {
-        .origin = point4_init(1, 2, 3),
-        .direction = vec4_init(0, 1, 0),
+        .origin = point_init(1, 2, 3),
+        .direction = vector_init(0, 1, 0),
       };
 
-      matrix4 m = {0};
+      m4 m = {0};
       scaling(2, 3, 4, m);
 
       ray out = {0};
       ray_transform(&r, m, &out);
 
-      assert(vec4_eq(out.origin, point4(2, 6, 12)));
-      assert(vec4_eq(out.direction, vec4(0, 3, 0)));
+      assert(v4_eq(out.origin, point(2, 6, 12)));
+      assert(v4_eq(out.direction, vector(0, 3, 0)));
   }
 
   TEST {
@@ -239,7 +239,7 @@ void test_objects()
       object o = {0};
       sphere_init(&o);
 
-      assert(matrix4_eq(o.transform, IDENTITY));
+      assert(m4_eq(o.transform, IDENTITY));
   }
 
   TEST {
@@ -247,24 +247,24 @@ void test_objects()
       object o = {0};
       sphere_init(&o);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(2, 3, 4, T);
       object_set_transform(&o, T);
 
-      assert(matrix4_eq(o.transform, T));
+      assert(m4_eq(o.transform, T));
   }
 
   TEST {
       // A ray intersects a scaled sphere
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
       sphere_init(&s);
       
-      matrix4 T = {0};
+      m4 T = {0};
       scaling(2, 2, 2, T);
 
       object_set_transform(&s, T);
@@ -280,14 +280,14 @@ void test_objects()
   TEST {
       // A ray intersects a translated sphere
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object s = {0};
       sphere_init(&s);
       
-      matrix4 T = {0};
+      m4 T = {0};
       translation(5, 0, 0, T);
 
       object_set_transform(&s, T);
@@ -303,10 +303,10 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(1, 0, 0), n);
+      v4 n = {0};
+      object_normal_at(&s, point(1, 0, 0), n);
 
-      assert(vec4_eq(n, vec4(1, 0, 0)));
+      assert(v4_eq(n, vector(1, 0, 0)));
   }
 
   TEST {
@@ -314,10 +314,10 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(0, 1, 0), n);
+      v4 n = {0};
+      object_normal_at(&s, point(0, 1, 0), n);
 
-      assert(vec4_eq(n, vec4(0, 1, 0)));
+      assert(v4_eq(n, vector(0, 1, 0)));
   }
 
   TEST {
@@ -325,10 +325,10 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(0, 0, 1), n);
+      v4 n = {0};
+      object_normal_at(&s, point(0, 0, 1), n);
 
-      assert(vec4_eq(n, vec4(0, 0, 1)));
+      assert(v4_eq(n, vector(0, 0, 1)));
   }
 
   TEST {
@@ -336,10 +336,10 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(ROOT_3_3, ROOT_3_3, ROOT_3_3), n);
+      v4 n = {0};
+      object_normal_at(&s, point(ROOT_3_3, ROOT_3_3, ROOT_3_3), n);
 
-      assert(vec4_eq(n, vec4(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
+      assert(v4_eq(n, vector(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
   }
 
   TEST {
@@ -347,12 +347,12 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(ROOT_3_3, ROOT_3_3, ROOT_3_3), n);
+      v4 n = {0};
+      object_normal_at(&s, point(ROOT_3_3, ROOT_3_3, ROOT_3_3), n);
 
-      assert(vec4_eq(n, vec4(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
-      vec4_norm(n, n);
-      assert(vec4_eq(n, vec4(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
+      assert(v4_eq(n, vector(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
+      v4_norm(n, n);
+      assert(v4_eq(n, vector(ROOT_3_3, ROOT_3_3, ROOT_3_3)));
   }
 
   TEST {
@@ -360,15 +360,15 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, 1, 0, T);
 
       object_set_transform(&s, T);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(0, 1.70711f, -0.70711f), n);
+      v4 n = {0};
+      object_normal_at(&s, point(0, 1.70711f, -0.70711f), n);
 
-      assert(vec4_eq(n, vec4(0, 0.70711f, -0.70711f)));
+      assert(v4_eq(n, vector(0, 0.70711f, -0.70711f)));
   }
 
   TEST {
@@ -376,21 +376,21 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      matrix4 R = {0};
+      m4 R = {0};
       rotation_z(PI_5, R);
 
-      matrix4 S = {0};
+      m4 S = {0};
       scaling(1, 0.5, 1, S);
 
-      matrix4 Z = {0};
-      matrix4_mul(S, R, Z);
+      m4 Z = {0};
+      m4_mul(S, R, Z);
 
       object_set_transform(&s, Z);
 
-      vec4 n = {0};
-      object_normal_at(&s, point4(0, ROOT_2_2, -ROOT_2_2), n);
+      v4 n = {0};
+      object_normal_at(&s, point(0, ROOT_2_2, -ROOT_2_2), n);
 
-      assert(vec4_eq(n, vec4(0, 0.97014f, -0.24254f)));
+      assert(v4_eq(n, vector(0, 0.97014f, -0.24254f)));
   }
 
   TEST {
@@ -398,7 +398,7 @@ void test_objects()
       object s = {0};
       sphere_init(&s);
 
-      assert(vec4_eq(s.material.color, color(1, 1, 1)));
+      assert(v3_eq(s.material.color, color(1, 1, 1)));
       assert(req(s.material.ambient, 0.1));
       assert(req(s.material.diffuse, 0.9));
       assert(req(s.material.specular, 0.9));
@@ -422,8 +422,8 @@ void test_objects()
   TEST {
       // Precomputing intersection
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object shape = {0};
@@ -439,16 +439,16 @@ void test_objects()
 
       assert(req(c.t, i.t));
       assert(c.o == i.o);
-      assert(vec4_eq(c.point, point4(0, 0, -1)));
-      assert(vec4_eq(c.eyev, vec4(0, 0, -1)));
-      assert(vec4_eq(c.normalv, vec4(0, 0, -1)));
+      assert(v4_eq(c.point, point(0, 0, -1)));
+      assert(v4_eq(c.eyev, vector(0, 0, -1)));
+      assert(v4_eq(c.normalv, vector(0, 0, -1)));
   }
 
   TEST {
       // Precomputing intersection outside
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object shape = {0};
@@ -468,8 +468,8 @@ void test_objects()
   TEST {
       // Precomputing intersection inside
       ray r = {
-        .origin = point4_init(0, 0, 0),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, 0),
+        .direction = vector_init(0, 0, 1),
       };
 
       object shape = {0};
@@ -486,16 +486,16 @@ void test_objects()
       assert(req(c.t, i.t));
       assert(c.o == i.o);
       assert(c.inside == true);
-      assert(vec4_eq(c.point, point4(0, 0, 1)));
-      assert(vec4_eq(c.eyev, vec4(0, 0, -1)));
-      assert(vec4_eq(c.normalv, vec4(0, 0, -1)));
+      assert(v4_eq(c.point, point(0, 0, 1)));
+      assert(v4_eq(c.eyev, vector(0, 0, -1)));
+      assert(v4_eq(c.normalv, vector(0, 0, -1)));
   }
 
   TEST {
       // Precomputing reflection vector
       ray r = {
-        .origin = point4_init(0, 1, -1),
-        .direction = vec4_init(0, -ROOT_2_2, ROOT_2_2),
+        .origin = point_init(0, 1, -1),
+        .direction = vector_init(0, -ROOT_2_2, ROOT_2_2),
       };
 
       object shape = {0};
@@ -509,21 +509,21 @@ void test_objects()
       computations c = {0};
       computations_prepare(&i, &r, NULL, &c);
 
-      assert(vec4_eq(c.reflectv, vec4(0, ROOT_2_2, ROOT_2_2)));
+      assert(v4_eq(c.reflectv, vector(0, ROOT_2_2, ROOT_2_2)));
   }
   
   TEST {
       // The hit should offset the point
       ray r = {
-        .origin = point4_init(0, 0, -5),
-        .direction = vec4_init(0, 0, 1),
+        .origin = point_init(0, 0, -5),
+        .direction = vector_init(0, 0, 1),
       };
 
       object shape = {0};
       {
         sphere_init(&shape);
 
-        matrix4 T = {0};
+        m4 T = {0};
         translation(0, 0, 1, T);
 
         object_set_transform(&shape, T);
@@ -547,24 +547,24 @@ void test_objects()
     plane_init(&p);
 
     {
-      vec4 n = {0};
-      object_normal_at(&p, point4(0, 0, 0), n);
+      v4 n = {0};
+      object_normal_at(&p, point(0, 0, 0), n);
 
-      assert(vec4_eq(n, vec4(0, 1, 0)));
+      assert(v4_eq(n, vector(0, 1, 0)));
     }
 
     {
-      vec4 n = {0};
-      object_normal_at(&p, point4(10, 0, -10), n);
+      v4 n = {0};
+      object_normal_at(&p, point(10, 0, -10), n);
 
-      assert(vec4_eq(n, vec4(0, 1, 0)));
+      assert(v4_eq(n, vector(0, 1, 0)));
     }
 
     {
-      vec4 n = {0};
-      object_normal_at(&p, point4(-5, 0, 150), n);
+      v4 n = {0};
+      object_normal_at(&p, point(-5, 0, 150), n);
 
-      assert(vec4_eq(n, vec4(0, 1, 0)));
+      assert(v4_eq(n, vector(0, 1, 0)));
     }
   }
 
@@ -574,8 +574,8 @@ void test_objects()
     plane_init(&p);
 
     ray r = { 
-      .origin = point4_init(0, 10, 0),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 10, 0),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {0};
@@ -590,8 +590,8 @@ void test_objects()
     plane_init(&p);
 
     ray r = { 
-      .origin = point4_init(0, 1, 0),
-      .direction = vec4_init(0, -1, 0),
+      .origin = point_init(0, 1, 0),
+      .direction = vector_init(0, -1, 0),
     };
 
     intersection_group ig = {0};
@@ -608,8 +608,8 @@ void test_objects()
     plane_init(&p);
 
     ray r = { 
-      .origin = point4_init(0, -1, 0),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, -1, 0),
+      .direction = vector_init(0, 1, 0),
     };
 
     intersection_group ig = {0};
@@ -627,7 +627,7 @@ void test_objects()
       glass_sphere_init(&A);
       A.material.refractive_index = 1.5;
 
-      matrix4 T = {0};
+      m4 T = {0};
       scaling(2, 2, 2, T);
       object_set_transform(&A, T);
     }
@@ -637,7 +637,7 @@ void test_objects()
       glass_sphere_init(&B);
       B.material.refractive_index = 2.0;
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, 0, -0.25, T);
       object_set_transform(&B, T);
     }
@@ -647,7 +647,7 @@ void test_objects()
       glass_sphere_init(&C);
       C.material.refractive_index = 2.5;
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, 0, 0.25, T);
       object_set_transform(&C, T);
     }
@@ -675,8 +675,8 @@ void test_objects()
     }
 
     ray r = {
-      .origin = point4_init(0, 0, -4),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -4),
+      .direction = vector_init(0, 0, 1),
     };
 
     for (u64 i = 0; i < L; i++) {
@@ -696,15 +696,15 @@ void test_objects()
     {
       glass_sphere_init(&shape);
 
-      matrix4 T = {0};
+      m4 T = {0};
       translation(0, 0, 1, T);
 
       object_set_transform(&shape, T);
     }
 
     ray r = { 
-      .origin = point4_init(0, 0, -5),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0, -5),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection i = {
@@ -730,8 +730,8 @@ void test_objects()
     glass_sphere_init(&shape);
 
     ray r = {
-      .origin = point4_init(0, 0, ROOT_2_2),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, 0, ROOT_2_2),
+      .direction = vector_init(0, 1, 0),
     };
 
     intersection_group ig = {
@@ -755,8 +755,8 @@ void test_objects()
     glass_sphere_init(&shape);
 
     ray r = {
-      .origin = point4_init(0, 0, 0),
-      .direction = vec4_init(0, 1, 0),
+      .origin = point_init(0, 0, 0),
+      .direction = vector_init(0, 1, 0),
     };
 
     intersection_group ig = {
@@ -780,8 +780,8 @@ void test_objects()
     glass_sphere_init(&shape);
 
     ray r = {
-      .origin = point4_init(0, 0.99, -2),
-      .direction = vec4_init(0, 0, 1),
+      .origin = point_init(0, 0.99, -2),
+      .direction = vector_init(0, 0, 1),
     };
 
     intersection_group ig = {
@@ -801,19 +801,19 @@ void test_objects()
   TEST {
     // cube intersect rays
     typedef struct {
-      vec4 origin;
-      vec4 direction;
+      v4 origin;
+      v4 direction;
       f64 t1;
       f64 t2;
     } test_case;
     test_case cases[] = {
-      { point4_init(5, 0.5, 0), vec4_init(-1, 0, 0), 4, 6 },
-      { point4_init(-5, 0.5, 0), vec4_init(1, 0, 0), 4, 6 },
-      { point4_init(0.5, 5, 0), vec4_init(0, -1, 0), 4, 6 },
-      { point4_init(0.5, -5, 0), vec4_init(0, 1, 0), 4, 6 },
-      { point4_init(0.5, 0, 5), vec4_init(0, 0, -1), 4, 6 },
-      { point4_init(0.5, 0, -5), vec4_init(0, 0, 1), 4, 6 },
-      { point4_init(0, 0.5, 0), vec4_init(0, 0, 1), -1, 1 },
+      { point_init(5, 0.5, 0), vector_init(-1, 0, 0), 4, 6 },
+      { point_init(-5, 0.5, 0), vector_init(1, 0, 0), 4, 6 },
+      { point_init(0.5, 5, 0), vector_init(0, -1, 0), 4, 6 },
+      { point_init(0.5, -5, 0), vector_init(0, 1, 0), 4, 6 },
+      { point_init(0.5, 0, 5), vector_init(0, 0, -1), 4, 6 },
+      { point_init(0.5, 0, -5), vector_init(0, 0, 1), 4, 6 },
+      { point_init(0, 0.5, 0), vector_init(0, 0, 1), -1, 1 },
     };
     u32 L = sizeof(cases) / sizeof(test_case);
 
@@ -823,8 +823,8 @@ void test_objects()
     for (u32 i = 0; i < L; i++) {
       test_case T = cases[i];
       ray r = {0};
-      memcpy(r.origin, T.origin, sizeof(vec4));
-      memcpy(r.direction, T.direction, sizeof(vec4));
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
 
       intersection_group ig = {0};
       ray_intersect(&r, &c, &ig);
@@ -838,16 +838,16 @@ void test_objects()
   TEST {
     // cube rays miss
     typedef struct {
-      vec4 origin;
-      vec4 direction;
+      v4 origin;
+      v4 direction;
     } test_case;
     test_case cases[] = {
-      { point4_init(-2, 0, 0), vec4_init(0.2673, 0.5345, 0.8018) },
-      { point4_init(0, -2, 0), vec4_init(0.8018, 0.2673, 0.5345) },
-      { point4_init(0, 0, -2), vec4_init(0.5345, 0.8018, 0.2673) },
-      { point4_init(2, 0, 2), vec4_init(0, 0, -1) },
-      { point4_init(0, 2, 2), vec4_init(0, -1, 0) },
-      { point4_init(2, 2, 0), vec4_init(-1, 0, 0) },
+      { point_init(-2, 0, 0), vector_init(0.2673, 0.5345, 0.8018) },
+      { point_init(0, -2, 0), vector_init(0.8018, 0.2673, 0.5345) },
+      { point_init(0, 0, -2), vector_init(0.5345, 0.8018, 0.2673) },
+      { point_init(2, 0, 2), vector_init(0, 0, -1) },
+      { point_init(0, 2, 2), vector_init(0, -1, 0) },
+      { point_init(2, 2, 0), vector_init(-1, 0, 0) },
     };
     u32 L = sizeof(cases) / sizeof(test_case);
 
@@ -857,8 +857,8 @@ void test_objects()
     for (u32 i = 0; i < L; i++) {
       test_case T = cases[i];
       ray r = {0};
-      memcpy(r.origin, T.origin, sizeof(vec4));
-      memcpy(r.direction, T.direction, sizeof(vec4));
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
 
       intersection_group ig = {0};
       ray_intersect(&r, &c, &ig);
@@ -870,18 +870,18 @@ void test_objects()
   TEST {
     // Cube normals
     typedef struct {
-      vec4 point;
-      vec4 normal;
+      v4 point;
+      v4 normal;
     } test_case;
     test_case cases[] = {
-      { point4_init(1, 0.5, -0.8), vec4_init(1, 0, 0) },
-      { point4_init(-1, -0.2, 0.9), vec4_init(-1, 0, 0) },
-      { point4_init(-0.4, 1, -0.1), vec4_init(0, 1, 0) },
-      { point4_init(0.3, -1, -0.7), vec4_init(0, -1, 0) },
-      { point4_init(-0.6, 0.3, 1), vec4_init(0, 0, 1) },
-      { point4_init(0.4, 0.4, -1), vec4_init(0, 0, -1) },
-      { point4_init(1, 1, 1), vec4_init(1, 0, 0) },
-      { point4_init(-1, -1, -1), vec4_init(-1, 0, 0) },
+      { point_init(1, 0.5, -0.8), vector_init(1, 0, 0) },
+      { point_init(-1, -0.2, 0.9), vector_init(-1, 0, 0) },
+      { point_init(-0.4, 1, -0.1), vector_init(0, 1, 0) },
+      { point_init(0.3, -1, -0.7), vector_init(0, -1, 0) },
+      { point_init(-0.6, 0.3, 1), vector_init(0, 0, 1) },
+      { point_init(0.4, 0.4, -1), vector_init(0, 0, -1) },
+      { point_init(1, 1, 1), vector_init(1, 0, 0) },
+      { point_init(-1, -1, -1), vector_init(-1, 0, 0) },
     };
     u32 L = sizeof(cases) / sizeof(test_case);
 
@@ -891,10 +891,10 @@ void test_objects()
     for (u32 i = 0; i < L; i++) {
       test_case T = cases[i];
 
-      vec4 normal = {0};
+      v4 normal = {0};
       object_normal_at(&c, T.point, normal);
 
-      assert(vec4_eq(normal, T.normal));
+      assert(v4_eq(normal, T.normal));
     }
   }
 }

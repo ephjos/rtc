@@ -9,7 +9,7 @@ void world_init(world *w)
     object s1 = {0};
     sphere_init(&s1);
 
-    memcpy(s1.material.color, color(0.8, 1.0, 0.6), sizeof(vec4));
+    memcpy(s1.material.color, color(0.8, 1.0, 0.6), sizeof(v3));
     s1.material.diffuse = 0.7;
     s1.material.specular = 0.2;
 
@@ -20,7 +20,7 @@ void world_init(world *w)
     object s2 = {0};
     sphere_init(&s2);
 
-    matrix4 T = {0};
+    m4 T = {0};
     scaling(0.5, 0.5, 0.5, T);
     object_set_transform(&s2, T);
 
@@ -29,7 +29,7 @@ void world_init(world *w)
 
   // Lights
   w->lights_count = 1;
-  point_light_init(&w->lights[0], point4(-10, 10, -10), color(1, 1, 1));
+  point_light_init(&w->lights[0], point(-10, 10, -10), color(1, 1, 1));
 }
 
 void world_intersect(const world *w, const ray *r, intersection_group *ig)
@@ -43,62 +43,62 @@ void world_intersect(const world *w, const ray *r, intersection_group *ig)
   qsort(ig->xs, ig->count, sizeof(intersection), intersection_compare);
 }
 
-void world_shade_hit(const world *w, const computations *c, u64 depth, vec4 out)
+void world_shade_hit(const world *w, const computations *c, u64 depth, v3 out)
 {
-  vec4 result = {0};
+  v3 result = {0};
 
   for (u32 i = 0; i < w->lights_count; i++) {
     b32 is_shadowed = world_is_shadowed(w, &w->lights[i], c->over_point);
 
-    vec4 surface = {0};
+    v3 surface = {0};
     material_lighting(&c->o->material, &w->lights[i], c->o, c->point, c->eyev, c->normalv, is_shadowed, surface);
-    vec4_add(result, surface, result);
+    v3_add(result, surface, result);
   }
 
-  vec4 reflected = {0};
+  v3 reflected = {0};
   world_reflected_color(w, c, depth, reflected);
 
-  vec4 refracted = {0};
+  v3 refracted = {0};
   world_refracted_color(w, c, depth, refracted);
 
   if (c->o->material.reflective > 0 && c->o->material.transparency > 0) {
     f64 reflectance = computations_schlick(c);
 
-    vec4_scale(reflected, reflectance, reflected);
-    vec4_scale(refracted, (1 - reflectance), refracted);
+    v3_scale(reflected, reflectance, reflected);
+    v3_scale(refracted, (1 - reflectance), refracted);
   }
 
-  vec4_add(result, reflected, result);
-  vec4_add(result, refracted, result);
+  v3_add(result, reflected, result);
+  v3_add(result, refracted, result);
 
-  memcpy(out, result, sizeof(vec4));
+  memcpy(out, result, sizeof(v3));
 }
 
-void world_reflected_color(const world *w, const computations *c, u64 depth, vec4 out)
+void world_reflected_color(const world *w, const computations *c, u64 depth, v3 out)
 {
   if (depth == 0 || req(c->o->material.reflective, 0.0)) {
-    memcpy(out, color(0, 0, 0), sizeof(vec4));
+    memcpy(out, color(0, 0, 0), sizeof(v3));
     return;
   }
 
   ray reflect_ray = {0};
-  memcpy(reflect_ray.origin, c->over_point, sizeof(vec4));
-  memcpy(reflect_ray.direction, c->reflectv, sizeof(vec4));
+  memcpy(reflect_ray.origin, c->over_point, sizeof(v4));
+  memcpy(reflect_ray.direction, c->reflectv, sizeof(v4));
 
-  vec4 result = {0};
+  v3 result = {0};
   world_color_at(w, &reflect_ray, depth - 1, result);
 
-  vec4_scale(result, c->o->material.reflective, out);
+  v3_scale(result, c->o->material.reflective, out);
 }
 
-void world_color_at(const world *w, const ray *r, u64 depth, vec4 out)
+void world_color_at(const world *w, const ray *r, u64 depth, v3 out)
 {
   intersection_group ig = {0};
   world_intersect(w, r, &ig);
 
   const intersection *hit = intersection_group_hit(&ig);
   if (hit == NULL) {
-    memset(out, 0, sizeof(vec4));
+    memset(out, 0, sizeof(v3));
   } else {
     computations c = {0};
     computations_prepare(hit, r, &ig, &c);
@@ -107,53 +107,53 @@ void world_color_at(const world *w, const ray *r, u64 depth, vec4 out)
   }
 }
 
-void world_refracted_color(const world *w, const computations *c, u64 depth, vec4 out)
+void world_refracted_color(const world *w, const computations *c, u64 depth, v3 out)
 {
 
   f64 n_ratio = c->n1 / c->n2;
-  f64 cos_i = vec4_dot(c->eyev, c->normalv);
+  f64 cos_i = v4_dot(c->eyev, c->normalv);
   f64 sin2_t = (n_ratio*n_ratio) * (1 - (cos_i*cos_i));
 
   if (depth == 0 || sin2_t > 1 || req(c->o->material.transparency, 0)) {
-    memcpy(out, color(0, 0, 0), sizeof(vec4));
+    memcpy(out, color(0, 0, 0), sizeof(v3));
     return;
   }
 
   f64 cos_t = sqrt(1.0 - sin2_t);
-  vec4 direction = {0};
+  v4 direction = {0};
   {
-    vec4 a = {0};
-    vec4_scale(c->normalv, n_ratio * cos_i - cos_t, a);
+    v4 a = {0};
+    v4_scale(c->normalv, n_ratio * cos_i - cos_t, a);
 
-    vec4 b = {0};
-    vec4_scale(c->eyev, n_ratio, b);
+    v4 b = {0};
+    v4_scale(c->eyev, n_ratio, b);
 
-    vec4_sub(a, b, direction);
+    v4_sub(a, b, direction);
   }
 
   ray refract_ray = {0};
-  memcpy(refract_ray.origin, c->under_point, sizeof(vec4));
-  memcpy(refract_ray.direction, direction, sizeof(vec4));
+  memcpy(refract_ray.origin, c->under_point, sizeof(v4));
+  memcpy(refract_ray.direction, direction, sizeof(v4));
 
-  vec4 result = {0};
+  v3 result = {0};
   world_color_at(w, &refract_ray, depth - 1, result);
 
-  vec4_scale(result, c->o->material.transparency, out);
+  v3_scale(result, c->o->material.transparency, out);
 }
 
-b32 world_is_shadowed(const world *w, const light *l, const vec4 p)
+b32 world_is_shadowed(const world *w, const light *l, const v4 p)
 {
-  vec4 v = {0};
-  vec4_sub(l->position, p, v);
+  v4 v = {0};
+  v4_sub(l->position, p, v);
 
-  f64 distance = vec4_mag(v);
+  f64 distance = v4_mag(v);
 
-  vec4 direction = {0};
-  vec4_norm(v, direction);
+  v4 direction = {0};
+  v4_norm(v, direction);
 
   ray r = {0};
-  memcpy(r.origin, p, sizeof(vec4));
-  memcpy(r.direction, direction, sizeof(vec4));
+  memcpy(r.origin, p, sizeof(v4));
+  memcpy(r.direction, direction, sizeof(v4));
 
   intersection_group ig = {0};
   world_intersect(w, &r, &ig);

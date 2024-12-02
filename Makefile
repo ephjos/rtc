@@ -2,7 +2,7 @@
 CC = gcc
 STRIP = strip
 
-DEBUG_ARGS = -g3 -Wall -Wextra -Wconversion -Wdouble-promotion \
+DEBUG_ARGS = -pg -g3 -Wall -Wextra -Wconversion -Wdouble-promotion \
 		-Wno-unused-parameter -Wno-unused-function -Wno-sign-conversion \
 		-fsanitize=address,undefined -fsanitize-undefined-trap-on-error \
 		-std=c99 -pedantic -DDEBUG

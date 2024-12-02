@@ -9,10 +9,10 @@ void object_init(object *o)
   object_set_material(o, &m);
 }
 
-void object_set_transform(object *o, const matrix4 T)
+void object_set_transform(object *o, const m4 T)
 {
-  memcpy(o->transform, T, sizeof(matrix4));
-  matrix4_inverse(o->transform, o->inverse_transform);
+  memcpy(o->transform, T, sizeof(m4));
+  m4_inverse(o->transform, o->inverse_transform);
 }
 
 void object_set_material(object *o, const material *m)
@@ -47,46 +47,19 @@ void cube_init(object *o)
   o->type = CubeType;
 }
 
-v2 cube_check_axis(f64 origin, f64 direction)
+void object_normal_at(const object *o, const v4 p, v4 out)
 {
-  f64 tmin_numerator = (-1 - origin);
-  f64 tmax_numerator = (1 - origin);
+  v4 object_point = {0};
+  m4_mulv(o->inverse_transform, p, object_point);
 
-  f64 tmin;
-  f64 tmax;
-  if (fabs(direction) >= EPSILON) {
-    tmin = tmin_numerator / direction;
-    tmax = tmax_numerator / direction;
-  } else {
-    tmin = tmin_numerator * (f64)INFINITY;
-    tmax = tmax_numerator * (f64)INFINITY;
-  }
-
-  if (tmin > tmax) {
-    f64 temp = tmin;
-    tmin = tmax;
-    tmax = temp;
-  }
-
-  return (v2){
-    .x = tmin,
-    .y = tmax,
-  };
-}
-
-void object_normal_at(const object *o, const vec4 p, vec4 out)
-{
-  vec4 object_point = {0};
-  matrix4_mulv(o->inverse_transform, p, object_point);
-
-  vec4 object_normal = {0};
+  v4 object_normal = {0};
 
   switch (o->type) {
     case SphereType: {
-      vec4_sub(object_point, point4(0, 0, 0), object_normal);
+      v4_sub(object_point, point(0, 0, 0), object_normal);
     } break;
     case PlaneType: {
-      memcpy(object_normal, vec4(0, 1, 0), sizeof(vec4));
+      memcpy(object_normal, vector(0, 1, 0), sizeof(v4));
     } break;
     case CubeType: {
       f64 x = object_point[0];
@@ -98,27 +71,27 @@ void object_normal_at(const object *o, const vec4 p, vec4 out)
       f64 maxc = MAX(MAX(ax, ay), az);
 
       if (maxc == ax) {
-        memcpy(object_normal, vec4(x, 0, 0), sizeof(vec4));
+        memcpy(object_normal, vector(x, 0, 0), sizeof(v4));
       } else if (maxc == ay) {
-        memcpy(object_normal, vec4(0, y, 0), sizeof(vec4)); 
+        memcpy(object_normal, vector(0, y, 0), sizeof(v4)); 
       } else {
-        memcpy(object_normal, vec4(0, 0, z), sizeof(vec4)); 
+        memcpy(object_normal, vector(0, 0, z), sizeof(v4)); 
       }
     } break;
   }
 
-  matrix4 world_transform = {0};
-  matrix4_transpose(o->inverse_transform, world_transform);
+  m4 world_transform = {0};
+  m4_transpose(o->inverse_transform, world_transform);
 
-  matrix4_mulv(world_transform, object_normal, out);
+  m4_mulv(world_transform, object_normal, out);
   out[3] = 0.0;
-  vec4_norm(out, out);
+  v4_norm(out, out);
 }
 
-void ray_position(const ray *r, f64 t, vec4 out)
+void ray_position(const ray *r, f64 t, v4 out)
 {
-  vec4_scale(r->direction, t, out);
-  vec4_add(r->origin, out, out);
+  v4_scale(r->direction, t, out);
+  v4_add(r->origin, out, out);
 }
 
 void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
@@ -128,12 +101,12 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
 
   switch (o->type) {
     case SphereType: {
-      vec4 sphere_to_ray = {0};
-      vec4_sub(r.origin, point4(0, 0, 0), sphere_to_ray);
+      v4 sphere_to_ray = {0};
+      v4_sub(r.origin, point(0, 0, 0), sphere_to_ray);
 
-      f64 a = vec4_dot(r.direction, r.direction);
-      f64 b = 2 * vec4_dot(r.direction, sphere_to_ray);
-      f64 c = vec4_dot(sphere_to_ray, sphere_to_ray) - 1;
+      f64 a = v4_dot(r.direction, r.direction);
+      f64 b = 2 * v4_dot(r.direction, sphere_to_ray);
+      f64 c = v4_dot(sphere_to_ray, sphere_to_ray) - 1;
 
       f64 discriminant = (b*b) - 4 * a * c;
 
@@ -154,12 +127,15 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
       }
     } break;
     case CubeType: {
-      v2 xt = cube_check_axis(r.origin[0], r.direction[0]);
-      v2 yt = cube_check_axis(r.origin[1], r.direction[1]);
-      v2 zt = cube_check_axis(r.origin[2], r.direction[2]);
+      v2 xt = {0};
+      cube_check_axis(r.origin[0], r.direction[0], xt);
+      v2 yt = {0};
+      cube_check_axis(r.origin[1], r.direction[1], yt);
+      v2 zt = {0};
+      cube_check_axis(r.origin[2], r.direction[2], zt);
 
-      f64 tmin = MAX(MAX(xt.x, yt.x), zt.x);
-      f64 tmax = MIN(MIN(xt.y, yt.y), zt.y);
+      f64 tmin = MAX(MAX(xt[0], yt[0]), zt[0]);
+      f64 tmax = MIN(MIN(xt[1], yt[1]), zt[1]);
 
       if (tmin <= tmax) {
         INTERSECTION_APPEND(ig, tmin, o);
@@ -195,10 +171,10 @@ const intersection *intersection_group_hit(const intersection_group *ig)
   return result;
 }
 
-void ray_transform(const ray *r, const matrix4 T, ray *out)
+void ray_transform(const ray *r, const m4 T, ray *out)
 {
-  matrix4_mulv(T, r->origin, out->origin);
-  matrix4_mulv(T, r->direction, out->direction);
+  m4_mulv(T, r->origin, out->origin);
+  m4_mulv(T, r->direction, out->direction);
 }
 
 void computations_prepare(const intersection *i, const ray *r, const intersection_group *ig, computations *out)
@@ -207,22 +183,22 @@ void computations_prepare(const intersection *i, const ray *r, const intersectio
   out->o = i->o;
 
   ray_position(r, out->t, out->point);
-  vec4_neg(r->direction, out->eyev);
+  v4_neg(r->direction, out->eyev);
   object_normal_at(out->o, out->point, out->normalv);
 
-  f64 normal_dot_eye = vec4_dot(out->normalv, out->eyev);
+  f64 normal_dot_eye = v4_dot(out->normalv, out->eyev);
   if (normal_dot_eye < 0) {
     out->inside = true;
-    vec4_neg(out->normalv, out->normalv);
+    v4_neg(out->normalv, out->normalv);
   }
 
-  vec4_scale(out->normalv, (f64)EPSILON, out->over_point);
-  vec4_add(out->point, out->over_point, out->over_point);
+  v4_scale(out->normalv, (f64)EPSILON, out->over_point);
+  v4_add(out->point, out->over_point, out->over_point);
 
-  vec4_scale(out->normalv, (f64)EPSILON, out->under_point);
-  vec4_sub(out->point, out->under_point, out->under_point);
+  v4_scale(out->normalv, (f64)EPSILON, out->under_point);
+  v4_sub(out->point, out->under_point, out->under_point);
 
-  vec4_reflect(r->direction, out->normalv, out->reflectv);
+  v4_reflect(r->direction, out->normalv, out->reflectv);
 
   if (ig == NULL) {
     return;
@@ -284,7 +260,7 @@ void computations_prepare(const intersection *i, const ray *r, const intersectio
 
 f64 computations_schlick(const computations *comps)
 {
-  f64 cos = vec4_dot(comps->eyev, comps->normalv);
+  f64 cos = v4_dot(comps->eyev, comps->normalv);
 
   if (comps->n1 > comps->n2) {
     f64 n = comps->n1 / comps->n2;

@@ -138,16 +138,15 @@ static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
   _is->xs[_is->count].t = _t;\
   _is->xs[_is->count++].o = _o
 
+#define v4_dot(a, b) ((a[0]*b[0]) + (a[1]*b[1]) + (a[2]*b[2]) + (a[3]*b[3]))
+
 //------------------------------------------------------------------------------
 // Types
 
-typedef struct {
-  f64 x;
-  f64 y;
-} v2;
-
-typedef f64 vec4[4];
-typedef f64 matrix4[16];
+typedef f64 v2[2];
+typedef f64 v3[3];
+typedef f64 v4[4];
+typedef f64 m4[16];
 
 typedef struct {
   u32 hsize;
@@ -156,8 +155,8 @@ typedef struct {
   f64 half_width;
   f64 half_height;
   f64 pixel_size;
-  matrix4 transform;
-  matrix4 inverse_transform;
+  m4 transform;
+  m4 inverse_transform;
 } camera;
 
 typedef struct {
@@ -171,15 +170,15 @@ typedef struct {
 typedef struct {
   u32 width;
   u32 height;
-  vec4 *pixels;
+  v3 *pixels;
 } canvas;
 
 enum light_type { PointLightType };
 
 typedef struct {
   enum light_type type;
-  vec4 position;
-  vec4 intensity;
+  v4 position;
+  v3 intensity;
   /*
   union {
     struct {} point_light;
@@ -193,24 +192,24 @@ enum pattern_type {
 
 typedef struct {
   enum pattern_type type;
-  matrix4 transform;
-  matrix4 inverse_transform;
+  m4 transform;
+  m4 inverse_transform;
   union {
     struct {
-      vec4 a;
-      vec4 b;
+      v3 a;
+      v3 b;
     } striped;
     struct {
-      vec4 a;
-      vec4 b;
+      v3 a;
+      v3 b;
     } gradient;
     struct {
-      vec4 a;
-      vec4 b;
+      v3 a;
+      v3 b;
     } ring;
     struct {
-      vec4 a;
-      vec4 b;
+      v3 a;
+      v3 b;
     } checker;
   } value;
 } pattern;
@@ -222,7 +221,7 @@ typedef struct {
 #define REFRACT_DIAMOND  2.417
 
 typedef struct {
-  vec4 color;
+  v3 color;
   f64 ambient;
   f64 diffuse;
   f64 specular;
@@ -237,8 +236,8 @@ enum object_type { SphereType, PlaneType, CubeType };
 
 typedef struct {
   enum object_type type;
-  matrix4 transform;
-  matrix4 inverse_transform;
+  m4 transform;
+  m4 inverse_transform;
   material material;
   /*
   union {
@@ -260,18 +259,18 @@ typedef struct {
 
 
 typedef struct {
-  vec4 origin;
-  vec4 direction;
+  v4 origin;
+  v4 direction;
 } ray;
 
 typedef struct {
   f64 t;
-  vec4 point;
-  vec4 eyev;
-  vec4 normalv;
-  vec4 reflectv;
-  vec4 over_point;
-  vec4 under_point;
+  v4 point;
+  v4 eyev;
+  v4 normalv;
+  v4 reflectv;
+  v4 over_point;
+  v4 under_point;
   b32 inside;
   f64 n1;
   f64 n2;
@@ -291,7 +290,7 @@ typedef struct {
 // Functions
 
 void camera_init(camera *c, const u32 hsize, const u32 vsize, const f64 fov);
-void camera_set_transform(camera *c, const matrix4 T);
+void camera_set_transform(camera *c, const m4 T);
 
 void camera_ray_for_pixel(const camera *c, const u32 x, const u32 y, ray *out);
 
@@ -302,121 +301,175 @@ void render_stats_print(const render_stats *s);
 canvas *canvas_alloc(u32 width, u32 height);
 void canvas_free(canvas *c);
 
-void canvas_write(canvas *c, u32 x, u32 y, vec4 color);
-void canvas_safe_write(canvas *c, s32 x, s32 y, vec4 color);
-vec4 *canvas_at(const canvas *c, u32 x, u32 y);
+void canvas_write(canvas *c, u32 x, u32 y, v3 color);
+void canvas_safe_write(canvas *c, s32 x, s32 y, v3 color);
+v3 *canvas_at(const canvas *c, u32 x, u32 y);
 
 char *canvas_to_ppm(const canvas *c);
 
-void light_init(light *o, const vec4 position, const vec4 intensity);
-void point_light_init(light *o, const vec4 position, const vec4 intensity);
+void light_init(light *o, const v4 position, const v3 intensity);
+void point_light_init(light *o, const v4 position, const v3 intensity);
 
 void pattern_init(pattern *p);
-void pattern_set_transform(pattern *p, const matrix4 T);
-void pattern_color_at(const pattern *p, const vec4 l, vec4 out);
-void pattern_object_color_at(const pattern *p, const object *o, const vec4 l, vec4 out);
+void pattern_set_transform(pattern *p, const m4 T);
+void pattern_color_at(const pattern *p, const v4 l, v3 out);
+void pattern_object_color_at(const pattern *p, const object *o, const v4 l, v3 out);
 
-void striped_pattern_init(pattern *p, const vec4 a, const vec4 b);
-void gradient_pattern_init(pattern *p, const vec4 a, const vec4 b);
-void ring_pattern_init(pattern *p, const vec4 a, const vec4 b);
-void checker_pattern_init(pattern *p, const vec4 a, const vec4 b);
+void striped_pattern_init(pattern *p, const v3 a, const v3 b);
+void gradient_pattern_init(pattern *p, const v3 a, const v3 b);
+void ring_pattern_init(pattern *p, const v3 a, const v3 b);
+void checker_pattern_init(pattern *p, const v3 a, const v3 b);
 
 void material_init(material *m);
 
-void material_lighting(const material *m, const light *l, const object *o, const vec4 position, const vec4 eyev, const vec4 normalv, const b32 in_shadow, vec4 result);
+void material_lighting(const material *m, const light *l, const object *o, const v4 position, const v4 eyev, const v4 normalv, const b32 in_shadow, v3 result);
 
-void matrix4_print(const matrix4 a);
+void m4_print(const m4 a);
 
-extern const matrix4 IDENTITY;
+extern const m4 IDENTITY;
 
 // Used for indexing like A[2 _ 3] = A[2][3] = A[2 * 4 + 3] = A[11]
 #define _ * 4 +
 
-void matrix4_transpose(const matrix4 A, matrix4 out);
-void matrix4_inverse(const matrix4 A, matrix4 out);
-f64 matrix4_det(const matrix4 A);
+void m4_transpose(const m4 A, m4 out);
+void m4_inverse(const m4 A, m4 out);
+f64 m4_det(const m4 A);
 
-b32 matrix4_eq(const matrix4 A, const matrix4 B);
-void matrix4_mul(const matrix4 A, const matrix4 B, matrix4 out);
-
-void matrix4_mulv(const matrix4 A, const vec4 b, vec4 out);
+b32 m4_eq(const m4 A, const m4 B);
 
 void object_init(object *o);
-void object_set_transform(object *o, const matrix4 T);
+void object_set_transform(object *o, const m4 T);
 void object_set_material(object *o, const material *M);
-void object_normal_at(const object *o, const vec4 p, vec4 out);
+void object_normal_at(const object *o, const v4 p, v4 out);
 
 void sphere_init(object *o);
 void glass_sphere_init(object *o);
 void plane_init(object *o);
 void cube_init(object *o);
 
-v2 cube_check_axis(f64 origin, f64 direction);
-
 int intersection_compare(const void* a, const void* b);
 
 const intersection *intersection_group_hit(const intersection_group *ig);
 
-void ray_position(const ray *r, f64 t, vec4 out);
+void ray_position(const ray *r, f64 t, v4 out);
 void ray_intersect(const ray *r, const object *o, intersection_group *ig);
-void ray_transform(const ray *r, const matrix4 T, ray *out);
+void ray_transform(const ray *r, const m4 T, ray *out);
 
 void computations_prepare(const intersection *i, const ray *r, const intersection_group *ig, computations *out);
 f64 computations_schlick(const computations *comps);
 
-void vec4_print(const vec4 a);
+extern const v3 BLACK;
+extern const v3 WHITE;
 
-#define point4_init(x, y, z) { x, y, z, 1.0 }
-#define point4(x, y, z) (vec4)point4_init(x,y,z)
-#define vec4_init(x, y, z) { x, y, z, 0.0 }
-#define vec4(x, y, z) (vec4)vec4_init(x,y,z)
+void v3_print(const v3 a);
 
-extern const vec4 ZERO_VEC;
+b32 v3_eq(const v3 a, const v3 b);
+void v3_add(const v3 a, const v3 b, v3 out);
+void v3_sub(const v3 a, const v3 b, v3 out);
+void v3_mul(const v3 a, const v3 b, v3 out);
+void v3_scale(const v3 a, f64 b, v3 out);
+
+void v4_print(const v4 a);
+
+#define point_init(x, y, z) { (x), (y), (z), 1.0 }
+#define point(x, y, z) (v4)point_init((x),(y),(z))
+#define vector_init(x, y, z) { (x), (y), (z), 0.0 }
+#define vector(x, y, z) (v4)vector_init((x),(y),(z))
+
+extern const v4 ZERO_VEC;
 
 // NOTE: 4th channel is always unused for colors. Could be alpha channel or
 // removed.
-#define color_init(r, g, b) { r, g, b, 0.0 }
-#define color(r, g, b) (vec4)color_init(r,g,b)
+#define color_init(r, g, b) { r, g, b }
+#define color(r, g, b) (v3)color_init(r,g,b)
 
-extern const vec4 BLACK;
-extern const vec4 WHITE;
+b32 is_point(const v4 a);
+b32 is_vector(const v4 a);
+f64 v4_mag(const v4 a);
+void v4_neg(const v4 a, v4 out);
+void v4_norm(const v4 a, v4 out);
 
-b32 is_point4(const vec4 a);
-b32 is_vec4(const vec4 a);
-f64 vec4_mag(const vec4 a);
-void vec4_neg(const vec4 a, vec4 out);
-void vec4_norm(const vec4 a, vec4 out);
+b32 v4_eq(const v4 a, const v4 b);
+void v4_add(const v4 a, const v4 b, v4 out);
+void v4_sub(const v4 a, const v4 b, v4 out);
+void v4_mul(const v4 a, const v4 b, v4 out);
+void v4_div(const v4 a, const v4 b, v4 out);
+void v4_cross(const v4 a, const v4 b, v4 out);
+void v4_reflect(const v4 v, const v4 n, v4 out);
 
-b32 vec4_eq(const vec4 a, const vec4 b);
-void vec4_add(const vec4 a, const vec4 b, vec4 out);
-void vec4_sub(const vec4 a, const vec4 b, vec4 out);
-void vec4_mul(const vec4 a, const vec4 b, vec4 out);
-void vec4_div(const vec4 a, const vec4 b, vec4 out);
-void vec4_cross(const vec4 a, const vec4 b, vec4 out);
-void vec4_reflect(const vec4 v, const vec4 n, vec4 out);
+void v4_scale(const v4 a, f64 b, v4 out);
+//f64 v4_dot(const v4 a, const v4 b);
 
-void vec4_scale(const vec4 a, f64 b, vec4 out);
+void translation(f64 x, f64 y, f64 z, m4 out);
+void scaling(f64 x, f64 y, f64 z, m4 out);
 
-f64 vec4_dot(const vec4 a, const vec4 b);
+void rotation_x(f64 r, m4 out);
+void rotation_y(f64 r, m4 out);
+void rotation_z(f64 r, m4 out);
 
-void translation(f64 x, f64 y, f64 z, matrix4 out);
-void scaling(f64 x, f64 y, f64 z, matrix4 out);
+void shearing(f64 xy, f64 xz, f64 yx, f64 yz, f64 zx, f64 zy, m4 out);
 
-void rotation_x(f64 r, matrix4 out);
-void rotation_y(f64 r, matrix4 out);
-void rotation_z(f64 r, matrix4 out);
-
-void shearing(f64 xy, f64 xz, f64 yx, f64 yz, f64 zx, f64 zy, matrix4 out);
-
-void view_transform(vec4 from, vec4 to, vec4 up, matrix4 out);
+void view_transform(v4 from, v4 to, v4 up, m4 out);
 
 void world_init(world *w);
 void world_intersect(const world *w, const ray *r, intersection_group *ig);
-void world_shade_hit(const world *w, const computations *c, u64 depth, vec4 out);
-void world_reflected_color(const world *w, const computations *c, u64 depth, vec4 out);
-void world_color_at(const world *w, const ray *r, u64 depth, vec4 out);
-void world_refracted_color(const world *w, const computations *c, u64 depth, vec4 out);
+void world_shade_hit(const world *w, const computations *c, u64 depth, v3 out);
+void world_reflected_color(const world *w, const computations *c, u64 depth, v3 out);
+void world_color_at(const world *w, const ray *r, u64 depth, v3 out);
+void world_refracted_color(const world *w, const computations *c, u64 depth, v3 out);
 
-b32 world_is_shadowed(const world *w, const light *l, const vec4 p);
+b32 world_is_shadowed(const world *w, const light *l, const v4 p);
+
+// Static inline functions
+
+static inline void m4_mul(const m4 A, const m4 B, m4 out)
+{
+  out[0 _ 0] = (A[0 _ 0] * B[0 _ 0]) + (A[0 _ 1] * B[1 _ 0]) + (A[0 _ 2] * B[2 _ 0]) + (A[0 _ 3] * B[3 _ 0]);
+  out[0 _ 1] = (A[0 _ 0] * B[0 _ 1]) + (A[0 _ 1] * B[1 _ 1]) + (A[0 _ 2] * B[2 _ 1]) + (A[0 _ 3] * B[3 _ 1]);
+  out[0 _ 2] = (A[0 _ 0] * B[0 _ 2]) + (A[0 _ 1] * B[1 _ 2]) + (A[0 _ 2] * B[2 _ 2]) + (A[0 _ 3] * B[3 _ 2]);
+  out[0 _ 3] = (A[0 _ 0] * B[0 _ 3]) + (A[0 _ 1] * B[1 _ 3]) + (A[0 _ 2] * B[2 _ 3]) + (A[0 _ 3] * B[3 _ 3]);
+
+  out[1 _ 0] = (A[1 _ 0] * B[0 _ 0]) + (A[1 _ 1] * B[1 _ 0]) + (A[1 _ 2] * B[2 _ 0]) + (A[1 _ 3] * B[3 _ 0]);
+  out[1 _ 1] = (A[1 _ 0] * B[0 _ 1]) + (A[1 _ 1] * B[1 _ 1]) + (A[1 _ 2] * B[2 _ 1]) + (A[1 _ 3] * B[3 _ 1]);
+  out[1 _ 2] = (A[1 _ 0] * B[0 _ 2]) + (A[1 _ 1] * B[1 _ 2]) + (A[1 _ 2] * B[2 _ 2]) + (A[1 _ 3] * B[3 _ 2]);
+  out[1 _ 3] = (A[1 _ 0] * B[0 _ 3]) + (A[1 _ 1] * B[1 _ 3]) + (A[1 _ 2] * B[2 _ 3]) + (A[1 _ 3] * B[3 _ 3]);
+
+  out[2 _ 0] = (A[2 _ 0] * B[0 _ 0]) + (A[2 _ 1] * B[1 _ 0]) + (A[2 _ 2] * B[2 _ 0]) + (A[2 _ 3] * B[3 _ 0]);
+  out[2 _ 1] = (A[2 _ 0] * B[0 _ 1]) + (A[2 _ 1] * B[1 _ 1]) + (A[2 _ 2] * B[2 _ 1]) + (A[2 _ 3] * B[3 _ 1]);
+  out[2 _ 2] = (A[2 _ 0] * B[0 _ 2]) + (A[2 _ 1] * B[1 _ 2]) + (A[2 _ 2] * B[2 _ 2]) + (A[2 _ 3] * B[3 _ 2]);
+  out[2 _ 3] = (A[2 _ 0] * B[0 _ 3]) + (A[2 _ 1] * B[1 _ 3]) + (A[2 _ 2] * B[2 _ 3]) + (A[2 _ 3] * B[3 _ 3]);
+
+  out[3 _ 0] = (A[3 _ 0] * B[0 _ 0]) + (A[3 _ 1] * B[1 _ 0]) + (A[3 _ 2] * B[2 _ 0]) + (A[3 _ 3] * B[3 _ 0]);
+  out[3 _ 1] = (A[3 _ 0] * B[0 _ 1]) + (A[3 _ 1] * B[1 _ 1]) + (A[3 _ 2] * B[2 _ 1]) + (A[3 _ 3] * B[3 _ 1]);
+  out[3 _ 2] = (A[3 _ 0] * B[0 _ 2]) + (A[3 _ 1] * B[1 _ 2]) + (A[3 _ 2] * B[2 _ 2]) + (A[3 _ 3] * B[3 _ 2]);
+  out[3 _ 3] = (A[3 _ 0] * B[0 _ 3]) + (A[3 _ 1] * B[1 _ 3]) + (A[3 _ 2] * B[2 _ 3]) + (A[3 _ 3] * B[3 _ 3]);
+}
+
+static inline void m4_mulv(const m4 A, const v4 b, v4 out)
+{
+  out[0] = (A[0 _ 0] * b[0]) + (A[0 _ 1] * b[1]) + (A[0 _ 2] * b[2]) + (A[0 _ 3] * b[3]);
+  out[1] = (A[1 _ 0] * b[0]) + (A[1 _ 1] * b[1]) + (A[1 _ 2] * b[2]) + (A[1 _ 3] * b[3]);
+  out[2] = (A[2 _ 0] * b[0]) + (A[2 _ 1] * b[1]) + (A[2 _ 2] * b[2]) + (A[2 _ 3] * b[3]);
+  out[3] = (A[3 _ 0] * b[0]) + (A[3 _ 1] * b[1]) + (A[3 _ 2] * b[2]) + (A[3 _ 3] * b[3]);
+}
+
+
+static inline void cube_check_axis(f64 origin, f64 direction, v2 out)
+{
+  f64 tmin_numerator = (-1 - origin);
+  f64 tmax_numerator = (1 - origin);
+
+  f64 tmin = tmin_numerator / direction;
+  f64 tmax = tmax_numerator / direction;
+
+  if (tmin > tmax) {
+    f64 temp = tmin;
+    tmin = tmax;
+    tmax = temp;
+  }
+
+  out[0] = tmin;
+  out[1] = tmax;
+}
 
 #endif

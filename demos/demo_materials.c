@@ -15,13 +15,13 @@ void demo_materials()
   object s = {0};
   sphere_init(&s);
 
-  memcpy(s.material.color, color(1, 0.2, 1), sizeof(vec4));
+  memcpy(s.material.color, color(1, 0.2, 1), sizeof(v3));
 
   light l = {0};
-  point_light_init(&l, point4(-10, 10, -10), color(1, 1, 1));
+  point_light_init(&l, point(-10, 10, -10), color(1, 1, 1));
 
   ray r = {
-    .origin = point4_init(0, 0, -5),
+    .origin = point_init(0, 0, -5),
   };
 
   for (u32 i = 0; i < w; i++) {
@@ -29,25 +29,25 @@ void demo_materials()
     for (u32 j = 0; j < w; j++) {
       f64 world_x = -half + pixel_size * (f64)j;
 
-      vec4 target = point4_init((f64)world_x, (f64)world_y, (f64)wall_z);
-      vec4_sub(target, r.origin, r.direction);
-      vec4_norm(r.direction, r.direction);
+      v4 target = point_init((f64)world_x, (f64)world_y, (f64)wall_z);
+      v4_sub(target, r.origin, r.direction);
+      v4_norm(r.direction, r.direction);
 
       intersection_group ig = {0};
       ray_intersect(&r, &s, &ig);
 
       const intersection *hit = intersection_group_hit(&ig);
       if (hit != NULL) {
-        vec4 p = {0};
+        v4 p = {0};
         ray_position(&r, hit->t, p);
 
-        vec4 normal = {0};
+        v4 normal = {0};
         object_normal_at(&s, p, normal);
 
-        vec4 eye = {0};
-        vec4_neg(r.direction, eye);
+        v4 eye = {0};
+        v4_neg(r.direction, eye);
 
-        vec4 px = {0};
+        v3 px = {0};
         material_lighting(&s.material, &l, hit->o, p, eye, normal, false, px);
 
         canvas_write(c, i, j, px);
