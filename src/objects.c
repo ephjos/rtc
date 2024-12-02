@@ -217,7 +217,7 @@ void computations_prepare(const intersection *i, const ray *r, const intersectio
     }
 
     s32 found_index = -1;
-    for (u64 k = 0; k < CONTAINER_CAPACITY; k++) {
+    for (s64 k = containers_index; k >= 0; k--) {
       if (containers[k] != NULL && containers[k] == curr.o) {
         found_index = k;
         break;
@@ -229,7 +229,7 @@ void computations_prepare(const intersection *i, const ray *r, const intersectio
       containers_length--;
 
       // Update index to point after last defined item
-      for (s64 k = CONTAINER_CAPACITY-1; k >= 0; k--) {
+      for (s64 k = containers_index; k >= 0; k--) {
         if (containers[k] != NULL) {
           containers_index = k+1;
           break;
