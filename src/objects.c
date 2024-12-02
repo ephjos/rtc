@@ -47,12 +47,34 @@ void cube_init(object *o)
   o->type = CubeType;
 }
 
+void cylinder_init(object *o)
+{
+  object_init(o);
+  o->type = CylinderType;
+  o->value.cylinder.minimum = -INFINITY;
+  o->value.cylinder.maximum = INFINITY;
+  o->value.cylinder.closed = false;
+}
+
+void cone_init(object *o)
+{
+  object_init(o);
+  o->type = ConeType;
+  o->value.cone.minimum = -INFINITY;
+  o->value.cone.maximum = INFINITY;
+  o->value.cone.closed = false;
+}
+
 void object_normal_at(const object *o, const v4 p, v4 out)
 {
   v4 object_point = {0};
   m4_mulv(o->inverse_transform, p, object_point);
 
   v4 object_normal = {0};
+
+  f64 x = object_point[0];
+  f64 y = object_point[1];
+  f64 z = object_point[2];
 
   switch (o->type) {
     case SphereType: {
@@ -62,9 +84,6 @@ void object_normal_at(const object *o, const v4 p, v4 out)
       memcpy(object_normal, vector(0, 1, 0), sizeof(v4));
     } break;
     case CubeType: {
-      f64 x = object_point[0];
-      f64 y = object_point[1];
-      f64 z = object_point[2];
       f64 ax = fabs(x);
       f64 ay = fabs(y);
       f64 az = fabs(z);
@@ -76,6 +95,32 @@ void object_normal_at(const object *o, const v4 p, v4 out)
         memcpy(object_normal, vector(0, y, 0), sizeof(v4)); 
       } else {
         memcpy(object_normal, vector(0, 0, z), sizeof(v4)); 
+      }
+    } break;
+    case CylinderType: {
+      f64 dist = (x*x) + (z*z);
+
+      if (dist < 1 && y >= o->value.cylinder.maximum - EPSILON) {
+        memcpy(object_normal, vector(0, 1, 0), sizeof(v4));
+      } else if (dist < 1 && y <= o->value.cylinder.minimum + EPSILON) {
+        memcpy(object_normal, vector(0, -1, 0), sizeof(v4));
+      } else {
+        memcpy(object_normal, vector(x, 0, z), sizeof(v4));
+      }
+    } break;
+    case ConeType: {
+      f64 dist = (x*x) + (z*z);
+
+      if (dist < 1 && y >= o->value.cone.maximum - EPSILON) {
+        memcpy(object_normal, vector(0, 1, 0), sizeof(v4));
+      } else if (dist < 1 && y <= o->value.cone.minimum + EPSILON) {
+        memcpy(object_normal, vector(0, -1, 0), sizeof(v4));
+      } else {
+        f64 ty = sqrt(dist);
+        if (y > 0) {
+          ty = -ty;
+        }
+        memcpy(object_normal, vector(x, ty, z), sizeof(v4));
       }
     } break;
   }
@@ -99,6 +144,9 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
   ray r = {0};
   ray_transform(input_r, o->inverse_transform, &r);
 
+  f64 ox = r.origin[0]; f64 oy = r.origin[1]; f64 oz = r.origin[2];
+  f64 dx = r.direction[0]; f64 dy = r.direction[1]; f64 dz = r.direction[2];
+
   switch (o->type) {
     case SphereType: {
       v4 sphere_to_ray = {0};
@@ -112,27 +160,27 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
 
       if (discriminant >= 0) {
         f64 root_discriminant = (f64)sqrt(discriminant);
-        f64 t1 = (-b - root_discriminant) / (2*a);
-        f64 t2 = (-b + root_discriminant) / (2*a);
+        f64 t0 = (-b - root_discriminant) / (2*a);
+        f64 t1 = (-b + root_discriminant) / (2*a);
 
+        INTERSECTION_APPEND(ig, t0, o);
         INTERSECTION_APPEND(ig, t1, o);
-        INTERSECTION_APPEND(ig, t2, o);
       }
     } break;
     case PlaneType: {
-      if (fabs(r.direction[1]) >= EPSILON) {
-        f64 t = -r.origin[1] / r.direction[1];
+      if (fabs(dy) >= EPSILON) {
+        f64 t = -oy / dy;
 
         INTERSECTION_APPEND(ig, t, o);
       }
     } break;
     case CubeType: {
       v2 xt = {0};
-      cube_check_axis(r.origin[0], r.direction[0], xt);
+      cube_check_axis(ox, dx, xt);
       v2 yt = {0};
-      cube_check_axis(r.origin[1], r.direction[1], yt);
+      cube_check_axis(oy, dy, yt);
       v2 zt = {0};
-      cube_check_axis(r.origin[2], r.direction[2], zt);
+      cube_check_axis(oz, dz, zt);
 
       f64 tmin = MAX(MAX(xt[0], yt[0]), zt[0]);
       f64 tmax = MIN(MIN(xt[1], yt[1]), zt[1]);
@@ -141,6 +189,86 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
         INTERSECTION_APPEND(ig, tmin, o);
         INTERSECTION_APPEND(ig, tmax, o);
       }
+    } break;
+    case CylinderType: {
+      f64 a = dx*dx + dz*dz;
+
+      if (fabs(a) > EPSILON) {
+        f64 b = 2 * ox * dx + 2 * oz * dz;
+        f64 c = ox * ox + oz * oz - 1;
+
+        f64 discriminant = (b*b) - 4 * a * c;
+
+        if (discriminant >= 0) {
+          f64 root_discriminant = (f64)sqrt(discriminant);
+          f64 t0 = (-b - root_discriminant) / (2*a);
+          f64 t1 = (-b + root_discriminant) / (2*a);
+
+          if (t0 > t1) {
+            f64 temp = t0;
+            t0 = t1;
+            t1 = temp;
+          }
+
+          f64 minimum = o->value.cylinder.minimum;
+          f64 maximum = o->value.cylinder.maximum;
+
+          f64 y0 = oy + t0 * dy;
+          if (minimum < y0 && y0 < maximum) {
+            INTERSECTION_APPEND(ig, t0, o);
+          }
+
+          f64 y1 = oy + t1 * dy;
+          if (minimum < y1 && y1 < maximum) {
+            INTERSECTION_APPEND(ig, t1, o);
+          }
+        }
+      }
+
+      cylinder_intersect_caps(&r, o, ig);
+    } break;
+    case ConeType: {
+      f64 a = dx*dx - dy*dy + dz*dz;
+      f64 b = 2*ox*dx - 2*oy*dy + 2*oz*dz;
+      f64 c = ox*ox - oy*oy + oz*oz;
+
+      f64 minimum = o->value.cone.minimum;
+      f64 maximum = o->value.cone.maximum;
+
+      if (fabs(a) > EPSILON) {
+        f64 discriminant = (b*b) - 4 * a * c;
+
+        if (discriminant >= 0) {
+          f64 root_discriminant = (f64)sqrt(discriminant);
+          f64 t0 = (-b - root_discriminant) / (2*a);
+          f64 t1 = (-b + root_discriminant) / (2*a);
+
+          if (t0 > t1) {
+            f64 temp = t0;
+            t0 = t1;
+            t1 = temp;
+          }
+
+          f64 y0 = oy + t0 * dy;
+          if (minimum < y0 && y0 < maximum) {
+            INTERSECTION_APPEND(ig, t0, o);
+          }
+
+          f64 y1 = oy + t1 * dy;
+          if (minimum < y1 && y1 < maximum) {
+            INTERSECTION_APPEND(ig, t1, o);
+          }
+        }
+      } else if (fabs(b) > EPSILON) {
+        f64 t = -c/(2*b);
+
+        f64 y = oy + t * dy;
+        if (minimum < y && y < maximum) {
+          INTERSECTION_APPEND(ig, t, o);
+        }
+      }
+
+      cone_intersect_caps(&r, o, ig);
     } break;
   }
 }

@@ -232,18 +232,25 @@ typedef struct {
   pattern *p;
 } material;
 
-enum object_type { SphereType, PlaneType, CubeType };
+enum object_type { SphereType, PlaneType, CubeType, CylinderType, ConeType };
 
 typedef struct {
   enum object_type type;
   m4 transform;
   m4 inverse_transform;
   material material;
-  /*
   union {
-    struct {} sphere;
+    struct {
+      f64 minimum;
+      f64 maximum;
+      b32 closed;
+    } cylinder;
+    struct {
+      f64 minimum;
+      f64 maximum;
+      b32 closed;
+    } cone;
   } value;
-  */
 } object;
 
 typedef struct {
@@ -346,6 +353,8 @@ void sphere_init(object *o);
 void glass_sphere_init(object *o);
 void plane_init(object *o);
 void cube_init(object *o);
+void cylinder_init(object *o);
+void cone_init(object *o);
 
 int intersection_compare(const void* a, const void* b);
 
@@ -510,6 +519,65 @@ static inline void ray_transform(const ray *r, const m4 T, ray *out)
 {
   m4_mulv(T, r->origin, out->origin);
   m4_mulv(T, r->direction, out->direction);
+}
+
+static inline b32 cylinder_check_cap(const ray *r, f64 t)
+{
+  f64 x = r->origin[0] + t * r->direction[0];
+  f64 z = r->origin[2] + t * r->direction[2];
+
+  return (x*x) + (z*z) <= 1;
+}
+
+static inline void cylinder_intersect_caps(const ray *r, const object *o, intersection_group *ig)
+{
+  assert(o->type == CylinderType);
+  if (!o->value.cylinder.closed || fabs(r->direction[1]) < EPSILON) {
+    return;
+  }
+
+  f64 t;
+
+  t = (o->value.cylinder.minimum - r->origin[1]) / r->direction[1];
+  if (cylinder_check_cap(r, t)) {
+    INTERSECTION_APPEND(ig, t, o);
+  }
+
+  t = (o->value.cylinder.maximum - r->origin[1]) / r->direction[1];
+  if (cylinder_check_cap(r, t)) {
+    INTERSECTION_APPEND(ig, t, o);
+  }
+}
+
+static inline b32 cone_check_cap(const ray *r, f64 t, f64 radius)
+{
+  f64 x = r->origin[0] + t * r->direction[0];
+  f64 z = r->origin[2] + t * r->direction[2];
+
+  return (x*x) + (z*z) <= fabs(radius);
+}
+
+static inline void cone_intersect_caps(const ray *r, const object *o, intersection_group *ig)
+{
+  assert(o->type == ConeType);
+  if (!o->value.cone.closed || fabs(r->direction[1]) < EPSILON) {
+    return;
+  }
+
+  f64 minimum = o->value.cone.minimum;
+  f64 maximum = o->value.cone.maximum;
+
+  f64 t;
+
+  t = (minimum - r->origin[1]) / r->direction[1];
+  if (cone_check_cap(r, t, minimum)) {
+    INTERSECTION_APPEND(ig, t, o);
+  }
+
+  t = (maximum - r->origin[1]) / r->direction[1];
+  if (cone_check_cap(r, t, maximum)) {
+    INTERSECTION_APPEND(ig, t, o);
+  }
 }
 
 #endif

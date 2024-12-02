@@ -897,6 +897,323 @@ void test_objects()
       assert(v4_eq(normal, T.normal));
     }
   }
+
+  TEST {
+    // A ray misses a cylinder
+    typedef struct {
+      v4 origin;
+      v4 direction;
+    } test_case;
+    test_case cases[] = {
+      { point_init(1, 0, 0), vector_init(0, 1, 0) },
+      { point_init(0, 0, 0), vector_init(0, 1, 0) },
+      { point_init(0, 0, -5), vector_init(1, 1, 1) },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object cyl = {0};
+    cylinder_init(&cyl);
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &cyl, &ig);
+
+      assert(ig.count == 0);
+    }
+  }
+
+  TEST {
+    // A ray hits a cylinder
+    typedef struct {
+      v4 origin;
+      v4 direction;
+      f64 t0;
+      f64 t1;
+    } test_case;
+    test_case cases[] = {
+      { point_init(1, 0, -5), vector_init(0, 0, 1), 5, 5 },
+      { point_init(0, 0, -5), vector_init(0, 0, 1), 4, 6 },
+      { point_init(0.5, 0, -5), vector_init(0.1, 1, 1), 6.80798, 7.08872 },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object cyl = {0};
+    cylinder_init(&cyl);
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &cyl, &ig);
+
+      assert(ig.count == 2);
+      assert(req(ig.xs[0].t, T.t0));
+      assert(req(ig.xs[1].t, T.t1));
+    }
+  }
+
+  TEST {
+    // Cylinder normals
+    typedef struct {
+      v4 point;
+      v4 normal;
+    } test_case;
+    test_case cases[] = {
+      { point_init(1, 0, 0), vector_init(1, 0, 0) },
+      { point_init(0, 5, -1), vector_init(0, 0, -1) },
+      { point_init(0, -2, 1), vector_init(0, 0, 1) },
+      { point_init(-1, 1, 0), vector_init(-1, 0, 0) },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object c = {0};
+    cylinder_init(&c);
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+
+      v4 normal = {0};
+      object_normal_at(&c, T.point, normal);
+
+      assert(v4_eq(normal, T.normal));
+    }
+  }
+
+  TEST {
+    // A ray hits a truncated cylinder
+    typedef struct {
+      v4 origin;
+      v4 direction;
+      f64 count;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 1.5, 0), vector_init(0.1, 1, 0), 0 },
+      { point_init(0, 3, -5), vector_init(0, 0, 1), 0 },
+      { point_init(0, 0, -5), vector_init(0, 0, 1), 0 },
+      { point_init(0, 2, -5), vector_init(0, 0, 1), 0 },
+      { point_init(0, 1, -5), vector_init(0, 0, 1), 0 },
+      { point_init(0, 1.5, -2), vector_init(0, 0, 1), 2 },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object cyl = {0};
+    cylinder_init(&cyl);
+    cyl.value.cylinder.minimum = 1;
+    cyl.value.cylinder.maximum = 2;
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &cyl, &ig);
+
+      assert(ig.count == T.count);
+    }
+  }
+
+  TEST {
+    // A ray hits a capped cylinder
+    typedef struct {
+      v4 origin;
+      v4 direction;
+      f64 count;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 3, 0), vector_init(0, -1, 0), 2 },
+      { point_init(0, 3, -2), vector_init(0, -1, 2), 2 },
+      { point_init(0, 4, -2), vector_init(0, -1, 1), 2 },
+      { point_init(0, 0, -2), vector_init(0, 1, 2), 2 },
+      { point_init(0, -1, -2), vector_init(0, 1, 1), 2 },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object cyl = {0};
+    cylinder_init(&cyl);
+    cyl.value.cylinder.minimum = 1;
+    cyl.value.cylinder.maximum = 2;
+    cyl.value.cylinder.closed = true;
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &cyl, &ig);
+
+      assert(ig.count == T.count);
+    }
+  }
+
+  TEST {
+    // Cylinder cap normals
+    typedef struct {
+      v4 point;
+      v4 normal;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 1, 0), vector_init(0, -1, 0) },
+      { point_init(0.5, 1, 0), vector_init(0, -1, 0) },
+      { point_init(0, 1, 0.5), vector_init(0, -1, 0) },
+      { point_init(0, 2, 0), vector_init(0, 1, 0) },
+      { point_init(0.5, 2, 0), vector_init(0, 1, 0) },
+      { point_init(0, 2, 0.5), vector_init(0, 1, 0) },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object cyl = {0};
+    cylinder_init(&cyl);
+    cyl.value.cylinder.minimum = 1;
+    cyl.value.cylinder.maximum = 2;
+    cyl.value.cylinder.closed = true;
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+
+      v4 normal = {0};
+      object_normal_at(&cyl, T.point, normal);
+
+      assert(v4_eq(normal, T.normal));
+    }
+  }
+
+  TEST {
+    // A ray hits a cone
+    typedef struct {
+      v4 origin;
+      v4 direction;
+      f64 t0;
+      f64 t1;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 0, -5), vector_init(0, 0, 1), 5, 5 },
+      { point_init(0, 0, -5), vector_init(1, 1, 1), 8.66025, 8.66025 },
+      { point_init(1, 1, -5), vector_init(-0.5, -1, 1), 4.55006, 49.44994 },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object c = {0};
+    cone_init(&c);
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &c, &ig);
+
+      assert(ig.count == 2);
+      assert(req(ig.xs[0].t, T.t0));
+      assert(req(ig.xs[1].t, T.t1));
+    }
+  }
+  TEST {
+    // A ray hits a capped cone parallel to one half
+    object c = {0};
+    cone_init(&c);
+
+    ray r = {0};
+    memcpy(r.origin, point(0, 0, -1), sizeof(v4));
+    memcpy(r.direction, vector(0, 1, 1), sizeof(v4));
+
+    v4_norm(r.direction, r.direction);
+
+    intersection_group ig = {0};
+    ray_intersect(&r, &c, &ig);
+
+    assert(ig.count == 1);
+    assert(req(ig.xs[0].t, 0.35355));
+  }
+
+  TEST {
+    // A ray hits a capped cone
+    typedef struct {
+      v4 origin;
+      v4 direction;
+      u32 count;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 0, -5), vector_init(0, 1, 0), 0 },
+      { point_init(0, 0, -0.25), vector_init(0, 1, 1), 2 },
+      { point_init(0, 0, -0.25), vector_init(0, 1, 0), 4 },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object c = {0};
+    cone_init(&c);
+    c.value.cone.minimum = -0.5;
+    c.value.cone.maximum = 0.5;
+    c.value.cone.closed = true;
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+      ray r = {0};
+      memcpy(r.origin, T.origin, sizeof(v4));
+      memcpy(r.direction, T.direction, sizeof(v4));
+
+      v4_norm(r.direction, r.direction);
+
+      intersection_group ig = {0};
+      ray_intersect(&r, &c, &ig);
+
+      assert(ig.count == T.count);
+    }
+  }
+
+  TEST {
+    // Cone normals
+    typedef struct {
+      v4 point;
+      v4 normal;
+    } test_case;
+    test_case cases[] = {
+      { point_init(0, 0, 0), vector_init(0, 0, 0) },
+      { point_init(1, 1, 1), vector_init(0.5, -ROOT_2_2, 0.5) },
+      { point_init(-1, -1, 0), vector_init(-ROOT_2_2, ROOT_2_2, 0) },
+    };
+    u32 L = sizeof(cases) / sizeof(test_case);
+
+    object c = {0};
+    cone_init(&c);
+    /*
+    c.value.cone.minimum = -0.5;
+    c.value.cone.maximum = 0.5;
+    c.value.cone.closed = true;
+    */
+
+    for (u32 i = 0; i < L; i++) {
+      test_case T = cases[i];
+
+      v4 normal = {0};
+      object_normal_at(&c, T.point, normal);
+
+      assert(v4_eq(normal, T.normal));
+    }
+  }
 }
 
 

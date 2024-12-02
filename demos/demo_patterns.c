@@ -104,12 +104,21 @@ void demo_patterns()
 
   object middle = {0};
   {
-    sphere_init(&middle);
+    cone_init(&middle);
+    middle.value.cone.minimum = -1;
+    middle.value.cone.maximum = 0;
+    middle.value.cone.closed = true;
 
     m4 T = {0};
-    translation(-0.5, 1, 0.5, T);
+    translation(-0.5, 2, 0.5, T);
 
-    object_set_transform(&middle, T);
+    m4 S = {0};
+    scaling(1, 2, 1, S);
+
+    m4 Z = {0};
+    m4_mul(T, S, Z);
+
+    object_set_transform(&middle, Z);
 
     material m = {0};
     material_init(&m);
@@ -150,7 +159,10 @@ void demo_patterns()
 
   object left = {0};
   {
-    sphere_init(&left);
+    cylinder_init(&left);
+    left.value.cylinder.minimum = 0;
+    left.value.cylinder.maximum = 2;
+    left.value.cylinder.closed = true;
 
     m4 T = {0};
     translation(-1.5, 0.33f, -0.75f, T);

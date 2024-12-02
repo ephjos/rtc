@@ -57,7 +57,9 @@ void v4_neg(const v4 a, v4 out)
 void v4_norm(const v4 a, v4 out)
 {
   f64 mag = v4_mag(a);
-  v4_scale(a, 1.0/mag, out);
+  if (mag > EPSILON) {
+    v4_scale(a, 1.0/mag, out);
+  } 
 }
 
 b32 v4_eq(const v4 a, const v4 b)
@@ -105,15 +107,3 @@ void v4_reflect(const v4 v, const v4 n, v4 out)
   out[2] = v[2] - scaled_normal[2];
   out[3] = v[3] - scaled_normal[3];
 }
-
-/*
-f64 v4_dot(const v4 a, const v4 b)
-{
-  return (a[0]*b[0]) +
-         (a[1]*b[1]) +
-         (a[2]*b[2]) +
-         (a[3]*b[3]);
-}
-*/
-
-
