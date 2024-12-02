@@ -2,6 +2,7 @@
 CC = gcc
 STRIP = strip
 
+ARGS = -march=native
 DEBUG_ARGS = -pg -g3 -Wall -Wextra -Wconversion -Wdouble-promotion \
 		-Wno-unused-parameter -Wno-unused-function -Wno-sign-conversion \
 		-fsanitize=address,undefined -fsanitize-undefined-trap-on-error \
@@ -29,22 +30,22 @@ demo-out:
 	mkdir -p demo-out
 
 main_debug: src/main.c $(SRCS) $(HEADERS)
-	$(CC) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS)
+	$(CC) $(ARGS) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS)
 
 main_release: src/main.c $(SRCS) $(HEADERS)
-	$(CC) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS)
+	$(CC) $(ARGS) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS)
 	$(STRIP) $@
 
 test_debug: tests/test_main.c $(SRCS) $(HEADERS) $(TESTS) $(TEST_HEADERS)
-	$(CC) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS) $(TESTS)
+	$(CC) $(ARGS) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS) $(TESTS)
 
 test_release: tests/test_main.c $(SRCS) $(HEADERS) $(TESTS) $(TEST_HEADERS)
-	$(CC) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(TESTS)
+	$(CC) $(ARGS) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(TESTS)
 	$(STRIP) $@
 
 demo_debug: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS) demo-out
-	$(CC) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
+	$(CC) $(ARGS) $(DEBUG_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
 
 demo_release: demos/demo_main.c $(SRCS) $(HEADERS) $(DEMOS) $(DEMO_HEADERS) demo-out
-	$(CC) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
+	$(CC) $(ARGS) $(RELEASE_ARGS) $(LIBS) -o $@ $< $(SRCS) $(DEMOS)
 	$(STRIP) $@
