@@ -13,30 +13,11 @@ b32 v3_eq(const v3 a, const v3 b)
          req(a[2], b[2]);
 }
 
-void v3_add(const v3 a, const v3 b, v3 out)
-{
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-}
-
-void v3_sub(const v3 a, const v3 b, v3 out)
-{
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-}
-
 void v3_mul(const v3 a, const v3 b, v3 out)
 {
   out[0] = a[0] * b[0];
   out[1] = a[1] * b[1];
   out[2] = a[2] * b[2];
-}
-
-void v3_scale(const v3 a, f64 b, v3 out)
-{
-  v3_mul(a, (v3){b, b, b}, out);
 }
 
 // -----------------------------------------------------------------------------
@@ -87,22 +68,6 @@ b32 v4_eq(const v4 a, const v4 b)
          req(a[3], b[3]);
 }
 
-void v4_add(const v4 a, const v4 b, v4 out)
-{
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  out[3] = a[3] + b[3];
-}
-
-void v4_sub(const v4 a, const v4 b, v4 out)
-{
-  out[0] = a[0] - b[0];
-  out[1] = a[1] - b[1];
-  out[2] = a[2] - b[2];
-  out[3] = a[3] - b[3];
-}
-
 void v4_mul(const v4 a, const v4 b, v4 out)
 {
   out[0] = a[0] * b[0];
@@ -150,13 +115,5 @@ f64 v4_dot(const v4 a, const v4 b)
          (a[3]*b[3]);
 }
 */
-
-void v4_scale(const v4 a, f64 b, v4 out)
-{
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  out[3] = a[3] * b;
-}
 
 

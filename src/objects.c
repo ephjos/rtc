@@ -171,12 +171,6 @@ const intersection *intersection_group_hit(const intersection_group *ig)
   return result;
 }
 
-void ray_transform(const ray *r, const m4 T, ray *out)
-{
-  m4_mulv(T, r->origin, out->origin);
-  m4_mulv(T, r->direction, out->direction);
-}
-
 void computations_prepare(const intersection *i, const ray *r, const intersection_group *ig, computations *out)
 {
   out->t = i->t;

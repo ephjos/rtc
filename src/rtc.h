@@ -353,7 +353,6 @@ const intersection *intersection_group_hit(const intersection_group *ig);
 
 void ray_position(const ray *r, f64 t, v4 out);
 void ray_intersect(const ray *r, const object *o, intersection_group *ig);
-void ray_transform(const ray *r, const m4 T, ray *out);
 
 void computations_prepare(const intersection *i, const ray *r, const intersection_group *ig, computations *out);
 f64 computations_schlick(const computations *comps);
@@ -364,10 +363,10 @@ extern const v3 WHITE;
 void v3_print(const v3 a);
 
 b32 v3_eq(const v3 a, const v3 b);
-void v3_add(const v3 a, const v3 b, v3 out);
-void v3_sub(const v3 a, const v3 b, v3 out);
 void v3_mul(const v3 a, const v3 b, v3 out);
-void v3_scale(const v3 a, f64 b, v3 out);
+
+#define color_init(r, g, b) { r, g, b }
+#define color(r, g, b) (v3)color_init(r,g,b)
 
 void v4_print(const v4 a);
 
@@ -378,11 +377,6 @@ void v4_print(const v4 a);
 
 extern const v4 ZERO_VEC;
 
-// NOTE: 4th channel is always unused for colors. Could be alpha channel or
-// removed.
-#define color_init(r, g, b) { r, g, b }
-#define color(r, g, b) (v3)color_init(r,g,b)
-
 b32 is_point(const v4 a);
 b32 is_vector(const v4 a);
 f64 v4_mag(const v4 a);
@@ -390,15 +384,10 @@ void v4_neg(const v4 a, v4 out);
 void v4_norm(const v4 a, v4 out);
 
 b32 v4_eq(const v4 a, const v4 b);
-void v4_add(const v4 a, const v4 b, v4 out);
-void v4_sub(const v4 a, const v4 b, v4 out);
 void v4_mul(const v4 a, const v4 b, v4 out);
 void v4_div(const v4 a, const v4 b, v4 out);
 void v4_cross(const v4 a, const v4 b, v4 out);
 void v4_reflect(const v4 v, const v4 n, v4 out);
-
-void v4_scale(const v4 a, f64 b, v4 out);
-//f64 v4_dot(const v4 a, const v4 b);
 
 void translation(f64 x, f64 y, f64 z, m4 out);
 void scaling(f64 x, f64 y, f64 z, m4 out);
@@ -470,6 +459,57 @@ static inline void cube_check_axis(f64 origin, f64 direction, v2 out)
 
   out[0] = tmin;
   out[1] = tmax;
+}
+
+static inline void v3_add(const v3 a, const v3 b, v3 out)
+{
+  out[0] = a[0] + b[0];
+  out[1] = a[1] + b[1];
+  out[2] = a[2] + b[2];
+}
+
+static inline void v3_sub(const v3 a, const v3 b, v3 out)
+{
+  out[0] = a[0] - b[0];
+  out[1] = a[1] - b[1];
+  out[2] = a[2] - b[2];
+}
+
+static inline void v3_scale(const v3 a, f64 b, v3 out)
+{
+  out[0] = a[0] * b;
+  out[1] = a[1] * b;
+  out[2] = a[2] * b;
+}
+
+static inline void v4_add(const v4 a, const v4 b, v4 out)
+{
+  out[0] = a[0] + b[0];
+  out[1] = a[1] + b[1];
+  out[2] = a[2] + b[2];
+  out[3] = a[3] + b[3];
+}
+
+static inline void v4_sub(const v4 a, const v4 b, v4 out)
+{
+  out[0] = a[0] - b[0];
+  out[1] = a[1] - b[1];
+  out[2] = a[2] - b[2];
+  out[3] = a[3] - b[3];
+}
+
+static inline void v4_scale(const v4 a, f64 b, v4 out)
+{
+  out[0] = a[0] * b;
+  out[1] = a[1] * b;
+  out[2] = a[2] * b;
+  out[3] = a[3] * b;
+}
+
+static inline void ray_transform(const ray *r, const m4 T, ray *out)
+{
+  m4_mulv(T, r->origin, out->origin);
+  m4_mulv(T, r->direction, out->direction);
 }
 
 #endif
