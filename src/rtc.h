@@ -123,21 +123,6 @@ static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
 
 #define INTERSECTION_APPEND_BOUND_CHECK
 
-#ifdef INTERSECTION_APPEND_BOUND_CHECK
-#define BOUND_CHECK(_is)\
-  if (_is->count >= MAX_INTERSECTIONS) {\
-    fprintf(stderr, "Too many intersections\n");\
-    exit(1);\
-  }
-#else
-#define BOUND_CHECK(...)
-#endif
-
-#define INTERSECTION_APPEND(_is, _t, _o) \
-  BOUND_CHECK(_is)\
-  _is->xs[_is->count].t = _t;\
-  _is->xs[_is->count++].o = _o
-
 #define v4_dot(a, b) ((a[0]*b[0]) + (a[1]*b[1]) + (a[2]*b[2]) + (a[3]*b[3]))
 
 //------------------------------------------------------------------------------
@@ -420,6 +405,18 @@ b32 world_is_shadowed(const world *w, const light *l, const v4 p);
 
 // Static inline functions
 
+static inline void intersection_append(intersection_group *_is, f64 _t, const object * _o) 
+{
+#ifdef INTERSECTION_APPEND_BOUND_CHECK
+  if (_is->count >= MAX_INTERSECTIONS) {\
+    fprintf(stderr, "Too many intersections\n");\
+      exit(1);\
+  }
+#endif
+  _is->xs[_is->count].t = _t;
+  _is->xs[_is->count++].o = _o;
+}
+
 static inline void m4_mul(const m4 A, const m4 B, m4 out)
 {
   out[0 _ 0] = (A[0 _ 0] * B[0 _ 0]) + (A[0 _ 1] * B[1 _ 0]) + (A[0 _ 2] * B[2 _ 0]) + (A[0 _ 3] * B[3 _ 0]);
@@ -540,12 +537,12 @@ static inline void cylinder_intersect_caps(const ray *r, const object *o, inters
 
   t = (o->value.cylinder.minimum - r->origin[1]) / r->direction[1];
   if (cylinder_check_cap(r, t)) {
-    INTERSECTION_APPEND(ig, t, o);
+    intersection_append(ig, t, o);
   }
 
   t = (o->value.cylinder.maximum - r->origin[1]) / r->direction[1];
   if (cylinder_check_cap(r, t)) {
-    INTERSECTION_APPEND(ig, t, o);
+    intersection_append(ig, t, o);
   }
 }
 
@@ -571,12 +568,12 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
 
   t = (minimum - r->origin[1]) / r->direction[1];
   if (cone_check_cap(r, t, minimum)) {
-    INTERSECTION_APPEND(ig, t, o);
+    intersection_append(ig, t, o);
   }
 
   t = (maximum - r->origin[1]) / r->direction[1];
   if (cone_check_cap(r, t, maximum)) {
-    INTERSECTION_APPEND(ig, t, o);
+    intersection_append(ig, t, o);
   }
 }
 
