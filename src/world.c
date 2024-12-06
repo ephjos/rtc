@@ -37,10 +37,6 @@ void world_intersect(const world *w, const ray *r, intersection_group *ig)
   for (u32 i = 0; i < w->objects_count; i++) {
     ray_intersect(r, &w->objects[i], ig);
   }
-
-  // NOTE: probably want to keep these sorted as we go or find a better sort
-  // for the typical intersection size (small)
-  qsort(ig->xs, ig->count, sizeof(intersection), intersection_compare);
 }
 
 void world_shade_hit(const world *w, const computations *c, u64 depth, v3 out)

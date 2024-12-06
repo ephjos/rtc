@@ -413,8 +413,22 @@ static inline void intersection_append(intersection_group *_is, f64 _t, const ob
       exit(1);\
   }
 #endif
-  _is->xs[_is->count].t = _t;
-  _is->xs[_is->count++].o = _o;
+  // Append in order, shifting list as needed on insert
+  u32 target_index = 0;
+  for (; target_index < _is->count; target_index++) {
+    if (_is->xs[target_index].t > _t) {
+      break;
+    }
+  }
+
+  for (u32 i = _is->count; i > target_index; i--) {
+    _is->xs[i].t = _is->xs[i-1].t;
+    _is->xs[i].o = _is->xs[i-1].o;
+  }
+  _is->count++;
+
+  _is->xs[target_index].t = _t;
+  _is->xs[target_index].o = _o;
 }
 
 static inline void m4_mul(const m4 A, const m4 B, m4 out)
