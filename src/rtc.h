@@ -44,7 +44,6 @@ typedef double f64;
 
 // Compare 
 #define EPSILON (f64)0.00001
-b32 req(f64 a, f64 b);
 
 // Util
 #define CLAMP(x, a, b) (x < a ? a : x > b ? b : x);
@@ -113,7 +112,7 @@ static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
 //------------------------------------------------------------------------------
 // Defines
 
-#define MAX_INTERSECTIONS 16
+#define MAX_INTERSECTIONS 32
 #define MAX_OBJECTS 512
 #define MAX_LIGHTS 512
 #define MAX_DEPTH 5
@@ -593,6 +592,11 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
   if (cone_check_cap(r, t, maximum)) {
     intersection_insert(ig, t, o);
   }
+}
+
+static inline b32 req(f64 a, f64 b)
+{
+  return fabs(a - b) < EPSILON;
 }
 
 #endif
