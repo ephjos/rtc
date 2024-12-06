@@ -163,15 +163,15 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
         f64 t0 = (-b - root_discriminant) / (2*a);
         f64 t1 = (-b + root_discriminant) / (2*a);
 
-        intersection_append(ig, t0, o);
-        intersection_append(ig, t1, o);
+        intersection_insert(ig, t0, o);
+        intersection_insert(ig, t1, o);
       }
     } break;
     case PlaneType: {
       if (fabs(dy) >= EPSILON) {
         f64 t = -oy / dy;
 
-        intersection_append(ig, t, o);
+        intersection_insert(ig, t, o);
       }
     } break;
     case CubeType: {
@@ -186,8 +186,8 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
       f64 tmax = MIN(MIN(xt[1], yt[1]), zt[1]);
 
       if (tmin <= tmax) {
-        intersection_append(ig, tmin, o);
-        intersection_append(ig, tmax, o);
+        intersection_insert(ig, tmin, o);
+        intersection_insert(ig, tmax, o);
       }
     } break;
     case CylinderType: {
@@ -215,12 +215,12 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
 
           f64 y0 = oy + t0 * dy;
           if (minimum < y0 && y0 < maximum) {
-            intersection_append(ig, t0, o);
+            intersection_insert(ig, t0, o);
           }
 
           f64 y1 = oy + t1 * dy;
           if (minimum < y1 && y1 < maximum) {
-            intersection_append(ig, t1, o);
+            intersection_insert(ig, t1, o);
           }
         }
       }
@@ -251,12 +251,12 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
 
           f64 y0 = oy + t0 * dy;
           if (minimum < y0 && y0 < maximum) {
-            intersection_append(ig, t0, o);
+            intersection_insert(ig, t0, o);
           }
 
           f64 y1 = oy + t1 * dy;
           if (minimum < y1 && y1 < maximum) {
-            intersection_append(ig, t1, o);
+            intersection_insert(ig, t1, o);
           }
         }
       } else if (fabs(b) > EPSILON) {
@@ -264,7 +264,7 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
 
         f64 y = oy + t * dy;
         if (minimum < y && y < maximum) {
-          intersection_append(ig, t, o);
+          intersection_insert(ig, t, o);
         }
       }
 

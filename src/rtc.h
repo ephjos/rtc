@@ -121,7 +121,7 @@ static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
 
-#define INTERSECTION_APPEND_BOUND_CHECK
+#define INTERSECTION_INSERT_BOUND_CHECK
 
 #define v4_dot(a, b) ((a[0]*b[0]) + (a[1]*b[1]) + (a[2]*b[2]) + (a[3]*b[3]))
 
@@ -405,30 +405,34 @@ b32 world_is_shadowed(const world *w, const light *l, const v4 p);
 
 // Static inline functions
 
-static inline void intersection_append(intersection_group *_is, f64 _t, const object * _o) 
+static inline void intersection_insert(intersection_group *is, f64 t, const object * o) 
 {
-#ifdef INTERSECTION_APPEND_BOUND_CHECK
-  if (_is->count >= MAX_INTERSECTIONS) {\
+#ifdef INTERSECTION_INSERT_BOUND_CHECK
+  if (is->count >= MAX_INTERSECTIONS) {\
     fprintf(stderr, "Too many intersections\n");\
       exit(1);\
   }
 #endif
-  // Append in order, shifting list as needed on insert
+  // Insert in order, shifting list as needed
+  // NOTE: maybe this could be a linked list for less work on insert? constant
+  // time access only matters in test, every operation in practice is a linear
+  // scan. However, better cache locality from array may make this
+  // implementation faster. Need to test.
   u32 target_index = 0;
-  for (; target_index < _is->count; target_index++) {
-    if (_is->xs[target_index].t > _t) {
+  for (; target_index < is->count; target_index++) {
+    if (is->xs[target_index].t > t) {
       break;
     }
   }
 
-  for (u32 i = _is->count; i > target_index; i--) {
-    _is->xs[i].t = _is->xs[i-1].t;
-    _is->xs[i].o = _is->xs[i-1].o;
+  for (u32 i = is->count; i > target_index; i--) {
+    is->xs[i].t = is->xs[i-1].t;
+    is->xs[i].o = is->xs[i-1].o;
   }
-  _is->count++;
+  is->count++;
 
-  _is->xs[target_index].t = _t;
-  _is->xs[target_index].o = _o;
+  is->xs[target_index].t = t;
+  is->xs[target_index].o = o;
 }
 
 static inline void m4_mul(const m4 A, const m4 B, m4 out)
@@ -551,12 +555,12 @@ static inline void cylinder_intersect_caps(const ray *r, const object *o, inters
 
   t = (o->value.cylinder.minimum - r->origin[1]) / r->direction[1];
   if (cylinder_check_cap(r, t)) {
-    intersection_append(ig, t, o);
+    intersection_insert(ig, t, o);
   }
 
   t = (o->value.cylinder.maximum - r->origin[1]) / r->direction[1];
   if (cylinder_check_cap(r, t)) {
-    intersection_append(ig, t, o);
+    intersection_insert(ig, t, o);
   }
 }
 
@@ -582,12 +586,12 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
 
   t = (minimum - r->origin[1]) / r->direction[1];
   if (cone_check_cap(r, t, minimum)) {
-    intersection_append(ig, t, o);
+    intersection_insert(ig, t, o);
   }
 
   t = (maximum - r->origin[1]) / r->direction[1];
   if (cone_check_cap(r, t, maximum)) {
-    intersection_append(ig, t, o);
+    intersection_insert(ig, t, o);
   }
 }
 
