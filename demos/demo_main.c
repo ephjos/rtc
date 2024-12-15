@@ -2,6 +2,8 @@
 
 int main(int argc, char **argv)
 {
+  srand((unsigned)time(NULL));
+
   if (argc == 1) {
     demo_primitives();
     demo_canvas();

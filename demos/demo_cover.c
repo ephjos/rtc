@@ -3,6 +3,9 @@
 const u32 W = 1000;
 const u32 H = W;
 
+//#define RENDER_MANY
+#ifndef RENDER_MANY
+
 void demo_cover()
 {
   printf("-- demo cover\n");
@@ -169,6 +172,7 @@ void demo_cover()
   camera v = {0};
   {
     camera_init(&v, W, H, 0.785);
+    v.antialias = true;
 
     m4 T = {0};
     view_transform(point(-6, 6, -10), point(6, 0, 6), vector(-0.45, 1, 0), T);
@@ -200,12 +204,15 @@ void demo_cover()
   }
 }
 
+#else
+
 void render_and_save(world w, u32 frame, f64 step)
 {
   // Camera
   camera v = {0};
   {
     camera_init(&v, W, H, 0.785);
+    v.antialias = true;
 
     v4 from = point_init(-6, 6, -10);
 
@@ -247,7 +254,6 @@ void render_and_save(world w, u32 frame, f64 step)
   }
 }
 
-/*
 // Sweeps out a path over the scene, rendering many frames to be stitched
 // externally
 void demo_cover()
@@ -412,12 +418,18 @@ void demo_cover()
     w.objects[w.objects_count++] = cube_i;
   }
 
-  u32 N = 120;
+  u32 N = 180;
   for (u32 i = 0; i < N; i++) {
     f64 step = ((f64)i / (f64)N) - 0.5;
     render_and_save(w, i, step);
   }
 
-}
+  /*
+  for (u32 i = 0; i < N; i++) {
+    f64 step = (((f64)N-(f64)i) / (f64)N) - 0.5;
+    render_and_save(w, N+i, step);
+  }
+  */
 
-*/
+}
+#endif

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <time.h>
 
 
 // Numeric types
@@ -139,6 +140,7 @@ typedef struct {
   f64 half_width;
   f64 half_height;
   f64 pixel_size;
+  b32 antialias;
   m4 transform;
   m4 inverse_transform;
 } camera;
@@ -284,6 +286,7 @@ void camera_init(camera *c, const u32 hsize, const u32 vsize, const f64 fov);
 void camera_set_transform(camera *c, const m4 T);
 
 void camera_ray_for_pixel(const camera *c, const u32 x, const u32 y, ray *out);
+void camera_raw_ray_for_pixel(const camera *c, const f64 x_offset, const f64 y_offset, ray *out);
 
 canvas *camera_render(const camera *v, const world *w, render_stats *s);
 
@@ -597,6 +600,11 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
 static inline b32 req(f64 a, f64 b)
 {
   return fabs(a - b) < EPSILON;
+}
+
+static inline f64 random_uniform()
+{
+  return (f64)rand()/(f64)RAND_MAX;
 }
 
 #endif
