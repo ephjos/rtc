@@ -51,8 +51,8 @@ void cylinder_init(object *o)
 {
   object_init(o);
   o->type = CylinderType;
-  o->value.cylinder.minimum = -INFINITY;
-  o->value.cylinder.maximum = INFINITY;
+  o->value.cylinder.minimum = -F64_INF;
+  o->value.cylinder.maximum = F64_INF;
   o->value.cylinder.closed = false;
 }
 
@@ -60,8 +60,8 @@ void cone_init(object *o)
 {
   object_init(o);
   o->type = ConeType;
-  o->value.cone.minimum = -INFINITY;
-  o->value.cone.maximum = INFINITY;
+  o->value.cone.minimum = -F64_INF;
+  o->value.cone.maximum = F64_INF;
   o->value.cone.closed = false;
 }
 
@@ -286,7 +286,7 @@ const intersection *intersection_group_hit(const intersection_group *ig)
     return NULL;
   }
 
-  f64 min = FLT_MAX;
+  f64 min = F64_MAX;
   const intersection *result = NULL;
   for (u32 j = 0; j < ig->count; j++) {
     f64 t = ig->xs[j].t;

@@ -9,7 +9,7 @@ void demo_camera()
     sphere_init(&floor);
 
     m4 T = {0};
-    scaling(10, 0.01f, 10, T);
+    scaling(10, 0.01, 10, T);
 
     object_set_transform(&floor, T);
 
@@ -27,7 +27,7 @@ void demo_camera()
     sphere_init(&left_wall);
 
     m4 S = {0};
-    scaling(10, 0.01f, 10, S);
+    scaling(10, 0.01, 10, S);
 
     m4 RX = {0};
     rotation_x(PI_2, RX);
@@ -53,7 +53,7 @@ void demo_camera()
     sphere_init(&right_wall);
 
     m4 S = {0};
-    scaling(10, 0.01f, 10, S);
+    scaling(10, 0.01, 10, S);
 
     m4 RX = {0};
     rotation_x(PI_2, RX);
@@ -123,10 +123,10 @@ void demo_camera()
     sphere_init(&left);
 
     m4 T = {0};
-    translation(-1.5, 0.33f, -0.75f, T);
+    translation(-1.5, 0.33, -0.75, T);
 
     m4 S = {0};
-    scaling(0.33f, 0.33f, 0.33f, S);
+    scaling(0.33, 0.33, 0.33, S);
 
     m4 Z = {0};
     m4_mul(T, S, Z);

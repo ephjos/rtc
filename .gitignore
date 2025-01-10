@@ -9,3 +9,6 @@ gmon*
 *.aux
 *_debug
 *_release
+*.dSYM
+
+.DS_Store

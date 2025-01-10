@@ -21,7 +21,7 @@ void test_camera()
       camera c = {0};
       camera_init(&c, 200, 125, PI_2);
 
-      assert(req(c.pixel_size, 0.01f));
+      assert(req(c.pixel_size, 0.01));
   }
 
   TEST {
@@ -29,7 +29,7 @@ void test_camera()
       camera c = {0};
       camera_init(&c, 125, 200, PI_2);
 
-      assert(req(c.pixel_size, 0.01f));
+      assert(req(c.pixel_size, 0.01));
   }
 
   TEST {
@@ -55,7 +55,7 @@ void test_camera()
       camera_ray_for_pixel(&c, 0, 0, &r);
 
       assert(v4_eq(r.origin, point(0, 0, 0)));
-      assert(v4_eq(r.direction, vector(0.66519f, 0.33259f, -0.66851f)));
+      assert(v4_eq(r.direction, vector(0.66519, 0.33259, -0.66851)));
   }
 
   TEST {
@@ -106,7 +106,7 @@ void test_camera()
       v3 *px = canvas_at(c, 5, 5);
       assert(px != NULL);
 
-      assert(v3_eq(*px, color(0.38066f, 0.47583f, 0.2855f)));
+      assert(v3_eq(*px, color(0.38066, 0.47583, 0.2855)));
 
       canvas_free(c);
   }

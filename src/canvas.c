@@ -52,7 +52,7 @@ char *canvas_to_ppm(const canvas *c)
   memset(buf, 0, n);
 
   u32 buf_i = 0;
-  buf_i += sprintf(buf+buf_i, "P3\n%ld %ld\n255\n", c->width, c->height);
+  buf_i += snprintf(buf+buf_i, 24, "P3\n%ld %ld\n255\n", c->width, c->height);
 
   for (u32 i = 0; i < c->height; i++) {
     for (u32 j = 0; j < c->width; j++) {
@@ -67,10 +67,10 @@ char *canvas_to_ppm(const canvas *c)
       s32 ib = (s32)(p[2] * 255.0);
       ib = CLAMP(ib, 0, 255);
 
-      buf_i += sprintf(buf+buf_i, "%ld %ld %ld ", ir, ig, ib);
+      buf_i += snprintf(buf+buf_i, 24, "%ld %ld %ld ", ir, ig, ib);
     }
 
-    buf_i += sprintf(buf+buf_i, "\n");
+    buf_i += snprintf(buf+buf_i, 2, "\n");
   }
 
   return buf;

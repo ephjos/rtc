@@ -31,7 +31,7 @@ void demo_primitives()
 
   primitives_environment e = {
     .gravity = vector_init(0, -0.1, 0),
-    .wind = vector_init(-0.01f, 0, 0),
+    .wind = vector_init(-0.01, 0, 0),
   };
 
   while (p.position[1] > 0) {

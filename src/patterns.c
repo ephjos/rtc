@@ -51,7 +51,7 @@ void pattern_color_at(const pattern *p, const v4 l, v3 out)
 {
   switch (p->type) {
     case StripedPatternType: {
-      u64 ix = (u64)floor(l[0]);
+      s64 ix = (s64)floor(l[0]);
 
       if (ix % 2 == 0) {
         memcpy(out, p->value.striped.a, sizeof(v3));
@@ -69,7 +69,7 @@ void pattern_color_at(const pattern *p, const v4 l, v3 out)
       v3_add(p->value.gradient.a, out, out);
     } break;
     case RingPatternType: {
-      u64 ix = (u64)floor((l[0] * l[0]) + (l[2] * l[2]));
+      s64 ix = (s64)floor((l[0] * l[0]) + (l[2] * l[2]));
 
       if (ix % 2 == 0) {
         memcpy(out, p->value.striped.a, sizeof(v3));
@@ -78,7 +78,7 @@ void pattern_color_at(const pattern *p, const v4 l, v3 out)
       }
     } break;
     case CheckerPatternType: {
-      u64 ix = (u64)(floor(l[0]+EPSILON) + floor(l[1]+EPSILON) + floor(l[2]+EPSILON));
+      s64 ix = (s64)(floor(l[0]+EPSILON) + floor(l[1]+EPSILON) + floor(l[2]+EPSILON));
 
       if (ix % 2 == 0) {
         memcpy(out, p->value.striped.a, sizeof(v3));

@@ -366,9 +366,9 @@ void test_objects()
       object_set_transform(&s, T);
 
       v4 n = {0};
-      object_normal_at(&s, point(0, 1.70711f, -0.70711f), n);
+      object_normal_at(&s, point(0, 1.70711, -0.70711), n);
 
-      assert(v4_eq(n, vector(0, 0.70711f, -0.70711f)));
+      assert(v4_eq(n, vector(0, 0.70711, -0.70711)));
   }
 
   TEST {
@@ -390,7 +390,7 @@ void test_objects()
       v4 n = {0};
       object_normal_at(&s, point(0, ROOT_2_2, -ROOT_2_2), n);
 
-      assert(v4_eq(n, vector(0, 0.97014f, -0.24254f)));
+      assert(v4_eq(n, vector(0, 0.97014, -0.24254)));
   }
 
   TEST {

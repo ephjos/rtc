@@ -44,7 +44,7 @@ void test_world()
     v3 out = {0};
     world_shade_hit(&w, &c, 0, out);
 
-    assert(v3_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
+    assert(v3_eq(out, color(0.38066, 0.47583, 0.2855)));
   }
 
   TEST {
@@ -52,7 +52,7 @@ void test_world()
     world w = {0};
     world_init(&w);
 
-    memcpy(w.lights[0].position, point(0.0, 0.25f, 0.0), sizeof(v4));
+    memcpy(w.lights[0].position, point(0.0, 0.25, 0.0), sizeof(v4));
     memcpy(w.lights[0].intensity, color(1, 1, 1), sizeof(v3));
 
     ray r = {
@@ -69,7 +69,7 @@ void test_world()
     v3 out = {0};
     world_shade_hit(&w, &c, 0, out);
 
-    assert(v3_eq(out, color(0.90498f, 0.90498f, 0.90498f)));
+    assert(v3_eq(out, color(0.90498, 0.90498, 0.90498)));
   }
 
   TEST {
@@ -101,7 +101,7 @@ void test_world()
     v3 out = {0};
     world_color_at(&w, &r, 0, out);
 
-    assert(v3_eq(out, color(0.38066f, 0.47583f, 0.2855f)));
+    assert(v3_eq(out, color(0.38066, 0.47583, 0.2855)));
   }
 
   TEST {

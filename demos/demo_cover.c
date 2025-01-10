@@ -231,7 +231,7 @@ void render_and_save(world w, u32 frame, f64 step)
   canvas *c = camera_render(&v, &w, &s);
 
   char filepath[256] = {0};
-  sprintf(filepath, "./demo-out/cover_%05ld.ppm", frame);
+  snprintf(filepath, 36, "./demo-out/cover_%05ld.ppm", frame);
 
   {
     char *ppm = canvas_to_ppm(c);

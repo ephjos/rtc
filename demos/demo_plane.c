@@ -66,10 +66,10 @@ void demo_plane()
     sphere_init(&left);
 
     m4 T = {0};
-    translation(-1.5, 0.33f, -0.75f, T);
+    translation(-1.5, 0.33, -0.75, T);
 
     m4 S = {0};
-    scaling(0.33f, 0.33f, 0.33f, S);
+    scaling(0.33, 0.33, 0.33, S);
 
     m4 Z = {0};
     m4_mul(T, S, Z);

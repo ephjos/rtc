@@ -77,7 +77,7 @@ void test_materials()
     v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(v3_eq(result, color(0.7364f, 0.7364f, 0.7364f)));
+    assert(v3_eq(result, color(0.7364, 0.7364, 0.7364)));
   }
 
   TEST {
@@ -96,7 +96,7 @@ void test_materials()
     v3 result = {0};
     material_lighting(&m, &l, &sphere, position, eyev, normalv, false, result);
 
-    assert(v3_eq(result, color(1.6364f, 1.6364f, 1.6364f)));
+    assert(v3_eq(result, color(1.6364, 1.6364, 1.6364)));
   }
 
   TEST {

@@ -43,6 +43,9 @@ typedef double f64;
 #define ROOT_3       1.73205080757
 #define ROOT_3_3     (ROOT_3 / 3.0)
 
+#define F64_MAX ((f64)FLT_MAX)
+#define F64_INF ((f64)INFINITY)
+
 // Compare 
 #define EPSILON (f64)0.00001
 
@@ -407,6 +410,11 @@ b32 world_is_shadowed(const world *w, const light *l, const v4 p);
 
 // Static inline functions
 
+static inline b32 req(f64 a, f64 b)
+{
+  return fabs(a - b) < EPSILON;
+}
+
 static inline void intersection_insert(intersection_group *is, f64 t, const object * o) 
 {
 #ifdef INTERSECTION_INSERT_BOUND_CHECK
@@ -471,6 +479,7 @@ static inline void m4_mulv(const m4 A, const v4 b, v4 out)
 
 static inline void cube_check_axis(f64 origin, f64 direction, v2 out)
 {
+
   f64 tmin_numerator = (-1 - origin);
   f64 tmax_numerator = (1 - origin);
 
@@ -595,11 +604,6 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
   if (cone_check_cap(r, t, maximum)) {
     intersection_insert(ig, t, o);
   }
-}
-
-static inline b32 req(f64 a, f64 b)
-{
-  return fabs(a - b) < EPSILON;
 }
 
 static inline f64 random_uniform()

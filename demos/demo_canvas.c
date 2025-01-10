@@ -42,7 +42,7 @@ void demo_canvas()
 
   canvas_environment e = {
     .gravity = vector_init(0, -0.1, 0),
-    .wind = vector_init(-0.01f, 0, 0),
+    .wind = vector_init(-0.01, 0, 0),
   };
 
   CANVAS_DEMO_BLOCK(3);

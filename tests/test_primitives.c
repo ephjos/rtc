@@ -155,7 +155,7 @@ void test_primitives()
       const v4 a = vector_init(1, 2, 3);
       v4 out = {0};
       v4_norm(a, out);
-      assert(v4_eq(out, vector(0.26726f, 0.53452f, 0.80178f)));
+      assert(v4_eq(out, vector(0.26726, 0.53452, 0.80178)));
       assert(req(v4_mag(out), 1));
   }
 
@@ -181,8 +181,8 @@ void test_primitives()
 
   TEST {
       // Adding two colors
-      const v3 a = color_init(0.9, 0.6, 0.75f);
-      const v3 b = color_init(0.7, 0.1, 0.25f);
+      const v3 a = color_init(0.9, 0.6, 0.75);
+      const v3 b = color_init(0.7, 0.1, 0.25);
       v3 out = {0};
       v3_add(a, b, out);
       assert(v3_eq(out, color(1.6, 0.7, 1.0)));
@@ -190,8 +190,8 @@ void test_primitives()
 
   TEST {
       // Subtracting two colors
-      const v3 a = color_init(0.9, 0.6, 0.75f);
-      const v3 b = color_init(0.7, 0.1, 0.25f);
+      const v3 a = color_init(0.9, 0.6, 0.75);
+      const v3 b = color_init(0.7, 0.1, 0.25);
       v3 out = {0};
       v3_sub(a, b, out);
       assert(v3_eq(out, color(0.2, 0.5, 0.5)));
@@ -211,7 +211,7 @@ void test_primitives()
       const v3 b = color_init(0.9, 1.0, 0.1);
       v3 out = {0};
       v3_mul(a, b, out);
-      assert(v3_eq(out, color(0.9, 0.2, 0.04f)));
+      assert(v3_eq(out, color(0.9, 0.2, 0.04)));
   }
 
   TEST {
