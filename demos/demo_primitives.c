@@ -19,7 +19,7 @@ void primitives_tick(primitives_environment *e, primitives_projectile *p)
   v4_add(p->velocity, env_comp, p->velocity);
 }
 
-void demo_primitives()
+void demo_primitives(void)
 {
   printf("-- demo primitives\n");
 

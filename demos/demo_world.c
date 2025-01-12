@@ -1,7 +1,7 @@
 #include "demos.h"
 
 
-void demo_world()
+void demo_world(void)
 {
   /*
   printf("-- demo world\n");

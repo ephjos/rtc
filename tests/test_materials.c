@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_materials()
+void test_materials(void)
 {
   object sphere = {0};
   sphere_init(&sphere);

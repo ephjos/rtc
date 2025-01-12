@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_patterns()
+void test_patterns(void)
 {
 
   TESTS();

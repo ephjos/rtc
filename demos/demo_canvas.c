@@ -26,7 +26,7 @@ void canvas_tick(canvas_environment *e, canvas_projectile *p)
     }\
   }
 
-void demo_canvas()
+void demo_canvas(void)
 {
   printf("-- demo canvas\n");
 

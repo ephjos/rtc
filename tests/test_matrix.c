@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_matrix()
+void test_matrix(void)
 {
   TESTS();
 

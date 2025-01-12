@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_transform()
+void test_transform(void)
 {
   TESTS();
 

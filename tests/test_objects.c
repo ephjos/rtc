@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_objects()
+void test_objects(void)
 {
   TESTS();
 

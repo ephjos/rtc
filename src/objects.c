@@ -238,8 +238,12 @@ void ray_intersect(const ray *input_r, const object *o, intersection_group *ig)
       if (fabs(a) > EPSILON) {
         f64 discriminant = (b*b) - 4 * a * c;
 
-        if (discriminant >= 0) {
+        if (discriminant >= 0 || req(discriminant, 0)) {
           f64 root_discriminant = (f64)sqrt(discriminant);
+          if (isnan(root_discriminant)) {
+            root_discriminant = 0;
+          }
+
           f64 t0 = (-b - root_discriminant) / (2*a);
           f64 t1 = (-b + root_discriminant) / (2*a);
 

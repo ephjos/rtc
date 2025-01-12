@@ -9,7 +9,7 @@
     }\
   }
 
-void demo_transform()
+void demo_transform(void)
 {
   printf("-- demo transform\n");
 

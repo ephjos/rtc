@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_lights()
+void test_lights(void)
 {
   TESTS();
 

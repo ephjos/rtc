@@ -1,6 +1,6 @@
 #include "demos.h"
 
-void demo_camera()
+void demo_camera(void)
 {
   printf("-- demo camera\n");
 

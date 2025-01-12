@@ -1,6 +1,6 @@
 #include "demos.h"
 
-void demo_plane()
+void demo_plane(void)
 {
   printf("-- demo plane\n");
 

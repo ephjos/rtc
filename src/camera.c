@@ -247,10 +247,9 @@ void render_stats_print(const render_stats *s)
 
   f64 total_pixels_million = (f64)total_pixels / 1000000;
   f64 duration_s = ((f64)duration / (f64)cpu_freq);
-  f64 duration_ms_per_px = (duration_s * 1000) / (f64)total_pixels;
-  f64 ticks_per_px = (f64)duration / (f64)total_pixels;
+  f64 ns_per_px = (f64)duration / (f64)total_pixels;
 
-  printf("[%llux%llupx (%0.2fm px) in %0.4fs (%0.6fms/px) (%0.2fcycles/px)]\n", 
-      s->width, s->height, total_pixels_million, duration_s, duration_ms_per_px, ticks_per_px);
+  printf("[%llux%llupx (%0.2fm px) in %0.4fs (%0.2fns/px)]\n", 
+      s->width, s->height, total_pixels_million, duration_s, ns_per_px);
 }
 

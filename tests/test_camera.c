@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_camera()
+void test_camera(void)
 {
   TESTS();
 

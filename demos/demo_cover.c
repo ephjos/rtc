@@ -6,7 +6,7 @@ const u32 H = W;
 //#define RENDER_MANY
 #ifndef RENDER_MANY
 
-void demo_cover()
+void demo_cover(void)
 {
   printf("-- demo cover\n");
 
@@ -172,7 +172,7 @@ void demo_cover()
   camera v = {0};
   {
     camera_init(&v, W, H, 0.785);
-    v.antialias = true;
+    v.antialias = false;
 
     m4 T = {0};
     view_transform(point(-6, 6, -10), point(6, 0, 6), vector(-0.45, 1, 0), T);
@@ -256,7 +256,7 @@ void render_and_save(world w, u32 frame, f64 step)
 
 // Sweeps out a path over the scene, rendering many frames to be stitched
 // externally
-void demo_cover()
+void demo_cover(void)
 {
   printf("-- demo cover\n");
 

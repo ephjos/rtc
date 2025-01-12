@@ -60,35 +60,39 @@ typedef double f64;
 // modified prof.h from performance aware programming series, haversine project
 // See https://www.computerenhance.com/ for more
 
-#define QUICK_BUILD
-#ifdef QUICK_BUILD
-// x86intrin is huge and slows compilation down massively. We only need 
-// __rdtsc from this library, so just replace with a direct call.
-static inline u64 __rdtsc(){
-    unsigned int lo, hi;
-    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-    return ((u64)hi << 32) | lo;
-}
-#else
-#include "x86intrin.h"
-#endif
+// On Apple Silicon now, no rdtsc. Perf counters are a pain to access, simplify
+// to nanosecond timer. See the following for more:
+// https://lemire.me/blog/2023/03/21/counting-cycles-and-instructions-on-arm-based-apple-systems/
+static inline u64 __rdtsc(void)
+{
+  struct timespec t;
+  clock_gettime( CLOCK_MONOTONIC_RAW, &t );
+  return (t.tv_sec * 1000000000) + t.tv_nsec;
 
-static inline u64 prof_get_os_timer_freq() {
+}
+
+static inline u64 prof_get_os_timer_freq(void) 
+{
   return 1000000;
 }
 
-static inline u64 prof_read_os_timer() {
+static inline u64 prof_read_os_timer(void) 
+{
   struct timeval value;
   gettimeofday(&value, 0);
 
   return prof_get_os_timer_freq() * (u64)value.tv_sec + (u64)value.tv_usec;
 }
 
-static inline u64 prof_read_cpu_timer() {
+static inline u64 prof_read_cpu_timer(void) 
+{
   return __rdtsc();
 }
 
-static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
+static inline u64 prof_estimate_cpu_freq(u64 wait_ms) 
+{
+  return 1000000000;
+  /*
   u64 os_freq = prof_get_os_timer_freq();
 
   u64 cpu_start = prof_read_cpu_timer();
@@ -111,6 +115,7 @@ static inline u64 prof_estimate_cpu_freq(u64 wait_ms) {
   }
 
   return cpu_freq;
+  */
 }
 
 //------------------------------------------------------------------------------
@@ -606,7 +611,7 @@ static inline void cone_intersect_caps(const ray *r, const object *o, intersecti
   }
 }
 
-static inline f64 random_uniform()
+static inline f64 random_uniform(void)
 {
   return (f64)rand()/(f64)RAND_MAX;
 }

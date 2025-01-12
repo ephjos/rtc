@@ -1,7 +1,7 @@
 #include "demos.h"
 
 
-void demo_patterns()
+void demo_patterns(void)
 {
   printf("-- demo patterns\n");
 

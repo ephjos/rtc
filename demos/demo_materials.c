@@ -1,7 +1,7 @@
 #include "demos.h"
 
 
-void demo_materials()
+void demo_materials(void)
 {
   printf("-- demo materials\n");
 

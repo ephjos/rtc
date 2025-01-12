@@ -1,7 +1,7 @@
 
 #include "tests.h"
 
-void test_canvas()
+void test_canvas(void)
 {
   TESTS();
 

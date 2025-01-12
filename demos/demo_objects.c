@@ -1,7 +1,7 @@
 #include "demos.h"
 
 
-void demo_objects() 
+void demo_objects(void)
 {
   printf("-- demo objects\n");
 
